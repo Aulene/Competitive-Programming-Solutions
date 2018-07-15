@@ -73,7 +73,7 @@ int main()
 
 				cin >> x >> y;
 			
-				ans=dijkstra(x, y);
+				ans = dijkstra(x, y);
 
 				if(ans==INT_MAX)
 					cout << "NO" << endl;

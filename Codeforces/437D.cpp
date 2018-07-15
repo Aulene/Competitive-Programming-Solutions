@@ -35,11 +35,14 @@ signed main()
 			cin >> a[i];
 
 		for(i = 0; i < m; i++)
-			{
-				cin >> u >> v;
-				ans += a[u] + a[v];
-			}
+			cin >> u >> v;
 		
+		sort(a + 1, a + n);
+
+		for(i = 1; i <= n; i++) {
+			ans = ans + n - i 
+		}
+
 		ans /= n * (n - 1);
 		cout << ans << endl;
 		

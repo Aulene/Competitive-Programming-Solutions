@@ -1,63 +1,65 @@
-#include<iostream>
-#include<fstream>
-#include<cstdio>
-#include<cstring>
-#include<cmath>
-#include<climits>
-#include<algorithm>
-#include<vector>
-#include<map>
-#include<queue>
-#include<stack>
-#include<set>
-#include<list>
+
+#include <bits/stdc++.h>
 
 using namespace std;
 
-#define lli long long int
+#define int long long int
 #define mod 1000000007
+#define p push
 #define pb push_back
+#define mp make_pair
+#define f first
+#define s second
 
-int main()
+signed main()
 	{
-		int n, m, i, j, cont;
-		int maxA=0, maxB=0;
-		int countA=0, countB=0;
+		ios_base::sync_with_stdio(false);
+		cin.tie(NULL);
 
+		int n, m, i, j, u, v, ans = 0;
 		string s;
 
 		cin >> n >> m >> s;
 
-		for(i=0; i<n; i++)
-			if(s[i]=='a')
-				countA++;
-			else
-				countB++;
+		//changing As to Bs
+		
+		int l = 0, r = 0, a = 0, b = 0;
 
-		for(i=0; i<n; i++)
-			{
-				j=i;
-				cont=0;
-				
-				while(s[j]==s[i])
-					{
-						cont++;
-						if(cont<=m)
-							{
-								if(s[i]=='a')
-									maxB=max(j-i, maxB);
-								else
-									maxA=max(j-i, maxA);
-							}
-						j++;
-					}
+		while(r < n) {
 
-				i=j;
+			if(s[r] == 'a') a++;
+			else b++;
+			r++;
+
+			while(b > m) {
+				if(s[l] == 'a') a--;
+				else b--;
+				l++;
 			}
 
-		cout << maxA << " " << maxB << endl;
+			ans = max(ans, r - l);
+			// cout << l << " " << r << " " << ans << endl;
+		}
 
-		int ans=max(maxA+countB, maxB+countA);
+		l = 0, r = 0, a = 0, b = 0;
+
+		while(r < n) {
+
+			if(s[r] == 'b') a++;
+			else b++;
+			r++;
+
+			while(b > m) {
+				if(s[l] == 'b') a--;
+				else b--;
+				l++;
+			}
+
+			ans = max(ans, r - l);
+			// cout << l << " " << r << " " << ans << endl;
+		}
+
 		cout << ans << endl;
-		return 0;
+
+		return 0;	
 	}

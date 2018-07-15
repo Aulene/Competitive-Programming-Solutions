@@ -1,73 +1,67 @@
-#include<iostream>
-#include<cstdio>
-#include<cstring>
-#include<cmath>
-#include<climits>
-#include<algorithm>
-#include<vector>
-#include<map>
-#include<queue>
-#include<stack>
-#include<set>
-#include<list>
+#include <iostream>
+#include <fstream>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+#include <climits>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <unordered_map>
+#include <queue>
+#include <stack>
+#include <set>
+#include <list>
 
 using namespace std;
 
-#define lli long long int
+#define int long long int
 #define mod 1000000007
+#define p push
 #define pb push_back
+#define mp make_pair
+#define f first
+#define s second
 
-lli graph[507][507];
-bool removed[507];
-lli n;
+int w[507][507], node[507], floyd[507][507];
 
-lli floyd()
-{
-	lli ans=0, i, j, k;
-	lli dist[507][507];
+stack <int> s;
 
-	for(i=0; i<n; i++)
-		for(j=0; j<n; j++)
-			dist[i][j]=graph[i][j];
-
-	for(i=0; i<n; i++)
-		for(j=0; j<n; j++)
-			for(k=0; k<n; k++)
-				dist[j][k]=min(dist[j][k], dist[j][i]+dist[i][k]);
-					
-	for(i=0; i<n; i++)
-		for(j=0; j<n; j++)
-			if(!removed[i] && !removed[j])
-				ans+=dist[i][j];
-
-	return ans;
-}
-
-int main()
+signed main()
 	{
-		int i, j, no;
+		ios_base::sync_with_stdio(false);
+		cin.tie(NULL);
+
+		int n, i, j, k, sum;
 
 		cin >> n;
 
-		for(i=0; i<n; i++)
-			for(j=0; j<n; j++)
-				cin >> graph[i][j];
+		for(i = 1; i <= n; i++)
+			for(j = 1; j <= n; j++)
+				cin >> floyd[i][j];
 
-		no=n;
+		for(i = 1; i <= n; i++) cin >> node[i];
 
-		while(no--)
+		for(i = n; i >= 1; i--)
 			{
-				cout << floyd() << endl;
+				for(j = 1; j <= n; j++)
+					for(k = 1; k <= n; k++)
+						floyd[node[j]][node[k]] = min(floyd[node[j]][node[k]], floyd[node[j]][node[i]] + floyd[node[i]][node[k]]);
+		
+				sum = 0;
 
-				cin >> j;
-
-				removed[j]=1;
-				
-				for(i=0; i<n; i++)
-					{
-						graph[i][j]=INT_MAX;
-						graph[j][i]=INT_MAX;
-					}
+				for(j = i; j <= n; j++)
+					for(k = i; k <= n; k++) 
+						sum += floyd[node[j]][node[k]];
+										
+				s.p(sum);
 			}
+
+		while(!s.empty())
+			{
+				cout << s.top() << " ";
+				s.pop();
+			}
+
 		return 0;
 	}

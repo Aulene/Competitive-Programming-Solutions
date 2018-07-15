@@ -15,6 +15,7 @@
 
 using namespace std;
 
+#define int long long int
 #define mod 1000000007
 #define p push
 #define pb push_back
@@ -33,17 +34,9 @@ signed main()
 		int x = 20000000007, ans = 0;
 
 		for(i = 0; i < 3; i++)
-			cin >> a[i], x = min(x, a[i]);
-
-		for(i = 0; i < 3; i++)
-			a[i] -= x;
-
+			cin >> a[i];
 		sort(a, a + 3);
-
-		if(a[1] + a[2] >= 3)
-			ans = max(min(ceil(a[2] / 2), a[1]), min(ceil(a[1] / 2), a[2]));
-
-		ans += x;
+		ans = min((a[0] + a[1] + a[2]) / 3, a[0] + a[1]);
 		cout << ans << endl;
 		return 0;
 	}

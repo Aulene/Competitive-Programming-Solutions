@@ -33,6 +33,8 @@ int dijkstra(int start, int reach)
 		dist[i]=INT_MAX;
 	dist[start]=0;
 
+	pair <int, int> pz, nx;
+	
 	pq.p(mp(start, dist[start]));
 
 	while(!pq.empty())

@@ -1,102 +1,82 @@
-#include<iostream>
-#include<fstream>
-#include<cstdio>
-#include<cstring>
-#include<cmath>
-#include<climits>
-#include<algorithm>
-#include<vector>
-#include<map>
-#include<queue>
-#include<stack>
-#include<set>
-#include<list>
+#include <iostream>
+#include <climits>
+#include <algorithm>
+#include <vector>
+#include <queue>
 
 using namespace std;
 
-#define lli long long int
+#define int long long int
 #define mod 1000000007
 #define p push
 #define pb push_back
 #define mp make_pair
+#define f first
+#define s second
 
-bool hasHospital[100007];
-lli dist[100007];
-vector < pair < lli, lli > > g[100007];
-priority_queue< pair <lli, lli>, vector < pair <lli, lli> >, greater < pair <lli, lli> > > pq;
-lli n, m, p;
+bool h[100007];
+int dist[100007];
+vector < pair <int, int> > g[100007];
+priority_queue < pair <int, int>, vector < pair <int, int> >, greater < pair <int, int> > > pq;
 
-lli dijkstra()
+void dijkstra(int n)
 {
-	lli i, v, d;
-	vector< pair <lli, lli> >::iterator it;
-
-	for(i=0; i<100007; i++)
-		{
-			if(hasHospital[i])
-				dist[i]=0;
-			else
-				dist[i]=10000000007;
-		}
+	int i, v, d;
+	vector< pair <int, int> >::iterator it;
 
 	for(i=1; i<=n; i++)
+		if(h[i] == 0) dist[i]=LLONG_MAX;
+
+	pair <int, int> pz, nx;
+	
+	for(i = 1; i <= n; i++)
+		if(h[i]) pq.p(mp(i, dist[i]));
+
+	while(!pq.empty())
 		{
-			if(hasHospital[i])
-				{
-					pq.p(mp(i, dist[i]));
+			v=pq.top().first;
+			d=pq.top().second;
+			pq.pop();
 
-					while(!pq.empty())
-						{
-							v=pq.top().first;
-							d=pq.top().second;
-							pq.pop();
-
-							for(it=g[v].begin(); it!=g[v].end(); it++)
-								if(dist[it->first] > it->second+d)
-									{
-										dist[it->first]=it->second+d;
-										pq.p(mp(it->first, dist[it->first]));
-									}
-						}
-				}
+			for(it=g[v].begin(); it!=g[v].end(); it++)
+				if(dist[it->first] > it->second+d)
+					{
+						dist[it->first]=it->second+d;
+						pq.p(mp(it->first, dist[it->first]));
+					}
 		}
-
-	return 0;
 }
 
-int main()
+signed main()
 	{
-		lli x, y, d;
-		lli i, j;
+		ios_base::sync_with_stdio(false);
+		cin.tie(NULL);
+		cout.tie(NULL);
+
+		int n, m, p, i, j, u, v, w;
 
 		cin >> n >> m >> p;
 
-		for(i=1; i<=p; i++)
+		for(i = 0; i < p; i++)
 			{
-				cin >> x;
-				hasHospital[x]=1;
+				cin >> u;
+				h[u] = 1;
 			}
 
-		while(m--)
+		for(i = 0; i < m; i++)
 			{
-				cin >> x >> y >> d;
-				g[x].pb(mp(y, d));
-				g[y].pb(mp(x, d));
+				cin >> u >> v >> w;
+				g[u].pb(mp(v, w));
+				g[v].pb(mp(u, w));
 			}
 
-		dijkstra();
+		dijkstra(n);
 
-		for(i=1; i<=n; i++)
-			{
-				if(!hasHospital[i])
-					{
-						if(dist[i]!=10000000007)
-							cout << i << " " << dist[i] << endl;
-						else
-							cout << i << " " << "-1" << endl;
-					}
-			}
-
+		for(i = 1; i <= n; i++)
+			if(h[i] == 0)
+				{
+					if(dist[i] == LLONG_MAX) dist[i] = -1; 
+						cout << i << " " << dist[i] << endl;
+				}
 		return 0;
-			
 	}

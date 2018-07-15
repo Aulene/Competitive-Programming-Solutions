@@ -24,37 +24,50 @@ using namespace std;
 #define f first
 #define s second
 
+string s1, s2;
+int n, x;
+int tp = 0, fx = 0;
+
+void recur(int idx, int pos)
+{
+	if(idx >= n)
+		{
+			if(pos == x) fx++;
+			tp++;
+			return;
+		}
+
+	if(s2[idx] == '+') recur(idx + 1, pos + 1);
+	else if(s2[idx] == '-') recur(idx + 1, pos - 1);
+	else
+		{
+			recur(idx + 1, pos + 1);
+			recur(idx + 1, pos - 1);
+		}
+}
+
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
 
-		string s1, s2;
-		int n, m, i, j;
+		
+		int i, j;
 		double ans;
-		int p1 = 0, p2 = 0, m1 = 0, m2 = 0, q = 0; 
 		cin >> s1 >> s2;
 
 		n = s1.size();
 
 		for(i = 0; i < n; i++)
 			{
-				if(s1[i] == '+')
-					p1++;
-				else
-					m1++;
-
-				if(s2[i] == '+')
-					p2++;
-				else if(s2[i] == '-')
-					m2++;
-				else
-					q++;
+				if(s1[i] == '+') x++;
+				else x--;
 			}
 
-		ans = max(p1, p2) - min(p1, p2) + max(m1, m2) - min(m1, m2);
-		ans = pow(0.5000000000, ans);
-		
-		cout << setprecision(10) << ans << endl;
+		recur(0, 0);
+
+		ans = (double) fx / tp ;
+		printf("%.11f\n", ans);
+
 		return 0;
 	}

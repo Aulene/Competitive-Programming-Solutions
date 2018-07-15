@@ -1,36 +1,33 @@
-#include<iostream>
-#include<cstdio>
-#include<cstring>
-#include<cmath>
-#include<climits>
-#include<algorithm>
-#include<vector>
-#include<map>
-#include<queue>
-#include<stack>
-#include<set>
-#include<list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-#define lli long long int
+#define int long long int
 #define mod 1000000007
+#define p push
 #define pb push_back
+#define mp make_pair
+#define f first
+#define s second
 
-lli a[1007][1007];
+int a[1007][1007], dp[1007][1007];
 
+int recur(int x1, int y1, int x2, int y2, bool vis)
+{
+	
+}
 
-
-int main()
+signed main()
 	{
-		int n, m, i, j;
+		ios_base::sync_with_stdio(false);
+		cin.tie(NULL);
+
+		int n, m, i, j, u, v;
 
 		cin >> n >> m;
 
-		for(i=1; i<=n; i++)
-			for(j=1; j<=n; j++)
-				cin >> a[i][j];
-
+		for(i = 1; i <= n; i++)
+			for(j = 1; j <= m; j++) cin >> a[i][j];
 
 		return 0;
 	}
