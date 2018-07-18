@@ -11,61 +11,38 @@ using namespace std;
 #define s second
 
 vector < vector <int> > g(1000007);
-int a[1000007];
+int a[1000007], sum[1000007];
 int ansC = INT_MAX, ans;
-int sum = 0;
 
-int dfs1(int idx, int p)
+void dfsSum(int idx, int p = -1)
 {
-	int anus = 0;
+	sum[idx] = a[idx];
 
-	if(p == -1)
-		{
-			for(int i = 0; i < g[idx].size(); i++)
-				if(g[idx][i] != p)
-					anus = max(dfs1(g[idx][i], idx), anus);
+	for(int i = 0; i < g[idx].size(); i++)
+		if(g[idx][i] != p) {
+			dfsSum(g[idx][i], idx);
+			sum[idx] += sum[g[idx][i]];
+		} 
 			
-			if(anus < ansC)
-				{
-					ansC = anus;
-					ans = idx;
-				}
-		}
-	else
-		{
-			anus = a[idx];
-
-			for(int i = 0; i < g[idx].size(); i++)
-				if(g[idx][i] != p)
-					anus += dfs1(g[idx][i], idx);
-
-			return anus;
-		}
-	
-	return 0;
 }
 
-int dfs2(int idx, int p, int upsum, int downsum)
+void dfs(int idx, int x = 0, int p = -1)
 {
-	int anus = max(upsum, downsum);
+	int mx = x;
 
-	if(anus < ansC)
-		{
-			ansC = anus;
-			ans = idx;
-		}
-	
 	for(int i = 0; i < g[idx].size(); i++)
-		if(g[idx][i] != p) dfs2(g[idx][i], idx, upsum + a[idx], downsum - a[idx]);
+		if(g[idx][i] != p)
+			{
+				int v = g[idx][i];
 
-	return 0;
-}
+				dfs(v, x + sum[idx] - sum[v], idx);
+				mx = max(mx, sum[v]);
+			}
 
-void dfsSum(int idx, int p)
-{
-	sum += a[idx];
-	for(int i = 0; i < g[idx].size(); i++)
-		if(g[idx][i] != p) dfsSum(g[idx][i], idx);
+	if(mx < ansC) {
+		ansC = mx;
+		ans = idx;
+	}
 }
 
 signed main()
@@ -86,19 +63,8 @@ signed main()
 				g[v].pb(u);
 			}
 
-		// dfsSum(0, -1);
-		// cout << sum << endl;
-		
-		if(n <= 1000)
-			{
-				for(i = 0; i < n; i++)
-					dfs1(i, -1);
-			}
-		else
-			{
-				dfsSum(0, -1);
-				dfs2(0, -1, 0, sum);
-			}
+		dfsSum(0);
+		dfs(0);
 
 		cout << ans << endl;
 
