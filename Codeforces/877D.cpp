@@ -1,17 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <queue>
-#include <stack>
-#include <set>
-#include <list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -23,82 +10,72 @@ using namespace std;
 #define f first
 #define s second
 
-char a[1007][1007];
-int dp[1007][1007];
-bool vis[1007][1007];
-
+int a[1007][1007], dp[1007][1007];
 int n, m, k;
-queue < pair <int, int> > q;
 
-int bfs(int x1, int y1, int x2, int y2)
+void bfs(int x, int y)
 {
-	int i, j;
+	pair <int, int> pz;
+	queue < pair <int, int> > q;
 
-	q.p(mp(x1, y1));
-	dp[x1][y1] = 0;
+	dp[x][y] = 0;
+	q.p(mp(x, y));
 
 	while(!q.empty())
 		{
-			pair <int, int> pz;
-
 			pz = q.front();
 			q.pop();
 
-			int u = pz.f, v = pz.s;
+			int x = pz.f, y = pz.s, s = dp[x][y] + 1;
 
-			if(vis[u][v]) continue;
-			vis[u][v] = 1;
-
-			for(i = u - 1; i >= max(1LL, u - k); i--)
-				if(a[i][v] == '.')
-					{
-						if(dp[i][v] > dp[u][v] + 1)
-							{
-								// cout << i << " " << v << " " << dp[u][v] << endl;
-								dp[i][v] = dp[u][v] + 1;
-								q.p(mp(i, v));
+			for(int i = 1; i <= k; i++)
+				{
+					if(x + i <= n && a[x + i][y])
+						{
+							if(dp[x + i][y] > s) {
+								dp[x + i][y] = s;
+								q.p(mp(x + i, y));
 							}
-					}
-				else { break; }
+						}
+					else break;
+				}
 
-			for(i = u + 1; i <= min(u + k, n); i++)
-				if(a[i][v] == '.')
-					{
-						if(dp[i][v] > dp[u][v] + 1)
-							{
-								// cout << i << " " << v << " " << dp[u][v] << endl;
-								dp[i][v] = dp[u][v] + 1;
-								q.p(mp(i, v));
+			for(int i = 1; i <= k; i++)
+				{
+					if(x - i >= 1 && a[x - i][y])
+						{
+							if(dp[x - i][y] > s) {
+								dp[x - i][y] = s;
+								q.p(mp(x - i, y));
 							}
-					}
-				else { break; }
+						}
+					else break;
+				}
+			
+			for(int i = 1; i <= k; i++)
+				{
+					if(y - i >= 1 && a[x][y - i])
+						{
+							if(dp[x][y - i] > s) {
+								dp[x][y - i] = s;
+								q.p(mp(x, y - i));
+							}
+						}
+					else break;
+				}
 
-			for(i = v - 1; i >= max(1LL, v - k); i--)
-				if(a[u][i] == '.')
-					{
-						if(dp[u][i] > dp[u][v] + 1)
-							{
-								// cout << u << " " << i << " " << dp[u][v] << endl;
-								dp[u][i] = dp[u][v] + 1;
-								q.p(mp(u, i));
+			for(int i = 1; i <= k; i++)
+				{
+					if(y + i <= m && a[x][y + i])
+						{
+							if(dp[x][y + i] > s) {
+								dp[x][y + i] = s;
+								q.p(mp(x, y + i));
 							}
-					}
-				else { break; }
-
-			for(i = v + 1; i <= min(v + k, m); i++)
-				if(a[u][i] == '.')
-					{
-						if(dp[u][i] > dp[u][v] + 1)
-							{
-								// cout << u << " " << i << " " << dp[u][v] << endl;
-								dp[u][i] = dp[u][v] + 1;
-								q.p(mp(u, i));
-							}
-					}
-				else { break; }
+						}
+					else break;
+				}
 		}
-
-	return dp[x2][y2];
 }
 
 signed main()
@@ -106,32 +83,37 @@ signed main()
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
 
-		int i, j;
-		int x1, x2, y1, y2;
-		string s;
+		int i, j, u, v;
+		int x1, x2, y1, y2, ans = -1;
+		char x;
 
 		cin >> n >> m >> k;
 
-		for(i = 0; i < 1007; i++)
-			for(j = 0; j < 1007; j++) dp[i][j] = 1000007;
-
 		for(i = 1; i <= n; i++)
-			{
-				cin >> s;
-				for(j = 0; j < s.size(); j++) a[i][j + 1] = s[j]; 
-			}
+			for(j = 1; j <= m; j++) dp[i][j] = INT_MAX;
+
+ 		for(i = 1; i <= n; i++)
+			for(j = 1; j <= m; j++)
+				{
+					cin >> x;
+					if(x == '.') {
+						a[i][j] = 1;
+					}
+				}
 
 		cin >> x1 >> y1 >> x2 >> y2;
-		int ans = bfs(x1, y1, x2, y2);
-
-		if(ans >= 1000007) ans = -1;
 
 		// for(i = 1; i <= n; i++)
-		// 	{
-		// 		for(j = 1; j <= m; j++)
-		// 			cout << dp[i][j] << " ";
-		// 		cout << endl;
-		// 	}
+		// 	{ for(j = 1; j <= m; j++) cout << a[i][j] << " "; cout << endl; }
+
+		bfs(x1, y1);
+
+		// for(i = 1; i <= n; i++)
+		// 	{ for(j = 1; j <= m; j++) cout << dp[i][j] << " "; cout << endl; }
+
+		ans = dp[x2][y2];
+		if(ans == INT_MAX) ans = -1;
+
 		cout << ans << endl;
 
 		return 0;
