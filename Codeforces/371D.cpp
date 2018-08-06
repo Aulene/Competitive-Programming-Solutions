@@ -2,7 +2,6 @@
 
 using namespace std;
 
-#define int long long int
 #define mod 1000000007
 #define p push
 #define pb push_back
@@ -14,11 +13,11 @@ int c[200007], a[200007], parent[200007];
 
 int par(int idx)
 {
-	if(parent[idx] != idx) return par(parent[idx]);
+	if(parent[idx] != idx) parent[idx] = par(parent[idx]);
 	return parent[idx];
 }
 
-signed main()
+int main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
