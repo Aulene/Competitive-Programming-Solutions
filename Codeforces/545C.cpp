@@ -1,17 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <queue>
-#include <stack>
-#include <set>
-#include <list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -23,15 +10,15 @@ using namespace std;
 #define f first
 #define s second
 
-vector < pair < pair <int, int> ,  pair <int, int> > > v;
+int x[100007], h[100007];
 
-bool intersect(pair < pair <int, int> ,  pair <int, int> > a, pair < pair <int, int> ,  pair <int, int> > b)
+bool intersect(int x1, int y1, int x2, int y2)
 {
-	if(b.f.f >= a.s.f && b.f.f <= a.f.f) return 1;
-	else if(b.s.f >= a.s.f && b.s.f <= a.f.f) return 1;
-	else if(b.f.s >= a.s.s && b.f.s <= a.f.s) return 1;
-	else if(b.s.s >= a.s.s && b.s.s <= a.f.s) return 1;
-	return 0;
+	if(x2 <= x1 && x1 <= y2) return 0;
+	if(x2 <= y1 && y1 <= y2) return 0;
+	if(x1 <= x2 && x2 <= y1) return 0;
+	if(x1 <= y2 && y2 <= y1) return 0;
+	return 1;	
 }
 
 signed main()
@@ -39,31 +26,46 @@ signed main()
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
 
-		int n, i, x, y, ans = 1;
-		pair < pair <int, int> ,  pair <int, int> > prev;
+		int n, i, j, u, v, l, r, el, er, ans = 1;
 
 		cin >> n;
 
-		for(i = 0; i < n; i++)
+		for(i = 1; i <= n; i++) cin >> x[i] >> h[i];
+		el = x[1] - h[1], er = x[1];
+
+		for(i = 2; i <= n; i++)
 			{
-				cin >> x >> y;
-				v.pb(mp(mp(x, y), mp(x - y, x)));
-			}
+				// cout << endl;
+				// cout << i << " " << el << " " << er << endl;
 
-		sort(v.begin(), v.end());
+				l = x[i] - h[i], r = x[i];
 
-		prev = v[0];
+				// cout << l << " " << r << endl;
 
-		for(i = 1; i < n; i++)
-			{
-				if(intersect(prev, v[i]))
+				if(intersect(l, r, el, er)) {
+					ans++;
+					el = l;
+					er = r;
+
+					// cout << i << " " << el << " " << er << endl;
 					continue;
-				else
-					{
-						ans++;
-						prev = v[i];
-					}
+				}
+
+				l = x[i], r = x[i] + h[i];
+
+				if(intersect(l, r, x[i + 1], x[i + 1])) {
+					ans++;
+					el = l;
+					er = r;
+
+					// cout << i << " " << el << " " << er << endl;
+					continue;
+				}
+
+				el = min(x[i], el);
+				er = max(x[i], er);
 			}
+
 		cout << ans << endl;
 
 		return 0;
