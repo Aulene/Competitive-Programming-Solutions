@@ -1,2 +1,0 @@
-#include<bits/stdc++.h>
-using namespace std;int main(void){string s; for(int i=1;i<=100;i++){s=(i%5==0&&i%3==0)?"FizzBuzz":(i%5==0)?"Buzz":(i%3==0)?"Fizz":".";if(s!=".")cout<<s<<endl;else printf("%d\n",i);}}

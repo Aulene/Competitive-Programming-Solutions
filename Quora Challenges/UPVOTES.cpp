@@ -20,10 +20,11 @@ signed main()
 		int n, k, i, j, u, v;
 		int l = 0, r = 0;
 		int ansinc = 0, ansdec = 0;
-		
+
 		cin >> n >> k;
 
 		for(i = 1; i <= n; i++) cin >> a[i];
 
+		for(r = 0; r < k; r++)
 		return 0;
 	}

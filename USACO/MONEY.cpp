@@ -1,3 +1,9 @@
+/*
+ID: aussyle1
+PROG: money
+LANG: C++11
+*/
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -15,18 +21,6 @@ signed main()
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
 
-		ifstream cin("teleport.in");
-		ofstream cout ("teleport.out");
-
-		int a, b, x, y;
-
-		cin >> a >> b >> x >> y;
-
-		if(x > y) swap(x, y);
-		if(a > b) swap(a, b);
-
-		int a1 = abs(b - y) + abs(a - x), a2 = abs(b - a);
-		cout << min(a1, a2) << endl;
 
 		return 0;
 	}
