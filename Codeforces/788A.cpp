@@ -11,6 +11,7 @@ using namespace std;
 #define s second
 
 int a[100007], even[100007], odd[100007];
+int preEven[100007], preOdd[100007];
 
 signed main()
 	{
@@ -29,6 +30,9 @@ signed main()
 
 		for(i = 1; i < n; i++) cout << odd[i] << " "; cout << endl;
 		for(i = 1; i < n; i++) cout << even[i] << " "; cout << endl;
-			
+
+		for(i = 1; i < n; i++) preEven[i] = preEven[i] + even[i];
+		for(i = 1; i < n; i++) preOdd[i] = preOdd[i] + odd[i];
+			 
 		return 0;
 	}

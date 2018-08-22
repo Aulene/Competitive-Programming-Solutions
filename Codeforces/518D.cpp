@@ -2,38 +2,45 @@
 
 using namespace std;
 
+#define double long double
 #define int long long int
-#define ld long double
 #define mod 1000000007
 #define p push
 #define pb push_back
 #define mp make_pair
 #define f first
 #define s second
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
 
-ld ent[2007], lv[2007];
+double dp[2007][2007];
 
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
+		cout.tie(NULL);
 
-		int n, t, i, j, u, v;
-		long double p, ans = 0;
-
+		int n, i, j, u, v, t;
+		double p, ans = 0;
+		
 		cin >> n >> p >> t;
 
-		ent[0] = lv[0] = 1;
-		ent[1] = p; lv[1] = (ld) 1 - p;
-		for(i = 2; i <= 2000; i++) ent[i] = ent[i - 1] * p;
-		for(i = 2; i <= 2000; i++) lv[i] = lv[i - 1] * lv[1];
-		
-		for(i = 0; i <= n; i++) {
-			ans = ans + (ld) ent[i] * lv[t - i];
-		}
+		for(i = 0; i < 2007; i++) dp[0][i] = 1;
 
-		ans = (ld) ans / (n + 1);
-		
-		printf("%.16Lf\n", ans);
+		for(i = 1; i <= n; i++)
+			{
+				for(j = 1; j <= t; j++)
+					dp[i][j] = (double) dp[i][j - 1] * (1 - p) + dp[i - 1][j - 1] * p;
+			}
+
+		// for(i = 1; i <= n; i++) {
+		// 	for(j = 1; j <= t; j++) printf("%.6Lf ", dp[i][j]); cout << endl;
+		// }
+
+		for(i = 1; i <= n; i++) ans += dp[i][t];
+
+		printf("%.17Lf\n", ans);
+
 		return 0;
 	}
