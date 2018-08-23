@@ -24,7 +24,7 @@ u = n & (1 << i); // non-zero if set
 // Find rightmost set bit
 u = log2(n & -n) + 1;
 
-// Find leftmost (most significant) set bit
+	// Find leftmost (most significant) set bit
 u = (int)(log2l(n)) + 1;
 
 // ----------
@@ -45,8 +45,7 @@ void dfs(int v)
 	    {
 	        if(vis[u] == 1) 
 		        {
-		        	vector <int> vs;
-		            cycles.__emplace_back(vs);
+		            cycles.emplace_back();
 
 		            int id = path.size() - 1;
 		            

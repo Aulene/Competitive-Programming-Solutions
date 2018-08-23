@@ -1,17 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <queue>
-#include <stack>
-#include <set>
-#include <list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -22,12 +9,15 @@ using namespace std;
 #define mp make_pair
 #define f first
 #define s second
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
 
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
+		cout.tie(NULL);
 
-		int n, i
+		
 		return 0;
 	}
