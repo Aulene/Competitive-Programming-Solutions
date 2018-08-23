@@ -18,6 +18,9 @@ signed main()
 		cin.tie(NULL);
 		cout.tie(NULL);
 
+		int n, m, q, i, j, u, v, w;
+
+		cin >> n >> m >> q;
 		
 		return 0;
 	}

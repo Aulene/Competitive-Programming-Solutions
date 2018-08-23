@@ -29,6 +29,13 @@ u = (int)(log2l(n)) + 1;
 
 // ----------
 
+// STL HAX
+// Erase one element in a multiset mx
+auto itr = mx.find(a[i]);
+if(itr != mx.end())
+    mx.erase(itr);
+
+
 // Find all cycles in a graph
 
 vector <int> path;
