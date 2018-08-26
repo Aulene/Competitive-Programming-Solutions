@@ -35,6 +35,8 @@ auto itr = mx.find(a[i]);
 if(itr != mx.end())
     mx.erase(itr);
 
+// Maximum element in a multiset mx
+x = *mx.rbegin();
 
 // Find all cycles in a graph
 

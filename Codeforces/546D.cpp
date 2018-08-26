@@ -4,6 +4,7 @@ using namespace std;
 
 #define int long long int
 #define mod 1000000007
+#define endl '\n'
 #define p push
 #define pb push_back
 #define mp make_pair
@@ -14,16 +15,6 @@ using namespace std;
 #define N 5000007
 
 int prime[N], pre[N], a[N];
-
-int foosh(int n)
-{
-	int ret = 0;
-	while(n) {
-		ret++;
-		n = a[n];
-	}
-	return ret;
-}
 
 void compute() 
 {
@@ -39,7 +30,7 @@ void compute()
 	for(int i = 2; i < N; i++)
 		{
 			if(prime[i]) pre[i] = 1;
-			else pre[i] = foosh(i);
+			else pre[i] = pre[i / a[i]] + 1;
 		}
 
 	for(int i = 2; i < N; i++) pre[i] += pre[i - 1];
