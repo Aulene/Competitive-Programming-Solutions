@@ -1,7 +1,8 @@
 #include <bits/stdc++.h>
-
+//ugh do it later too involved
 using namespace std;
 
+#define endl '\n'
 #define int long long int
 #define mod 1000000007
 #define p push
@@ -9,92 +10,31 @@ using namespace std;
 #define mp make_pair
 #define f first
 #define s second
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
 
-int a[100007], b[100007];
-int n, m, ax;
+vi b, c;
+int pers[100007];
+priority_queue < pair <int, int>, vector < pair <int, int> >, less < pair <int, int> > > pq;
 
-pair <int, int> run(int val)
-{
-	int ans = 0, j = 0, budget = ax, pm = 0;
-
-	// cout << "fuck " << val << endl;
-
-	for(int i = n - 1 - val; i < n; i++)
-		{
-			int u = budget + a[i];
-			
-			int diff = u - b[j];
-
-			// cout << u << " " << diff << endl;
-
-			if(diff >= 0) {
-				// cout << "hanji\n";
-
-				if(budget >= b[j]) {
-					budget -= b[j];
-					ans++;
-				}
-				else {
-					pm += abs(budget - b[j]);
-					// cout << "ugh\n";
-					int fuck = a[i] - b[j];
-					budget = 0;
-					ans++;
-				}
-			}
-			else {
-				break;
-			}
-
-			j++;
-		}
-
-	// cout << val << " " << ans << endl;
-
-	if(ans >= val) return mp(1, pm);
-	return mp(0, 0);
-}
-
-pair <int, int> bsearch()
-{
-	int low = 0, high = n - 1, mid;
-	pair <int, int> ans = mp(0, 0);
-
-	while(low <= high)
-		{
-			mid = (low + high) / 2;
-			pair <int, int> fx = run(mid);
-
-			if(fx.f) {
-				ans = fx;
-				low = mid + 1;
-			}
-			else {
-				high = mid - 1;
-			}
-		}
-
-	return ans;
-}
+int binarySearch()
 
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
+		cout.tie(NULL);
 
-		int i, j, u, v;
+		int n, m, s, i, j, u, v, ans1 = 0, ans2 = 0;	
 
-		cin >> n >> m >> ax;
+		cin >> n >> m >> s;
 
-		for(i = 0; i < n; i++) cin >> a[i];
-		for(i = 0; i < m; i++) cin >> b[i];
+		for(i = 1; i <= n; i++) cin >> u, b.pb(u);
+		for(i = 1; i <= m; i++) cin >> u, c.pb(u);
 
-		sort(a, a + n);
-		sort(b, b + m);
-
-		pair <int, int> ans = bsearch();
-
-		cout << ans.f + 1 << " " << ans.s << endl;
+		sort(b.begin(), b.end(), greater <int>());
+		sort(c.begin(), c.end());
+	
 
 		return 0;
 	}
