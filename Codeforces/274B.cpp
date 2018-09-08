@@ -2,6 +2,7 @@
 
 using namespace std;
 
+#define endl '\n'
 #define int long long int
 #define mod 1000000007
 #define p push
@@ -9,28 +10,44 @@ using namespace std;
 #define mp make_pair
 #define f first
 #define s second
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
+#define N 100007
 
-vector < vector <int> > g(100007);
-int a[100007];
+int a[N];
 int ans = 0;
 
-int dfs(int idx, int p, int add)
+vvi g(N);
+
+pair <int, int> dfs(int idx, int p = -1)
 {
+	int cur;
+	pair <int, int> fx, ret = {0, 0};
+
 	for(int i = 0; i < g[idx].size(); i++)
-		if(g[idx][i] != p)
-			add += dfs(g[idx][i], idx, add);
+		{
+			int u = g[idx][i];
 
-	int val = a[idx] + add;
+			if(u != p) {
+				fx = dfs(u, idx);
+				ret.f = max(fx.f, ret.f);
+				ret.s = max(fx.s, ret.s);
+			}
+		}
+	
+	cur = a[idx] + ret.f - ret.s;
 
-	ans += abs(val);
+	if(cur < 0) ret.f += -cur;
+	else ret.s += cur;
 
-	return -val;
+	return ret;
 }
 
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
+		cout.tie(NULL);
 
 		int n, m, i, j, u, v;
 
@@ -45,10 +62,8 @@ signed main()
 
 		for(i = 1; i <= n; i++) cin >> a[i];
 
-		v = 0;
-		dfs(1, 0, v);
-
-		cout << ans << endl;
+		pair <int, int> ans = dfs(1);
+		cout << ans.f + ans.s << endl;
 
 		return 0;
 	}
