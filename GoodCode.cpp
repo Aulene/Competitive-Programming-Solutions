@@ -42,30 +42,36 @@ x = *mx.rbegin();
 
 vector <int> path;
 vector < vector <int> > cycles;
+int vis[N];
+vvi g(N);
 
 void dfs(int v) 
 {
     path.push_back(v);
     vis[v] = 1;
-
-    int u = a[v];
     
-    if(vis[u] != 2) 
+    for(int i = 0; i < g[v].size(); i++)
 	    {
-	        if(vis[u] == 1) 
-		        {
-		            cycles.emplace_back();
+	    	int u = g[v][i];
 
-		            int id = path.size() - 1;
-		            
-		            while(path[id] != u)
-		                cycles.back().push_back(path[id--]);
+	    	if(vis[u] != 2) 
+			    {
+			        if(vis[u] == 1) 
+				        {
+				            cycles.emplace_back();
 
-		            cycles.back().push_back(u);
-		        } 
-	        else
-	            dfs(u);
-	    }
+				            int id = path.size() - 1;
+				            
+				            while(path[id] != u)
+				                cycles.back().push_back(path[id--]);
+
+				            cycles.back().push_back(u);
+				        } 
+			        else
+			            dfs(u);
+			    }
+    	}
+    
 
     path.pop_back();
     vis[v] = 2;

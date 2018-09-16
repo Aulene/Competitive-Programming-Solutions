@@ -13,7 +13,8 @@ using namespace std;
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
 
-vvi g(500007);
+int a[100007];
+multiset <int> mx;
 
 signed main()
 	{
@@ -21,14 +22,13 @@ signed main()
 		cin.tie(NULL);
 		cout.tie(NULL);
 
-		int n, m, i, j, u, v;
+		int n, a, b, i, j, u, v;
 
-		cin >> n >> m;
+		cin >> n >> a >> b;
 
-		for(i = 0; i < n - 1; i++) {
-			cin >> u >> v;
-			g[u].pb(v), g[v].pb(u);
-		}
+		for(i = 1; i <= n; i++) cin >> a[i], mx.insert(a[i]);
+
+
 
 		return 0;
 	}

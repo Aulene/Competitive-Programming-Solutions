@@ -13,22 +13,12 @@ using namespace std;
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
 
-vvi g(500007);
-
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
 		cout.tie(NULL);
 
-		int n, m, i, j, u, v;
-
-		cin >> n >> m;
-
-		for(i = 0; i < n - 1; i++) {
-			cin >> u >> v;
-			g[u].pb(v), g[v].pb(u);
-		}
-
+		
 		return 0;
 	}

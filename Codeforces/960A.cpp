@@ -33,6 +33,6 @@ signed main()
 			
 		if(ansx && ((m['c'] == m['a']) || (m['c'] == m['b'])) && m['a'] && m['b'] && m['c']) cout << "YES";
 		else cout << "NO";
-		
+		22
 		return 0;
 	}

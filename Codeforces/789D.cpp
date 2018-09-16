@@ -13,7 +13,7 @@ using namespace std;
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
 
-vvi g(500007);
+vvi g(1000007);
 
 signed main()
 	{
@@ -25,10 +25,9 @@ signed main()
 
 		cin >> n >> m;
 
-		for(i = 0; i < n - 1; i++) {
+		for(i = 0; i < m; i++) {
 			cin >> u >> v;
 			g[u].pb(v), g[v].pb(u);
-		}
-
+		}	
 		return 0;
 	}
