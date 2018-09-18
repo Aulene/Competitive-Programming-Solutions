@@ -1,4 +1,6 @@
+// -----------
 // Bit Operations
+// -----------
 
 // Total number of set bits
 u =  __builtin_popcount(n);
@@ -24,12 +26,13 @@ u = n & (1 << i); // non-zero if set
 // Find rightmost set bit
 u = log2(n & -n) + 1;
 
-	// Find leftmost (most significant) set bit
+// Find leftmost (most significant) set bit
 u = (int)(log2l(n)) + 1;
 
 // ----------
-
 // STL HAX
+// -----------
+
 // Erase one element in a multiset mx
 auto itr = mx.find(a[i]);
 if(itr != mx.end())
@@ -37,8 +40,11 @@ if(itr != mx.end())
 
 // Maximum element in a multiset mx
 x = *mx.rbegin();
+// -----------
 
-// Find all cycles in a graph
+// -----------
+// Find all Cycles in a Graph
+// -----------
 
 vector <int> path;
 vector < vector <int> > cycles;
@@ -75,4 +81,63 @@ void dfs(int v)
 
     path.pop_back();
     vis[v] = 2;
+}
+
+// -----------
+// Find all Strongly Connected Components (SCCs) in a Directed Graph
+// -----------
+
+int onStack[N], low[N], ids[N];
+vector < vector <int> > g(N); 
+vector < vector <int> > SCCs; // contains all found SCCs
+vector <int> path;
+stack <int> sx;
+int id = 1;
+
+void findSCC(int idx)
+{
+	/*
+	// put next lines in main
+	// memset(ids, -1, sizeof(ids));
+	// for(i = 1; i <= n; i++)
+	// 	if(ids[i] == -1) findSCC(i);
+	*/
+	
+	sx.push(idx);
+	onStack[idx] = 1;
+	ids[idx] = low[idx] = id++;
+
+	for(int i = 0; i < g[idx].size(); i++) 
+		{
+			int u = g[idx][i];
+
+			if(ids[u] == -1)
+				{
+					findSCC(u);
+					low[idx] = min(low[idx], low[u]);
+				}
+			else if(onStack[u]) 
+				low[idx] = min(low[idx], ids[u]);
+		}
+
+	if(ids[idx] == low[idx]) 
+		{
+			vector <int> path;
+
+			while(sx.top() != idx) 
+				{
+					int u = sx.top();
+					sx.pop();
+					onStack[u] = 0;
+					path.pb(u);
+				}
+
+			int u = sx.top();
+			sx.pop();
+			onStack[u] = 0;
+			path.pb(u);
+
+			SCCs.emplace_back();
+			SCCs.back() = path;
+		}
 }
