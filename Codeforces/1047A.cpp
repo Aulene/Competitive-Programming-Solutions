@@ -12,10 +12,6 @@ using namespace std;
 #define s second
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
-#define N 1007
-#define M 20007
-
-int a[N], ways[N][M];
 
 signed main()
 	{
@@ -23,20 +19,26 @@ signed main()
 		cin.tie(NULL);
 		cout.tie(NULL);
 
-		int n, m, i, j, k, l, u, v, sum, x = 1e4, ans = 0;
+		int n, m, i, j, u, v;
 
 		cin >> n;
-		
-		for(i = 1; i <= n; i++) {
-			cin >> m;
-			ways[i][x + m]++;
-			ways[i][x - m]++;
 
-			for(j = -x; j <= x; j++)
-				ways[i][x + j] = (ways[i][x + j] + ways[i - 1][x + j - m] + ways[i - 1][x + j + m]) % mod;
-			ans = (ans + ways[i][x]) % mod;		 
+		if(n == 4) {
+			cout << "2 1 1" << endl;
+			return 0;
 		}
 
-		cout << (ans) % mod << endl;
+		if(n % 3 == 0)
+			{
+				cout << n - 2 << " " << 1 << " " << 1 << endl;
+			}
+		else if(n % 3 == 1)
+			{
+				cout << n - 2 << " " << 1 << " " << 1 << endl;
+			}
+		else
+			{
+				cout << n - 3 << " 2 1" << endl;
+			}
 		return 0;
 	}
