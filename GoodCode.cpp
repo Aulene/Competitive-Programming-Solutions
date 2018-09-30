@@ -141,3 +141,30 @@ void findSCC(int idx)
 			SCCs.back() = path;
 		}
 }
+
+// two intersecting segments
+bool intersect(int x1, int y1, int x2, int y2)
+{
+	if(x2 <= x1 && x1 <= y2) return 0;
+	if(x2 <= y1 && y1 <= y2) return 0;
+	if(x1 <= x2 && x2 <= y1) return 0;
+	if(x1 <= y2 && y2 <= y1) return 0;
+	return 1;	
+}
+
+// Sieve of Eratosthenes
+
+bool prime[N];
+vi vs;
+
+void sieve()
+{
+	for(int i = 2; i < N; i++) prime[i] = 1;
+
+	for(int i = 2; i < N; i++) {
+		if(prime[i]) {
+			vs.pb(i);
+			for(int j = i * i; j < N; j += i) prime[j] = 0;
+		}
+	}
+}
