@@ -1,4 +1,4 @@
 # Competitive-Programming-Solutions
 My solutions to programming problems across various websites.
 
-Some of these don't work. :p
+A lot of these are just me starting out on a problem, realizing it was too easy/hard, and then moving onto another one. :D
