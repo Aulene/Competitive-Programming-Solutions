@@ -168,3 +168,85 @@ void sieve()
 		}
 	}
 }
+
+// Ranged Lazy Segment Tree
+struct RangeSTreeLazy
+{
+	int val;
+	RangeSTreeLazy *l, *r;
+
+	int merge(int a, int b) { return a + b; }
+
+	RangeSTreeLazy *build(int start, int end)
+		{
+			if(start == end)
+				val = 0;
+			else
+				{
+					l = new RangeSTreeLazy, r = new RangeSTreeLazy;
+					l = l -> build(start, mid), r = r -> build(mid + 1, end);
+					val = merge(l -> val, r -> val);
+				}
+			return this;
+		}
+
+	RangeSTreeLazy *update(int lazy[], int start, int end, int a, int b, int v, int level)	
+		{
+			if(lazy[level] != 0)
+				{
+					val += (end - start + 1) * lazy[level];
+
+					if(start != end)
+						{
+							lazy[2 * level] += lazy[level];
+							lazy[2 * level + 1] += lazy[level];
+						}
+
+					lazy[level] = 0;
+				}
+
+			if(start > b || end < a)
+				return this;
+
+			if(start >= a && end <= b)
+				{
+					val += (end - start + 1) * v;
+
+					if(start != end)
+						{
+							lazy[2 * level] += v;
+							lazy[2 * level + 1] += v;
+						}			
+
+					return this;
+				}
+
+			l = l -> update(lazy, start, mid, a, b, v, 2 * level);
+			r = r -> update(lazy, mid + 1, end, a, b, v, 2 * level + 1);
+			val = merge(l -> val, r -> val);
+			return this;
+		}
+
+	int query(int lazy[], int start, int end, int a, int b, int level)
+		{
+			if(lazy[level] != 0)
+				{
+					val += (end - start + 1) * lazy[level];
+
+					if(start != end)
+						{
+							lazy[2 * level] += lazy[level];
+							lazy[2 * level + 1] += lazy[level];
+						}
+
+					lazy[level] = 0;
+				}
+
+			if(start > b || end < a)
+				return 0;
+			else if(start >= a && end <= b)
+				return val;
+			else
+				return merge(l -> query(lazy, start, mid, a, b, 2 * level), r -> query(lazy, mid + 1, end, a, b, 2 * level + 1));
+		}
+};

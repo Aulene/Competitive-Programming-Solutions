@@ -68,6 +68,8 @@ struct node
 		}
 };
 
+int a[1000007];
+
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
