@@ -54,25 +54,34 @@ signed main()
 
         for(i = 0; i < n; i++)
             {
-                for(j = i + 1; j < n; j++)
-                    {
-                        x = __gcd(a[i], a[j]);
-                        y = peeness(x);
+                int v = peeness(a[i]);
 
-                        if(sx.count(x) == 0) sx.insert(x);
+                cout << i << " " << v << endl;
+                if(v != 0) {
+                    if(v == 4) u = sqrt(sqrt(a[i]));
+                    else if(v == 3) u = cbrt(a[i]);
+                    else if(v == 2) u = sqrt(a[i]);
 
-                        a[i] /= x;
-                        a[j] /= x;
-                        mx[x] += y;
-                    }
+                    mx[u] += v;
+                    if(sx.count(u) == 0) sx.insert(u);
+                    a[i] = 1;
+                }
             }
 
-        for(set <int> :: iterator it = sx.begin(); it != sx.end(); it++) {
-            u = *it;
-            ans = (ans * (mx[u] + 1)) % mod;
-            cout << "DP[" << u << "] = " << mx[u] + 1 << endl;
+        for(i = 0; i < n; i++) {
+            for(j = i + 1; j < n; j++) {
+                u = __gcd(a[i], a[j]);
+
+                a[i] /= u;
+                a[j] /= u;
+                mx[u] += 2;
+            }
         }
 
+        for(i = 0; i < n; i++) {
+
+        }
+        
         for(i = 0; i < n; i++) cout << a[i] << " "; cout << endl;
         cout << ans << endl;
 
