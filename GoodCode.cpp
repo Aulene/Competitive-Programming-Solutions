@@ -190,7 +190,7 @@ struct RangeSTreeLazy
 			return this;
 		}
 
-	RangeSTreeLazy *update(int lazy[], int start, int end, int a, int b, int v, int level = 1)	
+	RangeSTreeLazy *update(int lazy[], int start, int end, int a, int b, int v, int level)	
 		{
 			if(lazy[level] != 0)
 				{
@@ -227,7 +227,7 @@ struct RangeSTreeLazy
 			return this;
 		}
 
-	int query(int lazy[], int start, int end, int a, int b, int level = 1)
+	int query(int lazy[], int start, int end, int a, int b, int level)
 		{
 			if(lazy[level] != 0)
 				{
