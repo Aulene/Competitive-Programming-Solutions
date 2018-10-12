@@ -16,42 +16,31 @@ using namespace std;
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
 
-bool prime[N];
-vi vs;
-
-void sieve()
-{
-	for(int i = 2; i < N; i++) prime[i] = 1;
-
-	for(int i = 2; i < N; i++) {
-		if(prime[i]) {
-			vs.pb(i);
-			for(int j = i * i; j < N; j += i) prime[j] = 0;
-		}
-	}
-}
-
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
-		cout.tie(NULL);
+		cout.tie(NULL);}
 		
 		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
 		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
 
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
-		
-		int n, m, i = 0, j, u, v, ans = 1;;
+			
+		int t, n, i, j, u, v, s, a, b, c;
 
-		cin >> n;
+		cin >> t;
 
-		sieve();
-
-		while(true)
+		while(t--)
 			{
-				
-			}
+				int ans = 0;
+
+				cin >> s >> a >> b >> c;
+				u = floor(s / c);
+				v = floor(u / a) * b;
+				ans = u + v;
+				cout << ans << endl;
+			}	
 		return 0;
 	}

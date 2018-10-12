@@ -2,8 +2,6 @@
 
 using namespace std;
 
-#define endl '\n'
-#define int long long int
 #define mod 1000000007
 #define p push
 #define pb push_back
@@ -15,6 +13,7 @@ using namespace std;
 #define pi pair <int, int> 
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
+#define N 48
 
 bool prime[N];
 vi vs;
@@ -31,27 +30,31 @@ void sieve()
 	}
 }
 
-signed main()
-	{
-		ios_base::sync_with_stdio(false);
-		cin.tie(NULL);
-		cout.tie(NULL);
-		
-		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
-		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
 
-		// ifstream cin ("input.txt");
-		// ofstream cout ("output.txt");
-		
-		int n, m, i = 0, j, u, v, ans = 1;;
-
-		cin >> n;
-
+int main()
+	{	
 		sieve();
 
-		while(true)
-			{
-				
-			}
+		int n, m, i, j, u, v;
+		int prim = 0;
+		string s;
+		
+		vs.pb(4);
+		vs.pb(9);
+		vs.pb(16);
+		vs.pb(25);
+		vs.pb(49);
+
+		// cout << vs.size() << endl;
+		// for(i = 0; i < vs.size(); i++) cout << vs[i] << " "; cout << endl;
+
+		for(i = 0; i < vs.size(); i++) {
+			printf("%d\n", vs[i]);
+			cin >> s;
+			if(s == "yes") prim++;
+		}
+
+		if(prim > 1) cout << "composite" << endl;
+		else cout << "prime" << endl;
 		return 0;
 	}

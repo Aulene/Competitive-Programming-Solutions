@@ -16,20 +16,9 @@ using namespace std;
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
 
-bool prime[N];
-vi vs;
-
-void sieve()
-{
-	for(int i = 2; i < N; i++) prime[i] = 1;
-
-	for(int i = 2; i < N; i++) {
-		if(prime[i]) {
-			vs.pb(i);
-			for(int j = i * i; j < N; j += i) prime[j] = 0;
-		}
-	}
-}
+string s;
+string pattern;
+int symbol_val[305];
 
 signed main()
 	{
@@ -43,15 +32,33 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i = 0, j, u, v, ans = 1;;
+		string s;
+		int n, m, i, j, u, v;
 
-		cin >> n;
+		cin >> s;
+		for (char i = '0'; i <= '9'; i++)
+			pattern.push_back(i);
+		for (char i = 'A'; i <= 'Z'; i++)
+			pattern.push_back(i);
+		for (char i = 'a'; i <= 'z'; i++)
+			pattern.push_back(i);
+		pattern.push_back('-');
+		pattern.push_back('_');
+		for(i = 0; i < 64; i++)
+			symbol_val[pattern[i]] = i;
+		int ans = 1;
 
-		sieve();
+		for(i = 0; i < s.size(); i++) {
+			u = symbol_val[s[i]];
 
-		while(true)
-			{
-				
+			for(j = 0; j < 6; j++) {
+				if((u & (1 << j)) == 0) {
+					ans = (ans * 3) % mod;
+				}
 			}
+		}
+
+		cout << ans << endl;
+
 		return 0;
 	}
