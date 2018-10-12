@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <unordered_map>
 
 using namespace std;
 
@@ -9,60 +10,92 @@ using namespace std;
 #define mp make_pair
 #define f first
 #define s second
+#define mid (start + end) / 2
+#define pi pair <int, int> 
+#define ppi pair < pair <int, int>, int >
 
-int a[100007];
+pair <int, int> lazy[400007];
 
-struct node
+struct RangeSTreeSquare
 {
 	int val;
-	node *l, *r;
+	RangeSTreeSquare *l, *r;
 
-	int merge(int a, int b)
-		{
-			int x = a + b;
-			return x;
-		}
+	int merge(int a, int b) { 
+		return a + b; 
+	}
 
-	node* build(int start, int end)
+	RangeSTreeSquare *build(int start, int end)
 		{
 			if(start == end)
 				val = a[start] * a[start];
 			else
 				{
-					l = new node, r = new node;
+					l = new RangeSTreeSquare, r = new RangeSTreeSquare;
 					l = l -> build(start, mid), r = r -> build(mid + 1, end);
 					val = merge(l -> val, r -> val);
 				}
 			return this;
 		}
 
-	node* updateInc(int start, int end, int x, int v)
+	RangeSTreeSquare *update(int start, int end, int a, int b, int v, int level = 1)	
 		{
-			if(start == end)
+			if(lazy[level] != 0)
 				{
-					val.f = v;
+					val += (end - start + 1) * lazy[level];
+
+					if(start != end)
+						{
+							lazy[2 * level] += lazy[level];
+							lazy[2 * level + 1] += lazy[level];
+						}
+
+					lazy[level] = 0;
+				}
+
+			if(start > b || end < a)
+				return this;
+
+			if(start >= a && end <= b)
+				{
+					val += (end - start + 1) * v;
+
+					if(start != end)
+						{
+							lazy[2 * level] += v;
+							lazy[2 * level + 1] += v;
+						}			
+
 					return this;
 				}
-			else if(x <= mid)
-				l = l -> update(start, mid, x, v);
-			else
-				r = r -> update(mid + 1, end, x, v);
 
+			l = l -> update(lazy, start, mid, a, b, v, 2 * level);
+			r = r -> update(lazy, mid + 1, end, a, b, v, 2 * level + 1);
 			val = merge(l -> val, r -> val);
 			return this;
 		}
 
-	int query(int start, int end, int a, int b)
+	int query(int start, int end, int a, int b, int level = 1)
 		{
-			if(start >= a && end <= b)
+			if(lazy[level] != 0)
 				{
-					// cout << start << " " << end << endl;
-					return val;
+					val += (end - start + 1) * lazy[level];
+
+					if(start != end)
+						{
+							lazy[2 * level] += lazy[level];
+							lazy[2 * level + 1] += lazy[level];
+						}
+
+					lazy[level] = 0;
 				}
-			else if(end < a || start > b)
-				return mp(-1e9, -1e9);
+
+			if(start > b || end < a)
+				return 0;
+			else if(start >= a && end <= b)
+				return val;
 			else
-				return merge(l -> query(start, mid, a, b), r -> query(mid + 1, end, a, b));
+				return merge(l -> query(lazy, start, mid, a, b, 2 * level), r -> query(lazy, mid + 1, end, a, b, 2 * level + 1));
 		}
 };
 
@@ -72,35 +105,10 @@ signed main()
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
 
-		int T, t, n, m, q, i, j, u, v, w;
+		int t, n, m, u, q, v, i, j, x, y, ans;
 
-		cin >> t;
+        cin >> n;
+		for(i = 0; i < n; i++) cin >> a[i];
 
-		for(T = 1; T <= t; T++)
-			{
-				cin >> n >> m;
-
-				for(i = 1; i <= n; i++) cin >> a[i];
-
-				while(m--)
-					{
-						cin >> q;
-
-						if(q == 0)
-							{
-								cin >> u >> v >> w;
-
-							}
-						else if(q == 1)
-							{
-								cin >> u >> v >> w;
-							}
-						else
-							{
-								cin >> u >> v;
-							}
-					}
-			}
-
-		return 0;
+		return 0;   
 	}
