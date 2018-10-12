@@ -12,24 +12,9 @@ using namespace std;
 #define s second
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
-#define pi pair <int, int> 
-#define ppi pair < pair <int, int>, int> 
-#define zp mp(0, 0)
 
-bool prime[N];
-vi vs;
-
-void sieve()
-{
-	for(int i = 2; i < N; i++) prime[i] = 1;
-
-	for(int i = 2; i < N; i++) {
-		if(prime[i]) {
-			vs.pb(i);
-			for(int j = i * i; j < N; j += i) prime[j] = 0;
-		}
-	}
-}
+int a[35007], dp[35007][57];
+set <int> sx;
 
 signed main()
 	{
@@ -43,15 +28,15 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i = 0, j, u, v, ans = 1;;
+		int n, m, i, j, u, v;
 
-		cin >> n;
+		cin >> n >> m;
+		for(i = 1; i <= n; i++) cin >> a[i];
 
-		sieve();
-
-		while(true)
-			{
+		for(i = 1; i <= n; i++) {
+			for(j = 1; j <= m; j++) {
 				
 			}
+		}
 		return 0;
 	}

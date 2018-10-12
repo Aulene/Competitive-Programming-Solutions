@@ -190,7 +190,7 @@ struct RangeSTreeLazy
 			return this;
 		}
 
-	RangeSTreeLazy *update(int lazy[], int start, int end, int a, int b, int v, int level = 1)	
+	RangeSTreeLazy *update(int lazy[], int start, int end, int a, int b, int v, int level)	
 		{
 			if(lazy[level] != 0)
 				{
@@ -227,7 +227,7 @@ struct RangeSTreeLazy
 			return this;
 		}
 
-	int query(int lazy[], int start, int end, int a, int b, int level = 1)
+	int query(int lazy[], int start, int end, int a, int b, int level)
 		{
 			if(lazy[level] != 0)
 				{
@@ -250,3 +250,36 @@ struct RangeSTreeLazy
 				return merge(l -> query(lazy, start, mid, a, b, 2 * level), r -> query(lazy, mid + 1, end, a, b, 2 * level + 1));
 		}
 };
+
+// (a * b) % c
+int mulmod(int a, int b, int c) { return (__int128) a * b % c; }
+
+// POWMOD - Computing a^b % m
+int powmod(int a, int b, int m) {
+	int res = 1;
+	while(b)
+		if(b & 1) res = (res * 1ll * a) % m, --b;
+		else a = (a * 1ll * a) % m,  b >>= 1;
+	return res;
+}
+
+// Miller-Rabin Primality Test
+int miller_rabin(int n) {
+	if(n == 1) return 0;
+
+	int b = 2;
+	for(int g; (g = gcd(n, b)) != 1; ++b)
+		if(n > g) return 0;
+	int p = 0, q = n - 1;
+	while((q & 1) == 0)
+		++p,  q >>= 1;
+	int rem = powmod(b, q, n);
+	if(rem == 1 || rem == n - 1) return 1;
+	for(int i = 1; i < p; ++i) {
+		rem = (rem * 1ll * rem) % n;
+		if(rem == n - 1) return 1;
+	}
+	return 0;
+}
+
+

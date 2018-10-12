@@ -16,20 +16,9 @@ using namespace std;
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
 
-bool prime[N];
-vi vs;
+int a[17][17];
 
-void sieve()
-{
-	for(int i = 2; i < N; i++) prime[i] = 1;
-
-	for(int i = 2; i < N; i++) {
-		if(prime[i]) {
-			vs.pb(i);
-			for(int j = i * i; j < N; j += i) prime[j] = 0;
-		}
-	}
-}
+vector < pair <int, int> > vs;
 
 signed main()
 	{
@@ -43,15 +32,12 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i = 0, j, u, v, ans = 1;;
+		int n, m, i, j, u, v;
 
 		cin >> n;
 
-		sieve();
+		for(i = 1; i <= n; i++)
+			for(j = 1; j <= n; j++) cin >> a[i][j];
 
-		while(true)
-			{
-				
-			}
 		return 0;
 	}

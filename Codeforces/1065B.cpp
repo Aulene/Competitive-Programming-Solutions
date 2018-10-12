@@ -7,7 +7,7 @@ using namespace std;
 #define mod 1000000007
 #define p push
 #define pb push_back
-#define mp make_pair
+#define mp ans2ke_pair
 #define f first
 #define s second
 #define vi vector <int> 
@@ -15,21 +15,6 @@ using namespace std;
 #define pi pair <int, int> 
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
-
-bool prime[N];
-vi vs;
-
-void sieve()
-{
-	for(int i = 2; i < N; i++) prime[i] = 1;
-
-	for(int i = 2; i < N; i++) {
-		if(prime[i]) {
-			vs.pb(i);
-			for(int j = i * i; j < N; j += i) prime[j] = 0;
-		}
-	}
-}
 
 signed main()
 	{
@@ -43,15 +28,18 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i = 0, j, u, v, ans = 1;;
+		int n, m, i, j, k, u = 0, v = 1;
 
-		cin >> n;
+		cin >> n >> m;
 
-		sieve();
+		int minx = n - m * 2;
+    	if(minx < 0) minx = 0;
+    	k = (1 + sqrt(1 + 8 * m)) / 2;
+    	if(((k - 1) * k) / 2 > m) k = k - 1;
+    	if(((k - 1) * k) / 2 < m) k = k + 1;
+    	if(k == 1) k = 0;
 
-		while(true)
-			{
-				
-			}
+		cout << minx << " " << n - k << endl;
+
 		return 0;
 	}
