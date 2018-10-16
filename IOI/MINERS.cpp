@@ -1,78 +1,112 @@
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <queue>
-#include <stack>
-#include <set>
-#include <list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
+#define endl '\n'
 #define mod 1000000007
 #define p push
 #define pb push_back
 #define mp make_pair
 #define f first
 #define s second
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
+#define pi pair <int, int> 
+#define ppi pair < pair <int, int>, int> 
+#define zp mp(0, 0)
 
-int vs[100007];
-int n;
-int dp[100007][3][3][3][3];
-
-int cal(int a, int b, int c)
-{
-	int ans = 0;
-	for(int i = 1; i <= 3; i++)
-		if(a == i || b == i || c == i) ans++;
-	return ans;
-}
-
-int recur(int index, int s11, int s12, int s21, int s22)
-{
-	if(dp[index][s11][s12][s21][s22] != -1) return dp[index][s11][s12][s21][s22];
-	if(index >= n) return 0;
-
-	int ans1, ans2, ans;
-
-	ans1 = recur(index + 1, s12, vs[index], s21, s22) + cal(s11, s12, vs[index]);
-	ans2 = recur(index + 1, s11, s12, s22, vs[index]) + cal(s21, s22, vs[index]);
-	ans = max(ans1, ans2);
-
-	return dp[index][s11][s12][s21][s22] = ans;
-}
+int a[100007];
+int dp[2][4][4][4][4];
+bool vis[2][4][4][4][4];
 
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
+		cout.tie(NULL);
+		
+		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
+		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
 
-		int i, j, ans, a, b, c;
+		// ifstream cin ("input.txt");
+		// ofstream cout ("output.txt");
+		
+		int n, i, j, k, l, m, u, v, x, ans = 0;
 		string s;
 
-		memset(dp, -1, sizeof dp);
-		
+		vis[0][0][0][0][0] = 1;
+
 		cin >> n >> s;
 
-		for(i = 0; i < n; i++)
-			if(s[i] == 'M') vs[i] = 1;
-			else if(s[i] == 'B') vs[i] = 2;
-			else vs[i] = 3;
+		for(i = 1; i <= n; i++) {
+			if(s[i - 1] == 'M') a[i] = 1;
+			else if(s[i - 1] == 'F') a[i] = 2;
+			else a[i] = 3;
+		}	
 
-		int now = 0, prev = 1;
+		for(i = 1; i <= n; i++) {
 
-		for(i = n - 1; i >= 0; i--)
-			{
-				for()
+			x = a[i];
+
+			for(j = 0; j < 4; j++) {
+				for(k = 0; k < 4; k++) {
+					for(u = 0; u < 4; u++) {
+						for(v = 0; v < 4; v++) 
+							if(vis[0][j][k][u][v]) {
+
+							set <int> sx;
+							if(x != 0) sx.insert(x);
+							if(j != 0) sx.insert(j);
+							if(k != 0) sx.insert(k);
+							
+							int sz = sx.size();
+							dp[1][k][x][u][v] = max(dp[1][k][x][u][v], sz + dp[0][j][k][u][v]);
+							ans = max(ans, dp[1][k][x][u][v]);
+							vis[1][k][x][u][v] = 1;
+
+							sx.clear();
+							if(x != 0) sx.insert(x);
+							if(u != 0) sx.insert(u);
+							if(v != 0) sx.insert(v);
+							
+							sz = sx.size();
+							dp[1][j][k][v][x] = max(dp[1][j][k][v][x], sz + dp[0][j][k][u][v]);
+							ans = max(ans, dp[1][j][k][v][x]);
+							vis[1][j][k][v][x] = 1;
+						}
+					}
+				}
 			}
 
-		ans = recur(0, 0, 0, 0, 0);
+			for(j = 0; j < 4; j++) {
+				for(k = 0; k < 4; k++) {
+					for(u = 0; u < 4; u++) {
+						for(v = 0; v < 4; v++) {
+							dp[0][j][k][u][v] = dp[1][j][k][u][v]; 
+							vis[0][j][k][u][v] = vis[1][j][k][u][v]; 
+							dp[1][j][k][u][v] = 0;
+							vis[1][j][k][u][v] = 0;
+						}
+					}
+				}
+			}
+		}
+
+		// for(i = 0; i <= n; i++) {
+
+		// 	x = a[i];
+
+		// 	for(j = 0; j < 4; j++) {
+		// 		for(k = 0; k < 4; k++) {
+		// 			for(u = 0; u < 4; u++) {
+		// 				for(v = 0; v < 4; v++) 
+		// 					if(vis[i][j][k][u][v])
+		// 					printf("DP[%d][%d][%d][%d][%d] = %d\n", i, j, k, u, v, dp[i][j][k][u][v]);
+		// 			}
+		// 		}
+		// 	}
+		// }
+
 		cout << ans << endl;
 
 		return 0;
