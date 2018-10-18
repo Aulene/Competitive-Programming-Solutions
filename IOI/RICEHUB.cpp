@@ -1,20 +1,8 @@
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <queue>
-#include <stack>
-#include <set>
-#include <list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
+#define endl '\n'
 #define int long long int
 #define mod 1000000007
 #define p push
@@ -22,68 +10,83 @@ using namespace std;
 #define mp make_pair
 #define f first
 #define s second
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
+#define pi pair <int, int> 
+#define ppi pair < pair <int, int>, int> 
+#define zp mp(0, 0)
+#define N 100007
 
-int a[100007];
-int prefix[100007];
+int a[N], pre[N];
+int ans = 0;
+
+void binarySearch(int low, int high, int lidx, int c) {
+
+	int ansHere = 0;
+
+	while(low <= high) {
+
+		int mid = (low + high) / 2;
+		int idx = floor((int) (lidx + mid) / 2);
+
+		int sum = pre[mid] - (2 * pre[idx]) + pre[lidx - 1];
+		sum += a[idx] * ((2 * idx) + 1 - mid - lidx);
+
+		if(sum <= c) {
+			ansHere = mid - lidx + 1;
+			low = mid + 1;
+		}
+		else {
+			high = mid - 1;
+		}
+
+	}
+
+	ans = max(ans, ansHere);
+}
 
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
+		cout.tie(NULL);
+		
+		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
+		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
 
-		int n, r, b, i, j, bl, anshere, ans = 0;
-		int left, right, ansr, ansl, sum;
+		// ifstream cin ("input.txt");
+		// ofstream cout ("output.txt");
+		
+		int n, lx, b, i, j, u, v;
 
-		cin >> n >> r >> b;
+		cin >> n >> lx >> b;
 
-		for(i = 1; i <= n; i++)
-			cin >> a[i], prefix[i] = prefix[i - 1] + a[i];
+		for(i = 1; i <= n; i++) cin >> a[i];
+		for(i = 1; i <= n; i++) pre[i] = a[i] + pre[i - 1];
 
-		for(i = 1; i <= n; i++)
-			{
-				// vector <int> v;
+		for(i = 1; i <= n; i++) {
 
-				left = right = i;
-				anshere = 1, sum = 0;
+			binarySearch(i, n, i, b);
+			// for(j = i; j <= n; j++) {
+			// 	int idx = floor((int) (i + j) / 2);
+			// 	int ansHere = 0;
 
-				// cout << "OPEN " << i << endl;
-				while(true)
-					{
-						ansr = ansl = 2000000000000007;
+			// 	int sum = pre[j] - (2 * pre[idx]) + pre[i - 1];
+			// 	sum += a[idx] * ((2 * idx) + 1 - j - i);
 
-						// cout << right - left + 1 << endl;
-						// cout << "LEFT = " << left << " RIGHT = " << right << endl;
-						// cout << "PREFIX RIGHT = " << prefix[right + 1] - prefix[left] << " PREFIX LEFT = " << prefix[right] - prefix[left - 1] << endl;
-						if(right + 1 <= n)
-							ansr = sum + abs(a[right + 1] - a[i]);
-						if(left - 1 >= 1)
-							ansl = sum + abs(a[i] - a[left - 1]);
+			// 	if(sum <= b) ansHere = j - i + 1;
 
-						// cout << "ANSR = " << ansr << " ANSL = " << ansl << endl;
-						if(ansr < ansl && ansr <= b)
-							right++, sum = ansr;
-						else if(ansl <= b)
-							left--, sum = ansl;
-						else
-							break;
-					}
+			// 	ans = max(ans, ansHere);
+			// }
+		}
 
-				// cout << i << " " << left << " " << right << endl;
-				// cout << "CLOSE" << endl;
-				// for(j = 0; j < n; j++)
-				// 	v.pb(abs(a[i] - a[j]));	
-				// sort(v.begin(), v.end());
-
-				// for(j = 0; j < n; j++)
-				// 	if(bl - v[j] >= 0)
-				// 		anshere++, bl -= v[j];
-				// 	else
-				// 		break;
-
-				anshere = right - left + 1;
-				ans = max(ans, anshere);
-			}
+		// for(i = 1; i <= n; i++) {
+		// 	for(j = i; j >= 1; j--) {
+		// 		binarySearch(i, n, i, j, b);
+		// 	}
+		// }
 
 		cout << ans << endl;
+
 		return 0;
 	}
