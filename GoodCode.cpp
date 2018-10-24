@@ -282,4 +282,25 @@ int miller_rabin(int n) {
 	return 0;
 }
 
+// Minimum Sparse Table, 1-Indexed
+
+int mint[300007][27];
+void preprocessMin(int n) {
+
+	for(int i = 1; i <= n; i++)
+		table[i][0] = a[i];
+
+	for(int j = 1; (1 << j) <= n; j++)
+        for(int i = 1; i + (1 << j) - 1 <= n; i++) {
+            int k = i + (1 << (j - 1));
+            table[i][j] = min(table[i][j - 1], table[k][j - 1]);
+    }
+}
+
+int query(int x, int y) {
+	int len = y - x + 1;
+	int k = log2(len);
+	return min(table[x][k], table[y - (1 << k) + 1][k]);
+}
+
 
