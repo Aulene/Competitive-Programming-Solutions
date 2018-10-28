@@ -15,9 +15,15 @@ using namespace std;
 #define vvi vector < vector <int> > 
 #define mid (start + end) / 2
 #define pi pair <int, int>
-#define N 1000007
+#define N 100007
 
-int a[N];
+vvi g(N);
+bool ansx = 1;
+
+int dfs(int idx, int lvl) {
+
+
+}
 
 signed main()
 	{
@@ -31,13 +37,28 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, i, j, u, v;
+        int n, m, i, j, u, v;
+        int root = -1;
 
-		multiset <int> m1, m2;
+        cin >> n >> m;
 
-		cin >> n;
+        for(i = 0; i < n - 1; i++) {
+            cin >> u >> v;
+            g[u].pb(v), g[v].pb(u);
+        }
 
-		for(i = 1; i <= n; i++) cin >> a[i], m2.insert(a[i]);
+        for(i = 1; i <= n; i++) {
+            if(g[i].size() == 3) {
+                if(root == -1) root = i;
+                else ansx = 0;
+            }
+        }
+
+        if(!ansx) {
+            cout << "No\n"; return 0;
+        }
+
+        dfs(root, m);
 
 		return 0;
 	}

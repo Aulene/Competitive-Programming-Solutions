@@ -15,9 +15,7 @@ using namespace std;
 #define vvi vector < vector <int> > 
 #define mid (start + end) / 2
 #define pi pair <int, int>
-#define N 1000007
-
-int a[N];
+#define N 100007
 
 signed main()
 	{
@@ -31,13 +29,20 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, i, j, u, v;
+        int n, i, j, u, v = 0;
 
-		multiset <int> m1, m2;
+        cin >> n;
 
-		cin >> n;
+        for(i = 1; i <= sqrt(n); i++) {
+            if(n % i == 0) {
 
-		for(i = 1; i <= n; i++) cin >> a[i], m2.insert(a[i]);
+                u = sqrt(n);
+                if(i != u) v += 2;
+                else v++;
+            }
+        }
 
+        cout << n - v - 1 << endl;
+        
 		return 0;
 	}

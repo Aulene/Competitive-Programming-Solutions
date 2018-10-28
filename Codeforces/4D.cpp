@@ -13,11 +13,14 @@ using namespace std;
 #define s second
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
+#define vpi vector < pair <int, int> > 
 #define mid (start + end) / 2
 #define pi pair <int, int>
-#define N 1000007
+#define N 100007
 
-int a[N];
+vpi vs(100007);
+
+int dp[5007][5007];
 
 signed main()
 	{
@@ -31,13 +34,13 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, i, j, u, v;
+        int n, m, i, j, u, v, w, h;
 
-		multiset <int> m1, m2;
+        cin >> n >> w >> h;
 
-		cin >> n;
-
-		for(i = 1; i <= n; i++) cin >> a[i], m2.insert(a[i]);
-
+        for(i = 0; i < n; i++) {
+            cin >> u >> v;
+            vs.pb({u, v});
+        }
 		return 0;
 	}

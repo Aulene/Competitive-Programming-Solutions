@@ -15,9 +15,14 @@ using namespace std;
 #define vvi vector < vector <int> > 
 #define mid (start + end) / 2
 #define pi pair <int, int>
-#define N 1000007
+#define N 100007
 
-int a[N];
+int a[N], dp[N][207];
+
+int recur(int N, int num) {
+
+    
+}
 
 signed main()
 	{
@@ -30,14 +35,17 @@ signed main()
 
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
-		
-		int n, i, j, u, v;
+    
+        int n, m, i, j, u, v;
 
-		multiset <int> m1, m2;
+        for(i = 0; i < N; i++)
+            for(j = 0; j < 207; j++) dp[i][j] = -1;
 
-		cin >> n;
+        cin >> n;
 
-		for(i = 1; i <= n; i++) cin >> a[i], m2.insert(a[i]);
+        for(i = 1; i <= n; i++) cin >> a[i];
+
+
 
 		return 0;
 	}
