@@ -16,25 +16,8 @@ using namespace std;
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
 
-const int N = 200007;
-
-int a[N], ans[N];
-
-int bs(int a, int sum, int val) {
-	int low = 0, high = val, ans;
-
-	while(low <= high) {
-		int mid = (low + high) / 2;
-
-		if(sum + mid >= a) {
-			ans = mid;
-			high = mid - 1;
-		}
-		else low = mid + 1;
-	}
-
-	return ans;
-}
+vi vs;
+multiset <int> sx;
 
 signed main()
 	{
@@ -48,16 +31,23 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v, sum = 0;
+		int n, m, i, j, u;
+		double v;
 
 		cin >> n >> m;
 
 		for(i = 1; i <= n; i++) {
-			cin >> a[i], sum += a[i];
+			cin >> u >> v;
+			vs.pb(u);
+		}	
+
+		for(i = 0; i < n; i++) {
+			sx.insert(vs[i]);
+			auto it = sx.upper_bound(vs[i]);
+			if(it != sx.end()) sx.erase(it);
 		}
 
-		for(i = 1; i <= n; i++) ans[i] = bs(m, sum - a[i], a[i]);
-		for(i = 1; i <= n; i++) cout << ans[i] << " "; cout << endl;
+		cout << n - sx.size() << endl;
 
 		return 0;
 	}

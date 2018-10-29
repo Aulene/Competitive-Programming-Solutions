@@ -16,26 +16,6 @@ using namespace std;
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
 
-const int N = 200007;
-
-int a[N], ans[N];
-
-int bs(int a, int sum, int val) {
-	int low = 0, high = val, ans;
-
-	while(low <= high) {
-		int mid = (low + high) / 2;
-
-		if(sum + mid >= a) {
-			ans = mid;
-			high = mid - 1;
-		}
-		else low = mid + 1;
-	}
-
-	return ans;
-}
-
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -48,16 +28,18 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v, sum = 0;
+		string s1, s2, s3, s4, s5;
 
-		cin >> n >> m;
+		cin >> s1 >> s2 >> s3;
+		cin >> s4 >> s5;
 
-		for(i = 1; i <= n; i++) {
-			cin >> a[i], sum += a[i];
-		}
+		reverse(s1.begin(), s1.end());
+		reverse(s3.begin(), s2.end());
+		reverse(s5.begin(), s3.end());
 
-		for(i = 1; i <= n; i++) ans[i] = bs(m, sum - a[i], a[i]);
-		for(i = 1; i <= n; i++) cout << ans[i] << " "; cout << endl;
+		for(i = 0; i < max(s1.size(), s2.size())) 
+			if(i >= s3.size()) s3 += '0';
 
+		
 		return 0;
-	}
+	}	

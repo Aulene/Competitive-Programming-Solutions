@@ -285,6 +285,7 @@ int miller_rabin(int n) {
 // Minimum Sparse Table, 1-Indexed
 
 int mint[300007][27];
+
 void preprocessMin(int n) {
 
 	for(int i = 1; i <= n; i++)
