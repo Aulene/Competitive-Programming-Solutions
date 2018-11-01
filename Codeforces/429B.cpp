@@ -44,7 +44,7 @@ signed main()
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
 
-		int u, q, v, i, j, x, y, ans;
+		int u, q, v, i, j, x, y, ans = 0;
 
 		for(i = 0; i < 1007; i++)
 			for(j = 0; j < 1007; j++) dp[i][j][0] = dp[i][j][1] = -1;
@@ -55,16 +55,20 @@ signed main()
 			for(j = 1; j <= m; j++) cin >> a[i][j];
 		
 		for(i = 1; i <= n; i++) 
-			for(j = 1; j <= m; j++) b[i][j] = a[i][m - j + 1];
+			for(j = 1; j <= m; j++) b[i][j] = a[n - i + 1][j];
 		
 		for(i = 1; i <= n; i++)
 			for(j = 1; j <= m; j++) a[i][j] += b[i][j];
+
+		cout << endl;
 
 		for(i = 1; i <= n; i++) {
 			for(j = 1; j <= m; j++) cout << a[i][j] << " "; cout << endl;
 		}
 
-		ans = recur(1, 1, 0);
+		recur(1, 1, 0);
+
+		cout << endl;
 
 		for(i = 1; i <= n; i++) {
 			for(j = 1; j <= m; j++) cout << dp[i][j][0] << " "; cout << endl;
@@ -74,6 +78,12 @@ signed main()
 			for(j = 1; j <= m; j++) cout << dp[i][j][1] << " "; cout << endl;
 		} cout << endl;
 		
+		for(i = 1; i <= n; i++) {
+			for(j = 1; j <= m; j++) {
+				ans = max(ans, dp[i][j][1] + a[i - 1][j]);
+				ans = max(ans, dp[i][j][1] + a[i][j - 1]);
+			}
+		}
 
 		cout << ans << endl;
 
