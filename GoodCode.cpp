@@ -304,4 +304,24 @@ int query(int x, int y) {
 	return min(table[x][k], table[y - (1 << k) + 1][k]);
 }
 
+// ------------------
+// Disjoint Set Union
+// ------------------
 
+int lk[N], sz[N]; // lk initialized to i, sz initialized to 1
+
+int find(int idx) {
+	while(idx != lk[idx]) idx = lk[idx];
+	return idx;
+}
+
+bool same(int a, int b) { return find(a) == find(b); }
+
+void unite(int a, int b) {
+	a = find(a), b = find(b);
+	if(sz[a] < sz[b]) swap(a, b);
+	sz[a] += sz[b];
+	lk[b] = a;
+}
+
+// ------------------
