@@ -16,18 +16,8 @@ using namespace std;
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
 
-const int N = 100007;
-vector < vector < pi > > g(N);
-
-int dfs(int idx, int p = -1) {
-
-	int sum = 0;
-
-	for(int i = 0; i < g[idx].size(); i++)
-		if(g[idx][i].f != p) sum = sum = max(sum, g[idx][i].s + dfs(g[idx][i].f, idx));
-
-	return sum;
-}
+const int N = 300007;
+int a[N], p[N];
 
 signed main()
 	{
@@ -41,22 +31,14 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v, w, sum = 0;
+		int n, m, i, j, u, v;
 
-		cin >> n;	
+		cin >> n >> m;
 
-		for(i = 0; i < n - 1; i++) {
-			cin >> u >> v >> w;
-			g[u].pb({v, w});
-			g[v].pb({u, w});
-			sum += w;
+		for(i = 1; i <= n; i++) cin >> a[i], p[i] = p[i - 1] + a[i];
+		for(i = m; i <= n; i++) {
+			u = p[i] - p[i - m - 1];
 		}
-
-		u = dfs(1);
-		
-		// cout << u << endl;
-
-		cout << (2 * sum) - u << endl;
 
 		return 0;
 	}
