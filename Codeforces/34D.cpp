@@ -1,20 +1,8 @@
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <queue>
-#include <stack>
-#include <set>
-#include <list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
+#define endl '\n'
 #define int long long int
 #define mod 1000000007
 #define p push
@@ -22,46 +10,42 @@ using namespace std;
 #define mp make_pair
 #define f first
 #define s second
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
+#define pi pair <int, int> 
+#define ppi pair < pair <int, int>, int> 
+#define zp mp(0, 0)
 
-vector <int> g[50007];
-int ans[50007];
-
-int dfs(int idx, int p)
-{
-	for(int i = 0; i < g[idx].size(); i++)
-		{
-			if(g[idx][i] != p)
-				{
-					ans[g[idx][i]] = idx;
-					dfs(g[idx][i], idx);
-					// cout << g[idx][i] << " " << idx << endl;
-				}
-		}
-
-	return 0;
-}
+vector < pair <int, int> > vs;
+int mx[1007][1007];
 
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
+		cout.tie(NULL);
+		
+		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
+		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
 
-		int n, r1, r2, u, v, i, j;
+		// ifstream cin ("input.txt");
+		// ofstream cout ("output.txt");
 
-		cin >> n >> r1 >> r2;
+		int n, m, i, j, u, v;
 
-		for(i = 1; i <= n; i++)
-			{
-				if(i == r1) continue;
-				cin >> u;
+		cin >> n >> m;
 
-				g[u].pb(i);
-				g[i].pb(u);
+		for(i = 0; i < m; i++) {
+			cin >> u >> v;
+			mx[u][v] = mx[v][u] = 1;
+		}
+
+		for(i = 1; i <= n; i++) {
+			for(j = i + 1; j <= n; j++) {
+				if(!mx[i][j]) vs.pb({i, j});
 			}
+		}
 
-		dfs(r2, -1);
-
-		for(i = 1; i <= n; i++)
-			if(i != r2) cout << ans[i] << " ";
-		return 0;
+		cout << vs.size() << endl;
+		for(auto it : vs) cout << it.f << " " << it.s << endl;
 	}
