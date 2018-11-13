@@ -22,36 +22,38 @@ using namespace std;
 const int N = 300007;
 
 int lk[N], sz[N];
+int p[N], d[N], vis[N], ec[N];
 
 vi ansv;
 vvi g(N);
+vvpi g2(N);
 vector <ppipi> vs;
 map < pair <int, int>, int> mx;
 
 bool cmp(ppipi a, ppipi b) { return a.s.f < b.s.f; }
 
-int find(int x) {
-    while(x != lk[x]) x = lk[x];
-    return x;
-}
+// int find(int x) {
+//     while(x != lk[x]) x = lk[x];
+//     return x;
+// }
 
-bool same(int a, int b) { return find(a) == find(b); }
+// bool same(int a, int b) { return find(a) == find(b); }
 
-int unite(int a, int b) {
-    a = find(a), b = find(b);
-    if(same(a, b)) return 0;
-    if(sz[a] < sz[b]) swap(a, b);
-    sz[a] += sz[b];
-    lk[b] = a;
-    return 1;
-}
+// int unite(int a, int b) {
+//     a = find(a), b = find(b);
+//     if(same(a, b)) return 0;
+//     if(sz[a] < sz[b]) swap(a, b);
+//     sz[a] += sz[b];
+//     lk[b] = a;
+//     return 1;
+// }
 
-int dfs(int idx, int p = -1) {
-    for(auto it : g[idx])
-        if(it != p) dfs(it, idx);
+// int dfs(int idx, int p = -1) {
+//     for(auto it : g[idx])
+//         if(it != p) dfs(it, idx);
     
-    if(p != -1) ansv.pb(mx[{idx, p}]);
-}
+//     if(p != -1) ansv.pb(mx[{idx, p}]);
+// }
 
 void bfs(int k) {
     queue < pair <int, int> > q;
@@ -71,6 +73,51 @@ void bfs(int k) {
     }
 }
 
+void dijkstras(int n)
+{
+    for(int i = 2; i < N; i++) d[i] = INT_MAX;
+
+    priority_queue < pair <int, int>, vector < pair <int, int> >, greater < pair <int, int> > > q;
+    
+    p[1] = 0;
+    q.p({1, d[1]});
+
+    while(!q.empty()) {
+
+        pi pz = q.top();
+        q.pop();
+
+        int u = pz.f, v = pz.s;
+
+        for(auto it : g2[u])
+            if(d[it.f] > v + it.s) {
+                d[it.f] = v + it.s;
+                p[it.f] = u;
+                ec[it.f] = 1;
+                ec[u] = 0;
+                q.p({it.f, d[it.f]});
+            }
+    }
+
+    // for(int i = 1; i <= n; i++) cout << p[i] << " "; cout << endl;
+    // for(int i = 1; i <= n; i++) cout << d[i] << " "; cout << endl;
+
+    for(int i = 1; i <= n; i++)
+        if(ec[i]) {
+            int x = i;
+            
+            while(p[x] != 0) {
+                
+                g[x].pb(p[x]);
+                g[p[x]].pb(x);
+                
+                // cout << x << " " << p[x] << endl;
+                x = p[x];
+            }
+        }
+
+}
+
 signed main()
     {
         ios_base::sync_with_stdio(false);
@@ -85,31 +132,13 @@ signed main()
 
         for(i = 0; i < m; i++) {
             cin >> u >> v >> w;
-            vs.pb({{u, v}, {w, i}});
+            mx[{u, v}] = mx[{v, u}] = i;
+            g2[u].pb({v, w}), g2[v].pb({u, w});
         }
 
-        sort(vs.begin(), vs.end(), cmp);
-
-        for(i = 0; i < m; i++) {
-            u = vs[i].f.f, v = vs[i].f.s;
-        
-            if(unite(u, v)) {
-                g[u].pb(v), g[v].pb(u);
-                mx[{u, v}] = mx[{v, u}] = vs[i].s.s;
-            }
-            // else ansv.pb(vs[i].s.s);
-        }
-
-        // dfs(1);
-        
-        // cout << k << endl;
-        // i = ansv.size() - 1;
-        // while(k--) {
-        //     cout << ansv[i] + 1 << " ";
-        //     i--;
-        // } cout << endl;
-
+        dijkstras(n);
         bfs(k);
+
         cout << ansv.size() << endl;
         for(auto it : ansv) cout << it + 1 << " "; cout << endl;
         return 0;
