@@ -21,101 +21,42 @@ using namespace std;
 
 const int N = 300007;
 
-int lk[N], sz[N];
-int p[N], d[N], vis[N], ec[N];
+int p[N], d[N], vis[N], ec[N], nz[N];
 
 vi ansv;
-vvi g(N);
 vvpi g2(N);
-vector <ppipi> vs;
 map < pair <int, int>, int> mx;
 
-bool cmp(ppipi a, ppipi b) { return a.s.f < b.s.f; }
-
-// int find(int x) {
-//     while(x != lk[x]) x = lk[x];
-//     return x;
-// }
-
-// bool same(int a, int b) { return find(a) == find(b); }
-
-// int unite(int a, int b) {
-//     a = find(a), b = find(b);
-//     if(same(a, b)) return 0;
-//     if(sz[a] < sz[b]) swap(a, b);
-//     sz[a] += sz[b];
-//     lk[b] = a;
-//     return 1;
-// }
-
-// int dfs(int idx, int p = -1) {
-//     for(auto it : g[idx])
-//         if(it != p) dfs(it, idx);
-    
-//     if(p != -1) ansv.pb(mx[{idx, p}]);
-// }
-
-void bfs(int k) {
-    queue < pair <int, int> > q;
-    q.p({1, -1});
-
-    while(!q.empty()) {
-        int u = q.front().f, p = q.front().s;
-        q.pop();
-
-        for(auto it : g[u])
-            if(it != p) {
-                if(ansv.size() < k) {
-                    ansv.pb(mx[{u, it}]);
-                    q.p({it, u});
-                }
-            }
-    }
-}
-
-void dijkstras(int n)
+void dijkstras(int n, int k)
 {
-    for(int i = 2; i < N; i++) d[i] = INT_MAX;
+    for(int i = 1; i < N; i++) d[i] = LLONG_MAX, p[i] = -1;
 
-    priority_queue < pair <int, int>, vector < pair <int, int> >, greater < pair <int, int> > > q;
+    set < pair <int, int> > q;
     
-    p[1] = 0;
-    q.p({1, d[1]});
+    d[1] = 0;
+    q.insert({0, 1});
 
-    while(!q.empty()) {
+    while(!q.empty() && ansv.size() < k) {
 
-        pi pz = q.top();
-        q.pop();
+        pi pz = *q.begin();
+        q.erase(q.begin());
 
-        int u = pz.f, v = pz.s;
-
+        int v = pz.f, u = pz.s;
+        
+        if(ansv.size() >= k) return;
+        if(p[u] != -1) ansv.pb(p[u]);
+            
         for(auto it : g2[u])
             if(d[it.f] > v + it.s) {
+                
+                q.erase({d[it.f], it.f});
                 d[it.f] = v + it.s;
-                p[it.f] = u;
-                ec[it.f] = 1;
-                ec[u] = 0;
-                q.p({it.f, d[it.f]});
+                q.insert({d[it.f], it.f});
+
+                p[it.f] = mx[{u, it.f}];
+
             }
     }
-
-    // for(int i = 1; i <= n; i++) cout << p[i] << " "; cout << endl;
-    // for(int i = 1; i <= n; i++) cout << d[i] << " "; cout << endl;
-
-    for(int i = 1; i <= n; i++)
-        if(ec[i]) {
-            int x = i;
-            
-            while(p[x] != 0) {
-                
-                g[x].pb(p[x]);
-                g[p[x]].pb(x);
-                
-                // cout << x << " " << p[x] << endl;
-                x = p[x];
-            }
-        }
-
 }
 
 signed main()
@@ -124,22 +65,19 @@ signed main()
         cin.tie(NULL);
         cout.tie(NULL);
 
-        for(int i = 0; i < N; i++) lk[i] = i, sz[i] = 1;
-
         int n, m, k, i, j, u, v, w;
 
         cin >> n >> m >> k;
 
         for(i = 0; i < m; i++) {
             cin >> u >> v >> w;
-            mx[{u, v}] = mx[{v, u}] = i;
+            mx[{u, v}] = mx[{v, u}] = i + 1;
             g2[u].pb({v, w}), g2[v].pb({u, w});
         }
 
-        dijkstras(n);
-        bfs(k);
+        dijkstras(n, k);
 
         cout << ansv.size() << endl;
-        for(auto it : ansv) cout << it + 1 << " "; cout << endl;
+        for(auto it : ansv) cout << it << " "; cout << endl;
         return 0;
     }
