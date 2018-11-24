@@ -152,6 +152,15 @@ bool intersect(int x1, int y1, int x2, int y2)
 	return 1;	
 }
 
+bool intersect(pair <int, int> p1, pair <int, int> p2)
+{
+	if(p2.f <= p1.f && p1.f <= p2.s) return 0;
+	if(p2.f <= p1.s && p1.s <= p2.s) return 0;
+	if(p1.f <= p2.f && p2.f <= p1.s) return 0;
+	if(p1.f <= p2.s && p2.s <= p1.s) return 0;
+	return 1;	
+}
+
 // Sieve of Eratosthenes
 
 bool prime[N];
