@@ -16,8 +16,7 @@ using namespace std;
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
 
-const int N = 107;
-vector <double> vs;
+vi vs;
 
 signed main()
 	{
@@ -31,20 +30,20 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v;
-		double x;
+		int n, m, i, j, u, v, ans = 0;
+		int s1, s2;
 
-		for(i = 1; i <= n; i++) cin >> x, vs.pb(x);
+		cin >> n;
 
-		sort(vs.begin(), vs.end());
-		reverse(vs.begin(), vs.end());
+		for(i = 0; i < n; i++) {
+			cin >> u >> v;
+			vs.pb({u, v});
+		}	
 
-		if(vs[0] == 1.0) {
-			cout << "1.0000000" << endl;
-			return 0;
+		for(i = 0; i < n; i++) {
+
+			u = vs[i].f, v = vs[i].s;
+			
 		}
-
-		
-
 		return 0;
 	}

@@ -16,9 +16,6 @@ using namespace std;
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
 
-const int N = 107;
-vector <double> vs;
-
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -31,20 +28,5 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v;
-		double x;
-
-		for(i = 1; i <= n; i++) cin >> x, vs.pb(x);
-
-		sort(vs.begin(), vs.end());
-		reverse(vs.begin(), vs.end());
-
-		if(vs[0] == 1.0) {
-			cout << "1.0000000" << endl;
-			return 0;
-		}
-
-		
-
 		return 0;
 	}
