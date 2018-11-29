@@ -11,21 +11,15 @@ using namespace std;
 #define f first
 #define s second
 #define vi vector <int> 
-#define vvi vector < vector <int> >
-#define vppi vector < pair < pair <int, int>, int> > 
+#define vvi vector < vector <int> > 
 #define pi pair <int, int> 
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
 
 const int N = 100007;
 
-bool cmp(ppi a, ppi b) {
-	if(a.s < b.s) return 1;
-	return 0;
-}
-
-vppi vs;
-pi dp[N];
+vvi vs(N);
+int sum[N], psum[N];
 
 signed main()
 	{
@@ -39,30 +33,35 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v, w, ans = 0;
+		int n, m, i, j, u, v, ans = 0;
 
 		cin >> n >> m;
 
-		for(i = 0; i < m; i++) {
-			cin >> u >> v >> w;
-			vs.pb({{u, v}, w});
+		for(i = 0; i < n; i++) {
+			cin >> u >> v;
+			vs[u].pb(v);
 		}
 
-		// sort(vs.begin(), vs.end(), cmp);
+		for(i = 1; i <= m; i++) sort(vs[i].begin(), vs[i].end(), greater <int>());
 
-		// cout << endl; for(auto it : vs) cout << it.f.f << " " << it.f.s << " " << it.s << endl;
-
-		for(i = 0; i < N; i++) dp[i] = mp(1, 0);
-
-		for(auto it : vs) {
-			u = it.f.f, v = it.f.s, w = it.s;
-			if(dp[u].s <= w) {
-				if(dp[v].f <= 1 + dp[u].f || dp[v].s > w) 
-					dp[v] = mp(1 + dp[u].f, w);
+		// for(i = 1; i <= m; i++) {
+		// 	cout << i << ": ";
+		// 	for(auto it : vs[i]) cout << it << " "; cout << endl;
+		// }
+		
+		for(i = 1; i <= m; i++) {
+			for(j = 0; j < vs[i].size(); j++) {
+				psum[i] = psum[i] + vs[i][j];
+				if(psum[i] >= 0) 
+					sum[j] += psum[i];
 			}
 		}
 
-		for(i = 0; i < N; i++) ans = max(ans, dp[i].f);
+		// for(i = 0; i <= n; i++) cout << sum[i] << " "; cout << endl;
+
+		for(i = 0; i <= n; i++) ans = max(ans, sum[i]);
+
 		cout << ans << endl;
+
 		return 0;
 	}
