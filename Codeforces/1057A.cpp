@@ -18,9 +18,31 @@ using namespace std;
 
 const int N = 200007;
 
-int a[N];
-map <int, int> mx, par, pv;
-vi vs;
+vvi g(N);
+vi ansv;
+
+int n;
+
+int dfs(int idx, int p = -1) {
+
+	if(idx == n) {
+		ansv.pb(idx);
+		return 1;
+	}
+
+	for(auto it : g[idx]) {
+		if(it != p) {
+
+			if(dfs(it, idx)) {
+				ansv.pb(idx);
+				return 1;
+			}
+
+		}
+	}
+
+	return 0;
+}
 
 signed main()
 	{
@@ -34,39 +56,18 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v, ans = 0, ansidx;
+		int m, i, j, u, v;
 
 		cin >> n;
 
-		for(i = 1; i <= n; i++) cin >> a[i];
+		for(i = 2; i <= n; i++) {
+			cin >> u;
+			g[u].pb(i), g[i].pb(u);
+		}	
 
-		for(i = 1; i <= n; i++) {
+		dfs(1);
+		reverse(ansv.begin(), ansv.end());
 
-			pv[a[i]] = i;
-
-			if(mx[a[i]] < 1 + mx[a[i] - 1]) {
-				mx[a[i]] = 1 + mx[a[i] - 1];
-				par[i] = pv[a[i] - 1];
-			}
-
-			if(ans < mx[a[i]]) {
-				ans = mx[a[i]];
-				ansidx = i;
-			}
-
-		}
-
-		// for(auto it : mx) cout << "Num = " << it.f << " Ans = " << it.s << endl;
-		
-		while(ansidx != 0) {
-			vs.pb(ansidx);
-			ansidx = par[ansidx];
-		}
-
-		reverse(vs.begin(), vs.end());
-
-		cout << ans << endl;
-		for(auto it : vs) cout << it << " "; cout << endl;
-
+		for(auto it : ansv) cout << it << " "; cout << endl;
 		return 0;
 	}

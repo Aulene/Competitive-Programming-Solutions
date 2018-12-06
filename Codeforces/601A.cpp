@@ -16,12 +16,15 @@ using namespace std;
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
 
-const int N = 200007;
+const int N = 407;
+const int M = 407 * 407;
 
-int a[N];
-map <int, int> mx, par, pv;
-vi vs;
+vvi g(M);
+vvi g2(M);
 
+int a[N][N];
+
+int dijkstras(vvi g, int )
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -34,39 +37,17 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v, ans = 0, ansidx;
+		int n, m, i, j, u, v;
 
-		cin >> n;
+		cin >> n >> m;
 
-		for(i = 1; i <= n; i++) cin >> a[i];
-
-		for(i = 1; i <= n; i++) {
-
-			pv[a[i]] = i;
-
-			if(mx[a[i]] < 1 + mx[a[i] - 1]) {
-				mx[a[i]] = 1 + mx[a[i] - 1];
-				par[i] = pv[a[i] - 1];
-			}
-
-			if(ans < mx[a[i]]) {
-				ans = mx[a[i]];
-				ansidx = i;
-			}
-
+		for(i = 0; i < m; i++) {
+			cin >> u >> v;
+			g[u].pb(v), g[v].pb(u);
+			a[u][v] = a[v][u] = 1;
 		}
 
-		// for(auto it : mx) cout << "Num = " << it.f << " Ans = " << it.s << endl;
-		
-		while(ansidx != 0) {
-			vs.pb(ansidx);
-			ansidx = par[ansidx];
-		}
 
-		reverse(vs.begin(), vs.end());
-
-		cout << ans << endl;
-		for(auto it : vs) cout << it << " "; cout << endl;
 
 		return 0;
 	}
