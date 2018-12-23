@@ -3,7 +3,6 @@
 using namespace std;
 
 #define endl '\n'
-#define int long long int
 #define mod 1000000007
 #define p push
 #define pb push_back
@@ -19,7 +18,7 @@ using namespace std;
 const int N = 200007;
 
 int a[N];
-map <int, int> mx, par, pv;
+map <int, int> dp, par, pv;
 vi vs;
 
 signed main()
@@ -44,28 +43,28 @@ signed main()
 
 			pv[a[i]] = i;
 
-			if(mx[a[i]] < 1 + mx[a[i] - 1]) {
-				mx[a[i]] = 1 + mx[a[i] - 1];
-				par[i] = pv[a[i] - 1];
-			}
+			if(dp[a[i]] < 1 + dp[a[i] - 1])
+				dp[a[i]] = 1 + dp[a[i] - 1];
 
-			if(ans < mx[a[i]]) {
-				ans = mx[a[i]];
-				ansidx = i;
+			if(ans < dp[a[i]]) {
+				ans = dp[a[i]];
+				ansidx = a[i];
 			}
 
 		}
 
-		// for(auto it : mx) cout << "Num = " << it.f << " Ans = " << it.s << endl;
-		
-		while(ansidx != 0) {
-			vs.pb(ansidx);
-			ansidx = par[ansidx];
-		}
+		// for(auto it : dp) cout << "Num = " << it.f << " Ans = " << it.s << endl;
+	
+		for(i = n; i >= 1; i--) {
+			if(a[i] == ansidx && ans > 0) {
+				vs.pb(i);
+				ansidx--; ans--;
+			}
+		}		
 
 		reverse(vs.begin(), vs.end());
 
-		cout << ans << endl;
+		cout << vs.size() << endl;
 		for(auto it : vs) cout << it << " "; cout << endl;
 
 		return 0;
