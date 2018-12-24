@@ -23,7 +23,7 @@ const int N = 50007;
 vvpi g(N);
 priority_queue < pi, vpi, greater <pi> > pq;
 
-int sp[N];
+int sp[N], sp2[N], wx[N];
 
 void dijkstraFx(int n, int sp[]) {
 
@@ -50,7 +50,38 @@ void dijkstraFx(int n, int sp[]) {
 	}
 
 	for(int i = 1; i <= n; i++) sp[i] = dist[i];
-	for(int i = 1; i <= n; i++) cout << sp[i] << " "; cout << endl;
+}
+
+void dijkstra(int n, int sp[]) {
+
+	int dist[N];
+
+	for(int i = 0; i < N; i++) dist[i] = INT_MAX;
+	for(int i = 1; i <= n; i++)
+		if(wx[i] != -1) {
+			dist[i] = sp[i];
+			pq.p({i, dist[i]});
+		}
+
+	while(!pq.empty()) {
+		pi pz = pq.top(); pq.pop();
+
+		int u = pz.f, dx = pz.s;
+
+		for(auto it : g[u]) {
+
+			int v = it.f, w = it.s;
+
+			if(dist[v] > dx + w) {
+				if(wx[u] == -1 || (wx[u] != -1 && dx + w <= sp[v] + wx[u])) {
+					dist[v] = dx + w;
+					pq.p({v, dist[v]});
+				}
+			}
+		}
+	}
+
+	for(int i = 1; i <= n; i++) sp2[i] = dist[i];
 }
 
 signed main()
@@ -62,10 +93,13 @@ signed main()
 		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
 		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
 
-		// ifstream cin ("input.txt");
-		// ofstream cout ("output.txt");
-		
+		ifstream cin ("dining.in");
+		ofstream cout ("dining.out");
+			
 		int n, m, k, i, j, u, v, w;
+
+		for(i = 0; i < N; i++) 
+			wx[i] = -1;
 
 		cin >> n >> m >> k;
 
@@ -74,11 +108,22 @@ signed main()
 			g[u].pb({v, w}); g[v].pb({u, w});
 		}
 
-		// for(i = 0; i < k; i++) {
-		// 	cin >> u >> v;
-		// }
+		for(i = 0; i < k; i++) {
+			cin >> u >> v;
+			wx[u] = v;
+		}
 		
 		dijkstraFx(n, sp);
-
+		// for(int i = 1; i <= n; i++) cout << sp[i] << " "; cout << endl;
+		dijkstra(n, sp);
+		// for(int i = 1; i <= n; i++) cout << sp2[i] << " "; cout << endl;
+		
+		for(i = 1; i <= n; i++) {
+			if(wx[i] == -1) {
+				if(sp2[i] < INT_MAX) cout << 1 << endl;
+				else cout << 0 << endl;
+			}
+		}
+		
 		return 0;
 	}
