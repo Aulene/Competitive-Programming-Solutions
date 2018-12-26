@@ -19,11 +19,32 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 4007;
-const int M = 1000007;
+const int N = 200007;
 
-int a[N], comp[M];
-int dp[N][N];
+vvi g(N);
+int a[N], dp[N];
+
+int dfs(int idx, int p = -1) {
+
+	if(dp[idx] != -1) return dp[idx];
+
+	int ans = a[idx], minx = INT_MAX;
+
+	for(auto it : g[idx])
+		if(it != p) {
+			ans += dfs(it, idx);
+			minx = min(minx, dp[it]);
+		}
+
+	// cout << idx << " " << g[idx].size() << " " << ans << " " << minx << endl;
+
+	if(((p != -1) && g[idx].size() > 1 && ((g[idx].size() - 1) % 2) == 1) || ((p == -1) && (g[idx].size() % 2 == 1))) 
+		ans -= minx;
+
+	// cout << idx << " " << ans << endl;
+
+	return dp[idx] = ans;
+}
 
 signed main()
 	{
@@ -40,24 +61,20 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, x = 1, ans = 0;
+		int n, m, i, j, u, v;
 
 		cin >> n;
 
-		for(i = 1; i <= n; i++) {
-			cin >> a[i];
-			if(comp[a[i]] == 0)
-				comp[a[i]] = x++;
-			a[i] = comp[a[i]];
-		}
+		for(i = 1; i <= n; i++) dp[i] = -1;
 
 		for(i = 1; i <= n; i++) {
-			for(j = 1; j < x; j++) {
-				dp[j][a[i]] = max(dp[j][a[i]], 1 + dp[a[i]][j]);
-				ans = max(ans, dp[j][a[i]]);
-			}
+			cin >> u >> a[i];
+			if(i != 1) g[u].pb(i), g[i].pb(u);
 		}
 
-		cout << ans << endl;
+		cout << dfs(1) << endl;
+
+		// for(i = 1; i <= n; i++) cout << dp[i] << " "; cout << endl;
+
 		return 0;
 	}

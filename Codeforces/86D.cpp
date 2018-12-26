@@ -1,71 +1,72 @@
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <queue>
-#include <stack>
-#include <set>
-#include <list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
+#define endl '\n'
+#define int long long int
 #define mod 1000000007
-#define lli long long int
 #define p push
 #define pb push_back
 #define mp make_pair
 #define f first
 #define s second
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
+#define pi pair <int, int> 
+#define ppi pair < pair <int, int>, int>
+#define vpi vector < pi >
+#define vppi vector < ppi >
+#define vvpi vector < vector < pi > > 
+#define zp mp(0, 0)
 
-vector < pair < pair <lli, lli>, pair <lli, lli> > > qs;
-lli a[2000007], cnt[2000007];;
-lli ans[2000007], BLOCK;
+const int N = 200007;
+const int M = 2000007;
 
-bool comp(pair < pair <lli, lli>, pair <lli, lli> > a, pair < pair <lli, lli>, pair <lli, lli> > b)
+vector < pair < pair <int, int>, pair <int, int> > > qs;
+int a[M], cnt[M];
+int ans[M], sq[M], BLOCK;
+
+bool comp(pair < pair <int, int>, pair <int, int> > a, pair < pair <int, int>, pair <int, int> > b)
 {
 	if(a.f.f / BLOCK != b.f.f / BLOCK)
 		return a.f.f / BLOCK < b.f.f / BLOCK;
 	return a.f.s < b.f.s;
 }
 
-inline void add(lli x, lli &sum)
+inline void add(int x, int &sum)
 {
-	sum = sum - a[x] * cnt[a[x]] * cnt[a[x]];
+	sum = sum - a[x] * sq[cnt[a[x]]];
 	cnt[a[x]]++;
-	sum = sum + a[x] * cnt[a[x]] * cnt[a[x]];
+	sum = sum + a[x] * sq[cnt[a[x]]];
 }
 
-inline void remove(lli x, lli &sum)
+inline void remove(int x, int &sum)
 {
-	sum = sum - a[x] * cnt[a[x]] * cnt[a[x]];
+	sum = sum - a[x] * sq[cnt[a[x]]];
 	cnt[a[x]]--;
-	sum = sum + a[x] * cnt[a[x]] * cnt[a[x]];
+	sum = sum + a[x] * sq[cnt[a[x]]];
 }
 
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
+		cout.tie(NULL);
 
-		lli n, m, i, j, u, v;
-		lli left = 0, right = 0;
-		lli sum = 0;
+		for(int i = 1; i < M; i++) sq[i] = i * i;
+		
+		int n, m, i, j, u, v;
+		int left = 0, right = 0;
+		int sum = 0;
 
-		scanf("%lld %lld", &n, &m);
+		cin >> n >> m;
 
 		BLOCK = sqrt(n);
-		for(i = 0; i < n; i++)
-			scanf("%lld", &a[i]);
+		for(i = 0; i < n; i++) cin >> a[i];
 
 		for(i = 0; i < m; i++)
 			{
-				scanf("%lld %lld", &u, &v);
+				cin >> u >> v;
 				qs.pb(mp(mp(u - 1, v - 1), mp(i, 0)));
 			}
 

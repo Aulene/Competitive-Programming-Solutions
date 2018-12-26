@@ -3,7 +3,6 @@
 using namespace std;
 
 #define endl '\n'
-#define int long long int
 #define mod 1000000007
 #define p push
 #define pb push_back
@@ -12,63 +11,59 @@ using namespace std;
 #define s second
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
+#define pi pair <int, int> 
+#define ppi pair < pair <int, int>, int>
+#define vpi vector < pi >
+#define vppi vector < ppi >
+#define vvpi vector < vector < pi > > 
+#define zp mp(0, 0)
 
-struct node
+#define mid (start + end) / 2
+
+const int N = 1000007;
+
+int a[N];
+
+struct MSTree
 {
-	int val;
-	node *l, *r;
+	vector <int> vs;
+	MSTree *l, *r;
 
-	int merge(int a, int b)
-		{ return a + b; }
+	int sum(int a, int b) { return a + b; }
 
-	node* build(int start, int end)
+	MSTree *build(int start, int end)
 		{
 			if(start == end)
-				{ val = 0; }
+				vs = vi(1, a[start]);
 			else
 				{
-					l = new node, r = new node;
+					l = new MSTree, r = new MSTree;
 					l = l -> build(start, mid), r = r -> build(mid + 1, end);
-					val = merge(l -> val, r -> val);
-					// cout << start << " " << end << " " << val.f << " " << val.s << endl;
+					merge(l->vs.begin(), l->vs.end(), r->vs.begin(),r->vs.end(), back_inserter(vs));
 				}
 			return this;
 		}
 
-	node *update(int start, int end, int a, int b, int v)	
+	int lquery(int start, int end, int a, int b, int x)
 		{
 			if(start > b || end < a)
-				return this;
- 
-			if(start >= a && end <= b)
-				{
-					val += (end - start + 1) * v;
-					return this;
-				}
- 
-			l = l -> update(start, mid, a, b, v);
-			r = r -> update(mid + 1, end, a, b, v);
-			val = merge(l -> val, r -> val);
-			return this;
+				return 0;
+			else if(start >= a && end <= b)
+				return lower_bound(vs.begin(), vs.end(), x) - vs.begin();
+			else
+				return sum(l -> lquery(start, mid, a, b, x), r -> lquery(mid + 1, end, a, b, x));
 		}
 
-	int query(int start, int end, int a, int b)
+	int gquery(int start, int end, int a, int b, int x)
 		{
-			if(start >= a && end <= b)
-				{
-					// cout << start << " " << end << endl;
-					return val;
-				}
-			else if(end < a || start > b) {
-				return ;
-			}
-				
+			if(start > b || end < a)
+				return 0;
+			else if(start >= a && end <= b)
+				return vs.end() - upper_bound(vs.begin(), vs.end(), x);
 			else
-				return merge(l -> query(start, mid, a, b), r -> query(mid + 1, end, a, b));
+				return sum(l -> gquery(start, mid, a, b, x), r -> gquery(mid + 1, end, a, b, x));
 		}
 };
-
-int a[1000007];
 
 signed main()
 	{
@@ -82,18 +77,25 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v;
+		// ifstream cin ("usaco.in");
+		// ofstream cout ("usaco.out");
+		
+		int n, m, i, j, u, v, x = 1;
+		long long int ans = 0;
 
 		cin >> n;
+
 		for(i = 1; i <= n; i++) cin >> a[i];
 
-		node *root = new node;
+		MSTree *root = new MSTree;
 		root = root -> build(1, n);
 
-		for(i = n; i >= 1; i--) {
-
-			ans += 
+		for(i = 2; i <= n - 1; i++) {
+			u = root -> gquery(1, n, 1, i - 1, a[i]);
+			v = root -> lquery(1, n, i + 1, n, a[i]);
+			ans += (long long int) u * v;
 		}
 
-  		return 0;
+		cout << ans << endl;
+		return 0;
 	}
