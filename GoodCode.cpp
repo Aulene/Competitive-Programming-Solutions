@@ -260,16 +260,29 @@ struct RangeSTreeLazy
 		}
 };
 
-// (a * b) % c
-int mulmod(int a, int b, int c) { return (__int128) a * b % c; }
-
+// ------------------
 // POWMOD - Computing a^b % m
+// ------------------
 int powmod(int a, int b, int m) {
 	int res = 1;
 	while(b)
 		if(b & 1) res = (res * 1ll * a) % m, --b;
 		else a = (a * 1ll * a) % m,  b >>= 1;
 	return res;
+}
+
+// ------------------
+// Factors of a Number O(Sqrt(N))
+// ------------------
+
+vi factors(int n) {
+	vi fax;
+	for(int i = 1; i <= sqrt(n); i++)
+		if(n % i == 0) {
+			if(i == sqrt(n)) fax.pb(i);
+			else fax.pb(i), fax.pb(n / i);
+		}
+	return fax;
 }
 
 // Miller-Rabin Primality Test
@@ -289,6 +302,13 @@ int miller_rabin(int n) {
 		if(rem == n - 1) return 1;
 	}
 	return 0;
+}
+
+// ------------------
+// Euclid GCD
+// ------------------
+int gcd (int a, int b) {
+    return b ? gcd (b, a % b) : a;
 }
 
 // Minimum Sparse Table, 1-Indexed
@@ -334,3 +354,90 @@ void unite(int a, int b) {
 }
 
 // ------------------
+// Matrix Exponentiation
+// ------------------
+
+const int K = 4;
+
+vvi mul(vvi a, vvi b) {
+    vvi ans(K + 1, vi(K + 1));
+
+    for(int i = 1; i <= K; i++)
+        for(int j = 1; j <= K; j++)
+            for(int k = 1; k <= K; k++)
+                ans[i][j] = (ans[i][j] + a[i][k] * b[k][k]) % mod;
+    return ans;
+}
+
+vvi pow(vvi a, int n) {
+
+    if(n == 1) return a;
+    if(n % 2)
+        return mul(a, pow(a, n - 1));
+    vvi b = pow(a, n / 2);
+    return mul(b, b);
+}
+
+// ------------------
+// Fast Fourier Transform (FFT)
+// ------------------
+
+typedef complex<ld> cld;
+const double pi = acos(-1.0);
+const int N = 500500;
+
+void fft(vector<cld> &a, bool invert){
+	int n = a.size();
+
+	// bit reverse copy procedure
+	for(int i = 1, j = 0; i < n; i++){
+		int bit = n / 2;
+		for(; j >= bit; bit /= 2){
+			j-=bit;
+		}
+		j+=bit;
+		if(i < j) swap(a[i], a[j]);
+	}
+	for(int len = 2; len <= n; len *= 2){
+		double angle = 2 * pi / len * (invert ? -1 : 1);
+		cld wnrt = cld(cos(angle), sin(angle));
+		for(int i = 0; i < n; i+=len){
+			cld w(1);
+			for(int j = 0; j < len / 2; j++){
+				cld u = a[i + j], v = w * a[i + j + len / 2];
+				a[i + j] = u + v;
+				a[i + j + len / 2] = u - v;
+				w *= wnrt;
+			}
+		}
+	}
+
+	if(invert){
+		for(int i = 0; i < n; i++) a[i] /= (ld)n;
+	}
+
+}
+
+vector<int> multiply(vector<int> &a, vector<int> &b){
+	vector<cld> fa(a.begin(), a.end()), fb(a.begin(), a.end());
+	int n = 1;
+	while(n < 2 * max(a.size(), b.size())) n*=2;
+	fa.resize(n); fb.resize(n);
+	fft(fa, false); fft(fb, false);
+	for(int i = 0; i < n; i++) fa[i] *= fb[i];
+	fft(fa, true);
+	vector<int> c(n);
+	for(int i = 0; i < n; i++){
+		c[i] = (int)round(fa[i].real());
+	}
+	return c;
+}
+
+int main(){
+	vector<int> a = {1,1,2,2};
+	vector<int> b = {1,1};
+	vector<int> c = multiply(a, a);
+	for(int u : c ) cout << u << " ";
+	cout << endl;
+	return 0;
+}

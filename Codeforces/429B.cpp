@@ -1,8 +1,8 @@
 #include <bits/stdc++.h>
-#include <unordered_map>
 
 using namespace std;
 
+#define endl '\n'
 #define int long long int
 #define mod 1000000007
 #define p push
@@ -10,82 +10,57 @@ using namespace std;
 #define mp make_pair
 #define f first
 #define s second
-#define mid (start + end) / 2
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
 #define pi pair <int, int> 
-#define ppi pair < pair <int, int>, int >
+#define ppi pair < pair <int, int>, int>
+#define vpi vector < pi >
+#define vppi vector < ppi >
+#define vvpi vector < vector < pi > > 
+#define zp mp(0, 0)
 
-int a[1007][1007], b[1007][1007], dp[1007][1007][3];
-int n, m;
+const int N = 1007;
 
-int recur(int i, int j, bool done)
-{
-	if(i > n || j > m) {
-		if(!done) return -10000007;
-		return 0;
-	}
-
-	if(dp[i][j][done] != -1) return dp[i][j][done];
-
-	int ans = 0;
-
-	if(done) {
-		ans = a[i][j] + max(recur(i + 1, j, 1), recur(i, j + 1, 1));
-	}
-	else {
-		ans = max(recur(i + 1, j, 1), recur(i, j + 1, 1));
-		ans = max(ans, a[i][j] + max(recur(i + 1, j, 0), recur(i, j + 1, 0)));
-	}
-
-	return dp[i][j][done] = ans;
-}
+int a[N][N];
+int dp[N][N], dp2[N][N], dp3[N][N], dp4[N][N];
 
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
+		cout.tie(NULL);
+		
+		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
+		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
 
-		int u, q, v, i, j, x, y, ans = 0;
-
-		for(i = 0; i < 1007; i++)
-			for(j = 0; j < 1007; j++) dp[i][j][0] = dp[i][j][1] = -1;
+		// ifstream cin ("input.txt");
+		// ofstream cout ("output.txt");
+		
+		// ifstream cin ("usaco.in");
+		// ofstream cout ("usaco.out");
+		
+		int n, m, i, j, u, v, ans = 0;
 
 		cin >> n >> m;
 
 		for(i = 1; i <= n; i++) 
 			for(j = 1; j <= m; j++) cin >> a[i][j];
-		
-		for(i = 1; i <= n; i++) 
-			for(j = 1; j <= m; j++) b[i][j] = a[n - i + 1][j];
-		
+
 		for(i = 1; i <= n; i++)
-			for(j = 1; j <= m; j++) a[i][j] += b[i][j];
+			for(j = 1; j <= m; j++) dp[i][j] = a[i][j] + max(dp[i - 1][j], dp[i][j - 1]);
+		for(j = m; j >= 1; j--)
+		    for(i = 1; i <= n; i++) dp2[i][j] = a[i][j] + max(dp2[i - 1][j], dp2[i][j + 1]);
+		for(i = n; i >= 1; i--)
+		    for(j = 1; j <= m; j++) dp3[i][j] = a[i][j] + max(dp3[i + 1][j], dp3[i][j - 1]);
+		for(i = n; i >= 1; i--)
+		    for(j = m; j >= 1; j--) dp4[i][j] = a[i][j] + max(dp4[i][j + 1], dp4[i + 1][j]);
 
-		cout << endl;
-
-		for(i = 1; i <= n; i++) {
-			for(j = 1; j <= m; j++) cout << a[i][j] << " "; cout << endl;
-		}
-
-		recur(1, 1, 0);
-
-		cout << endl;
-
-		for(i = 1; i <= n; i++) {
-			for(j = 1; j <= m; j++) cout << dp[i][j][0] << " "; cout << endl;
-		} cout << endl;
-
-		for(i = 1; i <= n; i++) {
-			for(j = 1; j <= m; j++) cout << dp[i][j][1] << " "; cout << endl;
-		} cout << endl;
-		
-		for(i = 1; i <= n; i++) {
-			for(j = 1; j <= m; j++) {
-				ans = max(ans, dp[i][j][1] + a[i - 1][j]);
-				ans = max(ans, dp[i][j][1] + a[i][j - 1]);
+		for(i = 2; i < n; i++)
+			for(j = 2; j < m; j++) {
+				ans = max(ans, dp[i - 1][j] + dp4[i + 1][j] + dp2[i][j + 1] + dp3[i][j - 1]);
+				ans = max(ans, dp[i][j - 1] + dp4[i][j + 1] + dp2[i - 1][j] + dp3[i + 1][j]);
 			}
-		}
 
 		cout << ans << endl;
-
-		return 0;   
+		return 0;
 	}

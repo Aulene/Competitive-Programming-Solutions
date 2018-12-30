@@ -1,110 +1,125 @@
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <queue>
-#include <stack>
-#include <set>
-#include <list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-#define int long long int
-#define mod 1000000007
+#define endl '\n'
 #define p push
 #define pb push_back
 #define mp make_pair
 #define f first
 #define s second
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
+#define pi pair <int, int> 
+#define ppi pair < pair <int, int>, int>
+#define vpi vector < pi >
+#define vppi vector < ppi >
+#define vvpi vector < vector < pi > >
+#define zp mp(0, 0)
 #define mid (start + end) / 2
 
-int a[30007], ans[200007];
-vector < pair < pair <int, int>, pair <int, int> > > vs;
+const int N = 200007;
+int ans[N];
 
-struct node
+bool cmp(pi a, pi b) {
+	return a.s > b.s;
+}
+
+bool cmp2(vi a, vi b) {
+	return a[2] > b[2];
+}
+
+struct RSTree
 {
 	int val;
-	node *l, *r;
-
+	RSTree *l, *r;
+ 
 	int merge(int a, int b) { return a + b; }
-
-	node *build(int start, int end, int x)
+ 
+	RSTree *build(int start, int end)
 		{
 			if(start == end)
+				val = 0;
+			else
 				{
-					if(a[start] > x)
-						val = 1;
-					else
-						val = 0;
-					return this;
+					l = new RSTree, r = new RSTree;
+					l = l -> build(start, mid), r = r -> build(mid + 1, end);
+					val = merge(l -> val, r -> val);
 				}
-
-			l = new node, r = new node;
-			l = l -> build(start, mid, x), r = r -> build(mid + 1, end, x);
+			return this;
+		}
+ 
+	RSTree *update(int start, int end, int a, int b)	
+		{
+			if(start > b || end < a)
+				return this;
+ 
+			if(start >= a && end <= b) {
+				val = 1;
+				return this;
+			}
+			
+			l = l -> update(start, mid, a, b);
+			r = r -> update(mid + 1, end, a, b);
 			val = merge(l -> val, r -> val);
 			return this;
 		}
-
+ 
 	int query(int start, int end, int a, int b)
 		{
-			if(end < a || start > b) return 0;
-			else if(start >= a && end <= b) return val;
-			else return merge(l -> query(start, mid, a, b), r -> query(mid + 1, end, a, b));
+			if(start > b || end < a)
+				return 0;
+			else if(start >= a && end <= b)
+				return val;
+			else
+				return merge(l -> query(start, mid, a, b), r -> query(mid + 1, end, a, b));
 		}
-
 };
 
-// bool cmp(pair < pair <int, int>, pair <int, int> > a, pair < pair <int, int>, pair <int, int> > b) { return a.s.f > b.s.f; }
 
-signed main()
+int main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
-
-		int n, i, j, m, u, v, x, y, q, prev = 0;
-		vector < pair < pair <int, int>, pair <int, int> > > :: iterator it;
-		node *root;
-
-		scanf("%lld", &n);
-
-		for(i = 1; i <= n; i++)
-			scanf("%lld", &a[i]);
+		cout.tie(NULL);
 		
-		scanf("%lld", &m);
+		int n, m, i, j, u, v, idx, ct;
+		vpi vs;
 
-		for(i = 1; i <= m; i++)
-			{
-				scanf("%lld %lld %lld", &u, &v, &q);;
-				vs.pb(mp(mp(u, v), mp(q, i)));
-			}
+		scanf("%d", &n);
 
-		// sort(vs.begin(), vs.end(), cmp);
+		for(i = 1; i <= n; i++) {
+			scanf("%d", &u);
+			vs.pb({i, u});
+		}
 
-		// for(i = 0; i < m; i++)
-		// 	cout << vs[i].f.f << " " << vs[i].f.s << " " << vs[i].s.f << " " << vs[i].s.s << endl;
+		sort(vs.begin(), vs.end(), cmp);
 
-		for(it = vs.begin(); it != vs.end(); it++)
-			{
-				u = it -> f.f, v = it -> f.s, x = it -> s.f, y = it -> s.s;
+		scanf("%d", &m);
+		
+		vvi qs(m, vi(4));
 
-				if(prev != x)
-					{
-						root = new node;
-						root = root -> build(1, n, x);
-					}
+		for(i = 1; i <= m; i++) {
+			for(j = 0; j < 3; j++) scanf("%d", &qs[i - 1][j]);
+			qs[i - 1][3] = i;
+		}
 
-				ans[y] = root -> query(1, n, u, v);
-				prev = x;
-			}
+		sort(qs.begin(), qs.end(), cmp2);
 
-		for(i = 1; i <= m; i++)
-			printf("%lld\n", ans[i]);
+		ct = 0;
 
+		RSTree *root = new RSTree;
+		root = root -> build(1, n);
+
+		for(auto it : qs) {
+			u = it[0], v = it[1], j = it[2], idx = it[3];
+
+			while(ct < vs.size() && vs[ct].s > j)
+				root = root -> update(1, n, vs[ct].f, vs[ct].f), ct++;
+			ans[idx] = root -> query(1, n, u, v);
+		}
+
+		for(i = 1; i <= m; i++) printf("%d\n", ans[i]);
+		
 		return 0;
 	}
