@@ -19,11 +19,6 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 4007;
-
-int a[N], pre[N];
-map <int, int> mx;
-
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -39,39 +34,21 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans = 0;
-		string s;
+		string s1, s2, s = "";
+		int n, i, j, u, v, ansx = 1;
 
-		cin >> m >> s;
+		cin >> s1 >> s2;
+		n = s1.size();
 
-		if(m == 0) {
-			cout << 0 << endl;
-			return 0;
+		for(i = 0; i < n; i++) {
+			if(s1[i] < s2[i]) {
+				ansx = 0;
+			}
+			else if(s1[i] >= s2[i]) s += s2[i];
+			else s += s1[i];
 		}
 
-		n = s.size();
-
-		for(i = 1; i <= n; i++) a[i] = (int) (s[i - 1] - '0');
-		for(i = 1; i <= n; i++) pre[i] = pre[i - 1] + a[i];
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) mx[pre[j] - pre[i - 1]]++;
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) {
-				int sum = pre[j] - pre[i - 1];
-				
-				mx[sum]--;
-				
-				if(m % sum == 0) {
-					v = m / sum;
-					ans += mx[v];
-				}
-
-				mx[sum]++;
-			}
-
-		cout << ans << endl;
-
+		if(!ansx) cout << -1 << endl;
+		else cout << s << endl;
 		return 0;
 	}

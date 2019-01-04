@@ -19,11 +19,9 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 4007;
+const int N = 10007;
 
-int a[N], pre[N];
-map <int, int> mx;
-
+int dp[N], a[N];
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -36,42 +34,25 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		// ifstream cin ("usaco.in");
-		// ofstream cout ("usaco.out");
+		ifstream cin ("teamwork.in");
+		ofstream cout ("teamwork.out");
 		
-		int n, m, i, j, u, v, ans = 0;
-		string s;
+		int n, m, i, j, u, v;
 
-		cin >> m >> s;
+		cin >> n >> m;
 
-		if(m == 0) {
-			cout << 0 << endl;
-			return 0;
+		for(i = 1; i <= n; i++) cin >> a[i];
+
+		for(i = 1; i <= n; i++) {
+			int mx = a[i]; dp[i] = dp[i - 1] + a[i];
+
+			for(j = i - 1; j >= max(1LL, i - m + 1); j--) {
+				mx = max(mx, a[j]);
+				dp[i] = max(dp[i], dp[j - 1] + mx * (i - j + 1));
+			}
 		}
 
-		n = s.size();
-
-		for(i = 1; i <= n; i++) a[i] = (int) (s[i - 1] - '0');
-		for(i = 1; i <= n; i++) pre[i] = pre[i - 1] + a[i];
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) mx[pre[j] - pre[i - 1]]++;
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) {
-				int sum = pre[j] - pre[i - 1];
-				
-				mx[sum]--;
-				
-				if(m % sum == 0) {
-					v = m / sum;
-					ans += mx[v];
-				}
-
-				mx[sum]++;
-			}
-
-		cout << ans << endl;
+		cout << dp[n] << endl;
 
 		return 0;
 	}

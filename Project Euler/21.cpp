@@ -19,10 +19,19 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 4007;
+vi factors(int n) {
+	vi fax;
+	for(int i = 1; i <= sqrt(n); i++)
+		if(n % i == 0) {
+			if(i == sqrt(n)) fax.pb(i);
+			else fax.pb(i), fax.pb(n / i);
+		}
+	return fax;
+}
 
-int a[N], pre[N];
-map <int, int> mx;
+const int N = 10001;
+
+int d[N], ami[N];
 
 signed main()
 	{
@@ -38,38 +47,35 @@ signed main()
 		
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
-		
-		int n, m, i, j, u, v, ans = 0;
-		string s;
+			
+		int n, m, i, j, u, v;
+		n = N;
 
-		cin >> m >> s;
-
-		if(m == 0) {
-			cout << 0 << endl;
-			return 0;
+		for(i = 1; i < n; i++) {
+			vi fx = factors(i);
+			int sum = 0;
+			for(auto it : fx)
+				if(it != i) sum += it;
+			d[i] = sum; 
 		}
 
-		n = s.size();
+		int ans = 0;
 
-		for(i = 1; i <= n; i++) a[i] = (int) (s[i - 1] - '0');
-		for(i = 1; i <= n; i++) pre[i] = pre[i - 1] + a[i];
+		for(i = 1; i < n; i++) {
+			int a = i, da = d[i];
+			int b = da;
 
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) mx[pre[j] - pre[i - 1]]++;
+			if(b >= n) continue;
+			int db = d[b];
 
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) {
-				int sum = pre[j] - pre[i - 1];
-				
-				mx[sum]--;
-				
-				if(m % sum == 0) {
-					v = m / sum;
-					ans += mx[v];
-				}
-
-				mx[sum]++;
+			if(db == a) {
+				ami[a] = 1;
+				ami[b] = 1;
 			}
+		}
+
+		for(i = 1; i < n; i++)
+			if(ami[i]) ans += i;
 
 		cout << ans << endl;
 

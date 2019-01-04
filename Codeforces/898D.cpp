@@ -3,7 +3,6 @@
 using namespace std;
 
 #define endl '\n'
-#define int long long int
 #define mod 1000000007
 #define p push
 #define pb push_back
@@ -19,10 +18,10 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 4007;
+const int N = 200007;
+const int M = 1000007;
 
-int a[N], pre[N];
-map <int, int> mx;
+int a[N], d[M];
 
 signed main()
 	{
@@ -39,37 +38,50 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans = 0;
-		string s;
+		int n, m, k, i, j, u, v, ans = 0;
+		priority_queue <int, vi, less <int> > pq;
 
-		cin >> m >> s;
+		cin >> n >> m >> k;
 
-		if(m == 0) {
-			cout << 0 << endl;
-			return 0;
+		for(i = 1; i <= n; i++) 
+			cin >> a[i], d[a[i]]++;
+
+		int l = 1, r = 1, sum = 0;
+
+		while(r <= m) {
+
+			if(d[r]) {
+				sum++;
+				pq.p(r);
+			}
+
+			if(sum == k) {
+				u = pq.top(); pq.pop();
+				d[u]--; sum--; ans++;
+			}
+
+			r++;
+
+			// cout << l << " " << r << " " << sum << " " << ans << endl;
 		}
 
-		n = s.size();
-
-		for(i = 1; i <= n; i++) a[i] = (int) (s[i - 1] - '0');
-		for(i = 1; i <= n; i++) pre[i] = pre[i - 1] + a[i];
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) mx[pre[j] - pre[i - 1]]++;
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) {
-				int sum = pre[j] - pre[i - 1];
-				
-				mx[sum]--;
-				
-				if(m % sum == 0) {
-					v = m / sum;
-					ans += mx[v];
-				}
-
-				mx[sum]++;
+		while(r < M) {
+			if(d[r]) {
+				sum++;
+				pq.p(r);
 			}
+
+			if(d[l]) sum--;
+
+			if(sum == k) {
+				u = pq.top(); pq.pop();
+				d[u]--; sum--; ans++;
+			}
+
+			l++, r++;
+			// cout << l << " " << r << " " << sum << " " << ans << endl;
+		}
+
 
 		cout << ans << endl;
 

@@ -1,67 +1,85 @@
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-#include <climits>
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <unordered_map>
-#include <queue>
-#include <set>
-#include <list>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-#define int long long int
+#define endl '\n'
 #define mod 1000000007
 #define p push
 #define pb push_back
 #define mp make_pair
 #define f first
 #define s second
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
+#define pi pair <int, int> 
+#define ppi pair < pair <int, int>, int>
+#define vpi vector < pi >
+#define vppi vector < ppi >
+#define vvpi vector < vector < pi > > 
+#define zp mp(0, 0)
 
-int n, k, ans, twos, fives;
-int num;
-int dp[207][6007];
-map <int, int> :: iterator it;
+const int N = 207;
+const int M = 20007;
 
-int fact(int x, int y)
-{
-	int ans = 0;
-	while(x % y == 0) { ans++; x /= y; }
-	return ans;
+long long int a[N];
+ppi vs[N];
+int dp[7][N][M];
+
+ppi fact(long long int n) {
+	ppi pz = mp(zp, 0);
+	while(n % 2 == 0) pz.f.f++, n /= 2;
+	while(n % 5 == 0) pz.f.s++, n /= 5;
+	int u = min(pz.f.f, pz.f.s);
+	pz.s += u;
+	pz.f.f -= u, pz.f.s -= u;
+	return pz;
 }
 
-signed main() 
-{
-	int i, j;
+ppi sum(ppi a, ppi b) 
+{ 
+	int mv = min(a.f.f + b.f.f, a.f.s + b.f.s);
+	return mp(mp(a.f.f + b.f.f - mv, a.f.s + b.f.s - mv), a.s + b.s + mv); 
+}
 
-	cin >> n >> k;
+signed main()
+	{
+		ios_base::sync_with_stdio(false);
+		cin.tie(NULL);
+		cout.tie(NULL); 
+		
+		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
+		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
 
-	dp[0][0][0] = 0;
+		// ifstream cin ("input.txt");
+		// ofstream cout ("output.txt");
+		
+		// ifstream cin ("usaco.in");
+		// ofstream cout ("usaco.out");
+		
+		int n, m, i, j, k, u, v;
 
-	for (i = 1; i <= n; i++) 
-		{
-			twos = fives = 0;
-			
-			cin >> num;
+		cin >> n >> m;
 
-			twos = fact(num, 2);
-			fives = fact(num, 5);
-			
-			for (j = 0; j < i; j++)
-				for (it = dp[i - 1][j].begin(); it != dp[i - 1][j].end(); it++) 
-					{
-						dp[i][j][it->first] = max(dp[i][j][it->first], it->second);
-						dp[i][j + 1][it->first + fives] = max(dp[i][j + 1][it->first + fives], it->second + twos);
-					}
+		for(i = 1; i <= n; i++) cin >> a[i];
+		for(i = 1; i <= n; i++) vs[i] = fact(a[i]);
+
+		for(i = 1; i <= n; i++) {
+			dp[1][0][vs[i].s] = max(dp[1][0][vs[i].s], vs[i].f);
+			dp[1][0][vs[i].s] = max(dp[1][0][vs[i].s], dp[i][0][vs[i].s]);	
 		}
 
-	for (it = dp[n][k].begin(); it != dp[n][k].end(); it++)
-		ans = max(ans, min(it->first, it->second));
+		for(j = 2; j <= n; j++) {
 
-	cout << ans << endl;
-	return 0;
-}
+			for(i = 1; i <= n; i++) {
+				for(k = 1; k <= M; k++) {
+					dp[1][j + 1][k + vs[i].s] = max(dp[1][j + 1][k + vs[i].s], dp[0][j][k] + vs[i].f);
+					dp[1][j][k] = max(dp[1][j][k], dp[0][j][k]);
+				}
+			}
+
+			for(i = 1; i <= n; i++)
+		}
+
+		cout << mx.s << endl;
+		return 0;
+	}

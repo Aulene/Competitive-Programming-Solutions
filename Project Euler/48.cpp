@@ -3,8 +3,9 @@
 using namespace std;
 
 #define endl '\n'
-#define int long long int
-#define mod 1000000007
+#define int unsigned long long int
+#define ull int
+#define mod 10000000000ULL
 #define p push
 #define pb push_back
 #define mp make_pair
@@ -19,10 +20,22 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 4007;
+inline int modMul(const int x, const int y) {
+	if (x > (1<<30) && y > (1 << 30))
+		return ((x >> 30) * ((y << 30) % mod) + y * (x & ((1 << 30) - 1))) % mod;
+	int z = x * y;
+	if (z >= mod)
+		z %= mod;
+	return z;
+}
 
-int a[N], pre[N];
-map <int, int> mx;
+int powmod(int a, int b, int m) {
+	int res = 1;
+	while(b)
+		if(b & 1) res = (modMul(res, a)) % m, --b;
+		else a = (modMul(a, a)) % m,  b >>= 1;
+	return res;
+}
 
 signed main()
 	{
@@ -39,39 +52,16 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans = 0;
-		string s;
+		int n;
+		cin >> n;
+		int sum = 0;
 
-		cin >> m >> s;
-
-		if(m == 0) {
-			cout << 0 << endl;
-			return 0;
+		for(int i = 1; i <= n; i++) {
+			int val = powmod(i, i, mod);
+			sum = (sum + val) % mod;
 		}
 
-		n = s.size();
-
-		for(i = 1; i <= n; i++) a[i] = (int) (s[i - 1] - '0');
-		for(i = 1; i <= n; i++) pre[i] = pre[i - 1] + a[i];
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) mx[pre[j] - pre[i - 1]]++;
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) {
-				int sum = pre[j] - pre[i - 1];
-				
-				mx[sum]--;
-				
-				if(m % sum == 0) {
-					v = m / sum;
-					ans += mx[v];
-				}
-
-				mx[sum]++;
-			}
-
-		cout << ans << endl;
+		cout << sum << endl;
 
 		return 0;
 	}

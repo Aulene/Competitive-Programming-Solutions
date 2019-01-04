@@ -19,11 +19,6 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 4007;
-
-int a[N], pre[N];
-map <int, int> mx;
-
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -39,39 +34,15 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans = 0;
-		string s;
+		int n, m, i, j, u, v;
 
-		cin >> m >> s;
+		cin >> n;
 
-		if(m == 0) {
-			cout << 0 << endl;
-			return 0;
-		}
+		u = n % 10;
+		n = n - u;
+		if(u >= 5) n = n + 10;
 
-		n = s.size();
-
-		for(i = 1; i <= n; i++) a[i] = (int) (s[i - 1] - '0');
-		for(i = 1; i <= n; i++) pre[i] = pre[i - 1] + a[i];
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) mx[pre[j] - pre[i - 1]]++;
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) {
-				int sum = pre[j] - pre[i - 1];
-				
-				mx[sum]--;
-				
-				if(m % sum == 0) {
-					v = m / sum;
-					ans += mx[v];
-				}
-
-				mx[sum]++;
-			}
-
-		cout << ans << endl;
+		cout << n << endl;	
 
 		return 0;
 	}

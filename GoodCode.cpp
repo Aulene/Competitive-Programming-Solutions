@@ -270,6 +270,22 @@ int powmod(int a, int b, int m) {
 		else a = (a * 1ll * a) % m,  b >>= 1;
 	return res;
 }
+// ------------------
+// Mod Inverse
+// ------------------
+int inv(int a, int m) { return a < 2 ? a : ((1 - m * 1ll * inv(m % a, a)) / a % m + m) % m; }
+
+// ------------------
+// Mod Mult (a * b) % m
+// ------------------
+inline int modMul(const int x, const int y) {
+	if (x > (1<<30) && y > (1 << 30))
+		return ((x >> 30) * ((y << 30) % mod) + y * (x & ((1 << 30) - 1))) % mod;
+	int z = x * y;
+	if (z >= mod)
+		z %= mod;
+	return z;
+}
 
 // ------------------
 // Factors of a Number O(Sqrt(N))

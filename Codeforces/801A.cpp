@@ -19,11 +19,6 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 4007;
-
-int a[N], pre[N];
-map <int, int> mx;
-
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -39,39 +34,28 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans = 0;
 		string s;
+		int  i, j, u, v, ans = 0, use = 0;
 
-		cin >> m >> s;
+		cin >> s;
+		int n = s.size();
 
-		if(m == 0) {
-			cout << 0 << endl;
-			return 0;
-		}
-
-		n = s.size();
-
-		for(i = 1; i <= n; i++) a[i] = (int) (s[i - 1] - '0');
-		for(i = 1; i <= n; i++) pre[i] = pre[i - 1] + a[i];
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) mx[pre[j] - pre[i - 1]]++;
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) {
-				int sum = pre[j] - pre[i - 1];
-				
-				mx[sum]--;
-				
-				if(m % sum == 0) {
-					v = m / sum;
-					ans += mx[v];
+		for(i = 0; i < n; i++) {
+			if(s[i] == 'V') {
+				if(i + 1 < n && s[i + 1] == 'K') ans++;
+				else {
+					if(i + 1 < n && !use) use++, ans++, s[i + 1] = 'K';
+					else continue;
 				}
-
-				mx[sum]++;
 			}
+			else if(i > 0 && s[i] == 'K') {
+				if(s[i - 1] == 'K') {
+					if(!use) use++, ans++;
+					else continue;
+				}
+			}
+		}	
 
 		cout << ans << endl;
-
 		return 0;
 	}

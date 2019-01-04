@@ -19,10 +19,15 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 4007;
+int powmod(int a, int b, int m) {
+	int res = 1;
+	while(b)
+		if(b & 1) res = (res * 1ll * a) % m, --b;
+		else a = (a * 1ll * a) % m,  b >>= 1;
+	return res;
+}
 
-int a[N], pre[N];
-map <int, int> mx;
+const int N = 999999;
 
 signed main()
 	{
@@ -39,37 +44,17 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans = 0;
-		string s;
+		int ans = 0;
 
-		cin >> m >> s;
-
-		if(m == 0) {
-			cout << 0 << endl;
-			return 0;
-		}
-
-		n = s.size();
-
-		for(i = 1; i <= n; i++) a[i] = (int) (s[i - 1] - '0');
-		for(i = 1; i <= n; i++) pre[i] = pre[i - 1] + a[i];
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) mx[pre[j] - pre[i - 1]]++;
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) {
-				int sum = pre[j] - pre[i - 1];
-				
-				mx[sum]--;
-				
-				if(m % sum == 0) {
-					v = m / sum;
-					ans += mx[v];
-				}
-
-				mx[sum]++;
+		for(int i = 2; i <= N; i++) {
+			int u = i, sum = 0;
+			while(u) {
+				int v = u % 10;
+				u /= 10;
+				sum += powmod(v, 5, mod);
 			}
+			if(sum == i) ans += i;
+		}
 
 		cout << ans << endl;
 

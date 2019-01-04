@@ -2,6 +2,7 @@
 
 using namespace std;
 
+#define endl '\n'
 #define int long long int
 #define mod 1000000007
 #define p push
@@ -9,57 +10,46 @@ using namespace std;
 #define mp make_pair
 #define f first
 #define s second
+#define vi vector <int> 
+#define vvi vector < vector <int> > 
+#define pi pair <int, int> 
+#define ppi pair < pair <int, int>, int>
+#define vpi vector < pi >
+#define vppi vector < ppi >
+#define vvpi vector < vector < pi > > 
+#define zp mp(0, 0)
 
-int a[5007], p[5007];
-vector < pair < pair <int, int>, int> > vs;
-vector < pair <int, int> > vx;
-
-bool check(pair <int, int> a)
-{
-	for(int i = 0; i < vx.size(); i++)
-		if((a.f <= vx[i].f && vx[i].f <= a.s) || (a.f <= vx[i].s && vx[i].s <= a.s)) return 0;
-	return 1;
-}
-
-bool cmp(pair < pair <int, int>, int> a, pair < pair <int, int>, int> b)
-{
-	if(a.s != b.s) return a.s > b.s;
-	return a.f.s > b.f.s;
-}
+const int N = 5007;
+int a[N], pre[N];
+int dp[N][N];
 
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
+		cout.tie(NULL);
+		
+		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
+		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
 
-		int n, m, k, i, j, u, v, ans = 0;
+		// ifstream cin ("input.txt");
+		// ofstream cout ("output.txt");
+		
+		// ifstream cin ("usaco.in");
+		// ofstream cout ("usaco.out");
+		
+		int n, m, k, i, j, u, v;
 
 		cin >> n >> m >> k;
 
-		for(i = 1; i <= n; i++) cin >> a[i], p[i] = p[i - 1] + a[i];
+		for(i = 1; i <= n; i++) 
+			cin >> a[i], pre[i] = pre[i - 1] + a[i];
 
-		for(i = n; i >= 1; i--)
-			{
-				int u = i - m + 1;
-				if(u >= 1)
-					vs.pb(mp(mp(u, i), p[i] - p[u - 1]));
-			}
+		for(i = 1; i <= k; i++)
+			for(j = 1; j <= n; j++)
+				dp[j][i] = max(dp[max(0LL, j - m)][i - 1] + pre[j] - pre[max(0LL, j - m)], dp[j - 1][i]);
 
-		sort(vs.begin(), vs.end(), cmp);
-
-		// for(i = 0; i < vs.size(); i++) cout << vs[i].f.f << " " << vs[i].f.s << " " << vs[i].s << endl;
-
-		for(i = 0; i < vs.size(); i++)
-			if(k)
-				{
-					if(check(vs[i].f)) {
-						ans += vs[i].s;
-						vx.pb(vs[i].f);
-						k--;
-					}
-				}
-
-		cout << ans << endl;
+		cout << dp[n][k] << endl;
 
 		return 0;
 	}

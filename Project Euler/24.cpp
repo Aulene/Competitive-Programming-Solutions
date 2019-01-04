@@ -19,10 +19,13 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 4007;
+const int N = 1000007;
+int fact[N];
 
-int a[N], pre[N];
-map <int, int> mx;
+void facts() {
+	fact[0] = 1;
+	for(int i = 1; i < N; i++) fact[i] = (fact[i - 1] * i) % mod;
+}
 
 signed main()
 	{
@@ -38,40 +41,26 @@ signed main()
 		
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
+			
+		facts();
+		// cout << 2 * fact[9] << endl;
+		// cout << 6 * fact[8] << endl;
+
+		vi vs;
+
+		vs.pb(2 * fact[9]);
+		vs.pb(6 * fact[8]);
+		vs.pb(6 * fact[7]);
+		vs.pb(2 * fact[6]);
+		vs.pb(5 * fact[5]);
+		vs.pb(1 * fact[4]);
+		vs.pb(2 * fact[3]);
+		vs.pb(1 * fact[2]);
+		vs.pb(1 * fact[1]);
 		
-		int n, m, i, j, u, v, ans = 0;
-		string s;
+		int sum = 0;
+		for(auto it : vs) sum += it;
 
-		cin >> m >> s;
-
-		if(m == 0) {
-			cout << 0 << endl;
-			return 0;
-		}
-
-		n = s.size();
-
-		for(i = 1; i <= n; i++) a[i] = (int) (s[i - 1] - '0');
-		for(i = 1; i <= n; i++) pre[i] = pre[i - 1] + a[i];
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) mx[pre[j] - pre[i - 1]]++;
-
-		for(i = 1; i <= n; i++)
-			for(j = i; j <= n; j++) {
-				int sum = pre[j] - pre[i - 1];
-				
-				mx[sum]--;
-				
-				if(m % sum == 0) {
-					v = m / sum;
-					ans += mx[v];
-				}
-
-				mx[sum]++;
-			}
-
-		cout << ans << endl;
-
+		cout << sum << endl;
 		return 0;
 	}

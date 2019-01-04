@@ -18,17 +18,16 @@ using namespace std;
 #define ppi pair < pair <int, int>, int> 
 #define zp mp(0, 0)
 
-const int N = 50007;
+const int N = 100007;
 
 vvpi g(N);
 priority_queue < pi, vpi, greater <pi> > pq;
 
-int sp[N], sp2[N], wx[N];
+int sp[N], sp2[N], wx[N], bale[N];
 
 void dijkstraFx(int n, int sp[]) {
-
 	int dist[N];
-	for(int i = 0; i < N; i++) dist[i] = INT_MAX;
+	for(int i = 0; i < N; i++) dist[i] = LLONG_MAX;
 
 	dist[n] = 0;
 	pq.p({n, dist[n]});
@@ -56,10 +55,11 @@ void dijkstra(int n, int sp[]) {
 
 	int dist[N];
 
-	for(int i = 0; i < N; i++) dist[i] = INT_MAX;
+	for(int i = 0; i < N; i++) dist[i] = LLONG_MAX;
 	for(int i = 1; i <= n; i++)
 		if(wx[i] != -1) {
 			dist[i] = sp[i];
+			bale[i] = i;
 			pq.p({i, dist[i]});
 		}
 
@@ -74,6 +74,7 @@ void dijkstra(int n, int sp[]) {
 
 			if(dist[v] > dx + w) {
 				if(wx[u] == -1 || (wx[u] != -1 && dx + w <= sp[v] + wx[u])) {
+					bale[v] = bale[u];
 					dist[v] = dx + w;
 					pq.p({v, dist[v]});
 				}
@@ -86,9 +87,9 @@ void dijkstra(int n, int sp[]) {
 
 signed main()
 	{
-		ios_base::sync_with_stdio(false);
-		cin.tie(NULL);
-		cout.tie(NULL);
+		// ios_base::sync_with_stdio(false);
+		// cin.tie(NULL);
+		// cout.tie(NULL);
 		
 		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
 		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
@@ -118,11 +119,12 @@ signed main()
 		dijkstra(n, sp);
 		// for(int i = 1; i <= n; i++) cout << sp2[i] << " "; cout << endl;
 		
-		for(i = 1; i <= n; i++) {
-			if(wx[i] == -1) {
-				if(sp2[i] < INT_MAX) cout << 1 << endl;
+		for(i = 1; i < n; i++) {
+			if(sp2[i] < INT_MAX) {
+				if(sp2[i] - wx[bale[i]] <= sp[i]) cout << 1 << endl;
 				else cout << 0 << endl;
 			}
+			else cout << 0 << endl;
 		}
 		
 		return 0;
