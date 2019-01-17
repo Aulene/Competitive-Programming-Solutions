@@ -19,9 +19,12 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 5007;
+const int N = 50007;
 
-int dp[N];
+int a[N];
+
+multiset <int> mx;
+priority_queue <int, vi, less <int> > pq;
 
 signed main()
 	{
@@ -39,23 +42,29 @@ signed main()
 		// ofstream cout ("usaco.out");
 		
 		int n, m, i, j, u, v;
-		char s, prev;
 
 		cin >> n;
 
-		dp[1] = 1;
-		cin >> prev;
+		for(i = 1; i <= n; i++) cin >> a[i], mx.insert(a[i]), pq.push(a[i]);
 
-		for(i = 2; i <= n; i++) {
-			cin >> s;
+		while(true) {
+			u = pq.top(); pq.pop();
+			v = u;
 
-			if(s != prev && ) dp[i] = (dp[i - 1] + dp[i - 2]) % mod;
-			else dp[i] = dp[i - 1];
+			while(v) {
+				if(mx.count(v) == 0) break;
+				v = v / 2;
+			}
 
-			prev = s;
+			if(v == 0) break;
+
+			// cout << u << " " << v << endl;
+
+			mx.erase(u);
+			mx.insert(v);
+			pq.push(v);
 		}
 
-		cout << dp[n] << endl;
-
+		for(auto it : mx) cout << it << " "; cout << endl;
 		return 0;
 	}

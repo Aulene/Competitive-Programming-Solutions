@@ -19,9 +19,13 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 5007;
+const int N = 200007;
+int a[N], b[N], pre[N];
+vpi vs;
 
-int dp[N];
+bool cmp(pi a, pi b) {
+	return a.s - a.f > b.s - b.f;
+}
 
 signed main()
 	{
@@ -39,23 +43,33 @@ signed main()
 		// ofstream cout ("usaco.out");
 		
 		int n, m, i, j, u, v;
-		char s, prev;
 
-		cin >> n;
+		cin >> n >> m;
+		for(i = 1; i <= n; i++) cin >> a[i];
+		for(i = 1; i <= n; i++) cin >> b[i];
+		for(i = 1; i <= n; i++) vs.pb({a[i], b[i]});
 
-		dp[1] = 1;
-		cin >> prev;
+		sort(vs.begin(), vs.end(), cmp);
 
-		for(i = 2; i <= n; i++) {
-			cin >> s;
+		// for(auto it : vs) cout << it.f << " " << it.s << " " << it.s - it.f << endl;
 
-			if(s != prev && ) dp[i] = (dp[i - 1] + dp[i - 2]) % mod;
-			else dp[i] = dp[i - 1];
+		pre[0] = vs[0].s;
+		for(i = 1; i < n; i++) pre[i] = pre[i - 1] + vs[i].s;
 
-			prev = s;
+		int sum = 0, ans = LLONG_MAX;
+
+		for(i = 0; i < m; i++) sum += vs[i].f;
+
+		ans = min(ans, sum + pre[n - 1] - pre[m - 1]);
+		// cout << ans << endl;
+
+		for(i = m; i < n; i++) {
+			sum += vs[i].f;
+			// cout << i << " " << ans << " " << sum << " " << pre[n - 1] - pre[i - 1] << endl;
+			ans = min(ans, sum + pre[n - 1] - pre[i]);
 		}
 
-		cout << dp[n] << endl;
-
+		cout << ans << endl;
+	
 		return 0;
 	}

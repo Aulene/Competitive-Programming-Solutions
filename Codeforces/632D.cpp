@@ -19,9 +19,10 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 5007;
+const int N = 1000007;
+int a[N], ans[N];
 
-int dp[N];
+vvi cnt(N);
 
 signed main()
 	{
@@ -37,25 +38,37 @@ signed main()
 		
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
-		
-		int n, m, i, j, u, v;
-		char s, prev;
 
-		cin >> n;
+		int n, m, i, j, u, v, ansm = 0;
 
-		dp[1] = 1;
-		cin >> prev;
+		cin >> n >> m;
 
-		for(i = 2; i <= n; i++) {
-			cin >> s;
-
-			if(s != prev && ) dp[i] = (dp[i - 1] + dp[i - 2]) % mod;
-			else dp[i] = dp[i - 1];
-
-			prev = s;
+		for(i = 1; i <= n; i++) {
+			cin >> a[i]; 
+			if(a[i] <= m) cnt[a[i]].pb(i);
 		}
 
-		cout << dp[n] << endl;
+		for(i = 1; i <= m; i++) {
+			if(!cnt[i].size()) continue;
+			for(j = i; j <= m; j += i) ans[j] += cnt[i].size();
+		}
 
-		return 0;
+		for(i = 1; i <= m; i++)
+			if(ans[i] > ans[ansm]) ansm = i;
+
+		vi ansv;
+
+		for(i = 1; i <= ansm; i++)
+			if(ansm % i == 0) {
+				for(auto it : cnt[i]) ansv.pb(it);
+			}
+
+		sort(ansv.begin(), ansv.end());
+
+		if(ansm == 0) ansm = 1;
+
+		cout << ansm << " " << ans[ansm] << endl;
+		for(auto it : ansv) cout << it << " "; cout << endl;
+
+		return 0;	
 	}

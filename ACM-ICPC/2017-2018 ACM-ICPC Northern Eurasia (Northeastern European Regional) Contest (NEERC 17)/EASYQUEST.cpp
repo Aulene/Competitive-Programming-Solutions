@@ -19,9 +19,9 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 5007;
-
-int dp[N];
+const int N = 1007;
+int c[N], a[N];
+vi vs;
 
 signed main()
 	{
@@ -38,24 +38,52 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v;
-		char s, prev;
+		int n, m, i, j, u = 0, v = 0;
+		vi vs;
 
 		cin >> n;
-
-		dp[1] = 1;
-		cin >> prev;
-
-		for(i = 2; i <= n; i++) {
-			cin >> s;
-
-			if(s != prev && ) dp[i] = (dp[i - 1] + dp[i - 2]) % mod;
-			else dp[i] = dp[i - 1];
-
-			prev = s;
+		for(i = 1; i <= n; i++) {
+			cin >> a[i];
+			(a[i] < 0) ? v++ : v;
 		}
 
-		cout << dp[n] << endl;
+		for(i = 1; i <= n; i++) {
+			if(a[i] > 0) {
+				for(j = i + 1; j <= n; j++) {
+					if(!c[j] && a[i] == -a[j]) {
+						c[j] = 1;
+						break;
+					}
+				}
+			}
+		}
+
+		for(i = 1; i <= n; i++)
+			if(a[i] == 0) {
+				for(j = i + 1; j <= n; j++) {
+					if(!c[j] && a[j] < 0) {
+						vs.pb(-a[j]);
+						c[j] = 1;
+						break;
+					}
+				}
+
+				if(j == n + 1) vs.pb(1);
+			}
+
+		// for(i = 1; i <= n; i++) cout << c[i] << " "; cout << endl;
+
+
+		for(i = 1; i <= n; i++) 
+			if(c[i]) u++;
+
+		// cout << u << " " << v << endl;
+
+		if(u == v) {
+			cout << "Yes\n";
+			for(auto it : vs) cout << it << " "; cout << endl;
+		}
+		else cout << "No" << endl;
 
 		return 0;
 	}

@@ -13,7 +13,10 @@ using namespace std;
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
 #define pi pair <int, int> 
-#define ppi pair < pair <int, int>, int> 
+#define ppi pair < pair <int, int>, int>
+#define vpi vector < pi >
+#define vppi vector < ppi >
+#define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
 signed main()
@@ -28,15 +31,9 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v, ans = 0;
-
-		cin >> n >> m;
-
-		n = n ^ m;
-		m = 0;
-		while(n)
-			++m, n >>= 1;
-		cout << (1ll << m) - 1 << endl;
-
+		// ifstream cin ("usaco.in");
+		// ofstream cout ("usaco.out");
+		
+			
 		return 0;
 	}

@@ -19,60 +19,64 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 200007;
-const int M = 31;
+const int N = 107;
+const int M = 40;
+
+int a[N];
 
 struct node {
 	int cnt = 0;
 	node *ns[2] = {NULL};
 };
 
-node *trie = new node;
+node *trie[N];
 
-void insert(int n) {
-	node *cur = trie;
-	cur -> cnt++;
+void insert(int idx, int n) {
+	node *rt = trie[idx];
+	rt -> cnt++;
 
 	for(int i = M; i >= 0; i--) {
-		int u = n & (1 << i);
+		int u = n & (1LL << i);
 		u = (u > 0) ? 1 : 0;
-		if(cur -> ns[u] == NULL) 
-			cur -> ns[u] = new node;
 
-		cur = cur -> ns[u];
-		cur -> cnt++;
+		if(rt -> ns[u] == NULL) 
+			rt -> ns[u] = new node;
+		
+		rt = rt -> ns[u];
+		rt -> cnt++;
 	}
 }
 
-void del(int n) {
-	node *cur = trie;
-	cur -> cnt--;
+int update(int idx1, int idx2) {
+	node *rt = trie[idx1];
+
+	int val = 0LL;
 
 	for(int i = M; i >= 0; i--) {
-		int u = n & (1 << i);
-		u = (u > 0) ? 1 : 0;
-		cur = cur -> ns[u];
-		cur -> cnt--;
+		int u =
 	}
 }
 
-int query(int n) {
-	node *cur = trie;
-	int ans = 0;
+int query(int idx, int n) {
+	node *rt = trie[idx];
+
+	int ans = 0LL;
 
 	for(int i = M; i >= 0; i--) {
-		int u = n & (1 << i);
+	
+		int u = n & (1LL << i);
 		u = (u > 0) ? 0 : 1;
 
-		if(cur -> ns[u] != NULL && cur -> ns[u] -> cnt > 0) {
-			cur = cur -> ns[u];
-			ans = ans | (1 << i);
+		if(rt -> ns[u] != NULL && rt -> ns[u] -> cnt > 0) {
+			rt = rt -> ns[u];
+			ans = ans | (1LL << i);
 		}
-		else cur = cur -> ns[!u];
+		else rt = rt -> ns[!u];
 	}
 
 	return ans;
 }
+
 
 signed main()
 	{
@@ -89,19 +93,25 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v;
-		char x;
+		int n, m, i, j, u, v, ans = 0;
 
-		insert(0);
-		
-		cin >> m;
+		cin >> n;
 
-		while(m--) {
-			cin >> x >> n;
+		for(i = 1; i <= n; i++) trie[i] = new node;
 
-			if(x == '+') insert(n);
-			else if(x == '-') del(n);
-			else cout << query(n) << endl;
-		}	
+		for(i = 1; i <= n; i++) cin >> a[i];
+
+		for(i = 1; i <= n; i++) 
+			for(j = i + 1; j <= n; j++) {
+				int val = a[i] ^ a[j];
+				cout << j << " " << val << endl;
+				insert(j, val);
+			}
+
+		// for(i = 1; i <= n; i++)
+		// 	ans = max(ans, query(i, 0));
+
+		cout << ans << endl;
+
 		return 0;
 	}

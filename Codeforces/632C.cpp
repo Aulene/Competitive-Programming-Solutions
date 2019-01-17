@@ -13,8 +13,14 @@ using namespace std;
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
 #define pi pair <int, int> 
-#define ppi pair < pair <int, int>, int> 
+#define ppi pair < pair <int, int>, int>
+#define vpi vector < pi >
+#define vppi vector < ppi >
+#define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
+
+vector <string> vs;
+bool cmp(string a, string b) { return a + b < b + a; }
 
 signed main()
 	{
@@ -28,15 +34,23 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v, ans = 0;
+		// ifstream cin ("usaco.in");
+		// ofstream cout ("usaco.out");
+		
+		int n, m, i, j, u, v;
+		string s;
 
-		cin >> n >> m;
+		cin >> n;
 
-		n = n ^ m;
-		m = 0;
-		while(n)
-			++m, n >>= 1;
-		cout << (1ll << m) - 1 << endl;
+		for(i = 1; i <= n; i++) {
+			cin >> s;
+			vs.pb(s);
+		}	
 
+		sort(vs.begin(), vs.end(), cmp);
+
+		for(auto it : vs) {
+			for(i = 0; i < it.size(); i++) cout << it[i];
+		}
 		return 0;
 	}

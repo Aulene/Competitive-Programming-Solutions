@@ -43,9 +43,61 @@ x = *mx.rbegin();
 // -----------
 
 // -----------
-// Find all Cycles in a Graph
+// Find all Cycles in a Undirected/Directed Graph
 // -----------
 
+int n;
+vector < vector <int> > g(N);
+vector <char> color;
+vector <int> parent;
+int cycle_start, cycle_end;
+
+bool dfs(int v) {
+    color[v] = 1;
+    
+    for(int u : g[v]) {
+        if(color[u] == 0) {
+            parent[u] = v;
+            if(dfs(u)) return true;
+        } 
+        else if (color[u] == 1) {
+            cycle_end = v;
+            cycle_start = u;
+            return true;
+        }
+    }
+
+    color[v] = 2;
+    return false;
+}
+
+void find_cycle() {
+    color.assign(n + 1, 0);
+    parent.assign(n + 1, -1);
+    cycle_start = -1;
+
+    for(int v = 1; v <= n; v++)
+        if(dfs(v)) break;
+
+    if(cycle_start == -1) {
+        cout << "Acyclic" << endl;
+    } 
+    else  {
+        vector <int> cycle;
+
+        cycle.push_back(cycle_start);
+        for(int v = cycle_end; v != cycle_start; v = parent[v]) cycle.push_back(v);
+        cycle.push_back(cycle_start);
+
+        reverse(cycle.begin(), cycle.end());
+
+        cout << "Cycle found: ";
+        for(int v : cycle) cout << v << " ";
+        cout << endl;
+    }
+}
+
+/// OORRR for Undirected
 vector <int> path;
 vector < vector <int> > cycles;
 int vis[N];
@@ -82,6 +134,8 @@ void dfs(int v)
     path.pop_back();
     vis[v] = 2;
 }
+
+
 
 // -----------
 // Find all Strongly Connected Components (SCCs) in a Directed Graph

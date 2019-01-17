@@ -17,11 +17,7 @@ using namespace std;
 #define vpi vector < pi >
 #define vppi vector < ppi >
 #define vvpi vector < vector < pi > > 
-#define zp mp(0, 0)
-
-const int N = 5007;
-
-int dp[N];
+#define zp mp(0LL, 0LL)
 
 signed main()
 	{
@@ -39,23 +35,29 @@ signed main()
 		// ofstream cout ("usaco.out");
 		
 		int n, m, i, j, u, v;
-		char s, prev;
+		char x;
+
+		pi mf = zp, ms = zp;
 
 		cin >> n;
 
-		dp[1] = 1;
-		cin >> prev;
+		while(n--) {
+			cin >> x >> u >> v;
 
-		for(i = 2; i <= n; i++) {
-			cin >> s;
+			if(u > v) swap(u, v);
 
-			if(s != prev && ) dp[i] = (dp[i - 1] + dp[i - 2]) % mod;
-			else dp[i] = dp[i - 1];
+			if(x == '+'){
+				if(u > mf.f || (u == mf.f && v > mf.s)) mf = mp(u, v);
+				if(v > ms.s || (v == ms.s && u > ms.f)) ms = mp(u, v);
+			}
+			else {
+				// cout << mf.f << " " << mf.s << endl;
+				// cout << ms.f << " " << ms.s << endl;
+				
+				if(mf.f <= u && mf.s <= v && ms.f <= u && ms.s <= v) cout << "YES\n";
+				else cout << "NO" << endl;
+			}
 
-			prev = s;
-		}
-
-		cout << dp[n] << endl;
-
+		}	
 		return 0;
 	}

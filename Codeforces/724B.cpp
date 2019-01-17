@@ -13,8 +13,24 @@ using namespace std;
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
 #define pi pair <int, int> 
-#define ppi pair < pair <int, int>, int> 
+#define ppi pair < pair <int, int>, int>
+#define vpi vector < pi >
+#define vppi vector < ppi >
+#define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
+
+const int N = 27
+
+int a[N][N], b[N][N], c[N][N];
+int n, m;
+
+bool check() {
+
+	for(int i = 1; i <= n; i++)
+		for(int j = 1; j <= m; j++)
+			if(c[i][j] != b[i][j]) return 0;
+	return 1;
+}
 
 signed main()
 	{
@@ -28,15 +44,20 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
-		int n, m, i, j, u, v, ans = 0;
+		// ifstream cin ("usaco.in");
+		// ofstream cout ("usaco.out");
+		
+		int i, j, u, v;
 
 		cin >> n >> m;
 
-		n = n ^ m;
-		m = 0;
-		while(n)
-			++m, n >>= 1;
-		cout << (1ll << m) - 1 << endl;
+		for(i = 1; i <= n; i++) 
+			for(j = 1; j <= m; j++) cin >> a[i][j], b[i][j] = j, c[i][j] = a[i][j];
 
+		if(check()) {
+			cout << "YES\n"; return 0;
+		}
+
+		
 		return 0;
 	}

@@ -12,90 +12,84 @@ using namespace std;
 #define s second
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
+#define pi pair <int, int> 
+#define ppi pair < pair <int, int>, int>
+#define vpi vector < pi >
+#define vppi vector < ppi >
+#define vvpi vector < vector < pi > > 
+#define zp mp(0, 0)
 
-int a[200007];
-vector < pair <int, int> > pos, neg, zeroes;
+vpi pos, neg, zer;
 
-bool cmp(pair <int, int> a, pair <int, int> b) { return a.f < b.f; }
+bool cmp(pi a, pi b) {
+	return a.s < b.s;
+}
+
+const int N = 200007;
+int a[N];
 
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
 		cin.tie(NULL);
 		cout.tie(NULL);
+		
+		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
+		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
 
-		int n, i, j, u = -1, negu = -1, posu = -1, v;
+		// ifstream cin ("input.txt");
+		// ofstream cout ("output.txt");
+		
+		// ifstream cin ("usaco.in");
+		// ofstream cout ("usaco.out");
+		
+		int n, m, i, j, u = 0, v = 0;
 
 		cin >> n;
+		for(i = 1; i <= n; i++) {
+			cin >> a[i];
+			if(a[i] < 0) neg.pb({i, a[i]});
+			else if(a[i] > 0) pos.pb({i, a[i]});
+			else zer.pb({i, 0});
+		}
 
-		for(i = 1; i <= n; i++) cin >> a[i];
+		m = neg.size();
 
-		for(i = 1; i <= n; i++)
-			{
-				if(a[i] > 0)
-					pos.pb(mp(i, a[i]));
-				else if(a[i] == 0) zeroes.pb(mp(i, a[i]));
-				else neg.pb({i, a[i]});
-			}
+		if(m <= 1 && pos.size() == 0) {
+			for(i = 0; i < zer.size() - 1; i++) 
+				cout << "2 " << zer[i].f << endl;
+		}
+		else {
+			for(i = 0; i < zer.size(); i++) 
+				cout << "2 " << zer[i].f << endl;
+		}
 
 		sort(neg.begin(), neg.end(), cmp);
 
-		// for(i = 0; i < neg.size(); i++) cout << neg[i].f << " " << neg[i].s << endl;
-		// 	cout << endl;
-		// cout << neg.size() << endl;
-
-		if(zeroes.size())
-			{
-				for(i = 0; i < zeroes.size() - 1; i++)
-					cout << "1 " << zeroes[i].f << " " << zeroes[i + 1].f << endl, n--;
-				u = zeroes[zeroes.size() - 1].f;
+		if(neg.size() > 0) {
+			if(((int)(neg.size() % 2)) == 1) {
+				cout << "2 " << neg[neg.size() - 1].f << endl;
+				for(i = 0; i < ((int)(neg.size() - 2)); i++) 
+					cout << "1 " << neg[i].f << " " << neg[i + 1].f << endl;
 			}
-
-		if(n == 1) return 0;
-
-		if(neg.size() % 2 == 1)
-			{
-				if(zeroes.size())
-					{
-						cout << "1 " << u << " " << neg[0].f << endl;
-						n--;
-						u = neg[0].f;
-						neg.erase(neg.begin());
-					}
-				else
-					{
-						negu = neg[0].f;
-						neg.erase(neg.begin());
-					}				
+			else {
+				for(i = 0; i < ((int)(neg.size() - 1)); i++) 
+					cout << "1 " << neg[i].f << " " << neg[i + 1].f << endl;
 			}
- 		
- 		if(zeroes.size())
-			{
-				if(negu != -1)
-					{
-						cout << "2 " << negu << endl;
-						negu = -1;
-					}
-				else if(n > 1) cout << "2 " << u << endl, negu = -1;
+		}
+
+		if(pos.size() > 0) {
+			for(i = 0; i < ((int)(pos.size() - 1)); i++) 
+				cout << "1 " << pos[i].f << " " << pos[i + 1].f << endl;
+		}
+
+		if(m >= 2 && pos.size() > 0) {
+			if(m % 2 == 1) {
+				cout << "1 " << neg[m - 2].f << " " << pos[pos.size() - 1].f << endl;
 			}
-
-		if(negu != -1) cout << "2 " << negu << endl;
-
-		if(pos.size())
-			{
-				for(i = 0; i < pos.size() - 1; i++) cout << "1 " << pos[i].f << " " << pos[i + 1].f << endl;
-				posu = pos[pos.size() - 1].f;
-
+			else {
+				cout << "1 " << neg[m - 1].f << " " << pos[pos.size() - 1].f << endl;
 			}
-
-		if(neg.size())
-			{
-				for(i = 0; i < neg.size() - 1; i++) cout << "1 " << neg[i].f << " " << neg[i + 1].f << endl;
-				
-				if(posu != -1)
-					cout << "1 " << posu << " " << neg[neg.size() - 1].f << endl;
-			}
-
-
- 		return 0;
+		}
+		return 0;
 	}

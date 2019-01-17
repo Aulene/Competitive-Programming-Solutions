@@ -4,7 +4,7 @@ using namespace std;
 
 #define endl '\n'
 #define int long long int
-#define mod 1000000007
+#define INF 1000000007
 #define p push
 #define pb push_back
 #define mp make_pair
@@ -19,9 +19,10 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 5007;
+const int N = 200007;
+const int M = 37;
 
-int dp[N];
+int a[N], basis[M];
 
 signed main()
 	{
@@ -37,25 +38,37 @@ signed main()
 		
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
-		
-		int n, m, i, j, u, v;
-		char s, prev;
+	
+		// FUCK MY SHIT UP FAM
+		// FUCK THIS
+				
+		int n, m, i, j, u, v, ans = 0;
 
 		cin >> n;
 
-		dp[1] = 1;
-		cin >> prev;
+		for(i = 1; i <= n; i++) cin >> a[i], a[i] = a[i - 1] ^ a[i];
 
-		for(i = 2; i <= n; i++) {
-			cin >> s;
-
-			if(s != prev && ) dp[i] = (dp[i - 1] + dp[i - 2]) % mod;
-			else dp[i] = dp[i - 1];
-
-			prev = s;
+		if(a[n] == 0) {
+			cout << -1 << endl;
+			return 0;
 		}
 
-		cout << dp[n] << endl;
+		for(i = 1; i <= n; i++) {
+
+			for(j = M; j >= 0; j--) {
+
+				if((a[i] & (1LL << j)) == 0) continue;
+
+				if(basis[j]) a[i] ^= basis[j];
+				else {
+					ans++;
+					basis[j] = a[i];
+					break;
+				}
+			}
+		}
+
+		cout << ans << endl;
 
 		return 0;
 	}

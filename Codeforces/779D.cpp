@@ -19,9 +19,11 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 5007;
+const int N = 200007;
+const int M = 207;
 
-int dp[N];
+int a[N];
+int h1[M], h2[M], fidx[M];
 
 signed main()
 	{
@@ -38,24 +40,30 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v;
-		char s, prev;
+		string s1, s2;
+		int n, m, i, j, u, v, ans;
 
-		cin >> n;
+		cin >> s1 >> s2;
+		n = s1.size(), m = s2.size();
 
-		dp[1] = 1;
-		cin >> prev;
+		for(i = 0; i < M; i++) fidx[i] = -1;
 
-		for(i = 2; i <= n; i++) {
-			cin >> s;
+		for(i = 0; i < n; i++) cin >> a[i];
 
-			if(s != prev && ) dp[i] = (dp[i - 1] + dp[i - 2]) % mod;
-			else dp[i] = dp[i - 1];
+		for(i = 0; i < m; i++) h2[s2[i]]++;
 
-			prev = s;
+		int idx = 0;
+
+		for(i = 0; i < n; i++) {
+			if(s1[i] == s2[idx] && fidx[s1[i]] == -1) {
+				fidx[s1[i]] = i;
+				idx++;
+			}
 		}
 
-		cout << dp[n] << endl;
+		for(i = 0; i < n; i++) 
+			if(i >= fidx[s1[i]]) h1[s1[i]]++;
 
+		cout << ans << endl;
 		return 0;
 	}

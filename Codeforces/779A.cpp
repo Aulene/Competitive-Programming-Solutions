@@ -19,9 +19,8 @@ using namespace std;
 #define vvpi vector < vector < pi > > 
 #define zp mp(0, 0)
 
-const int N = 5007;
-
-int dp[N];
+const int N = 107;
+int a[N], b[N], ax[7], bx[7], cnt[7];
 
 signed main()
 	{
@@ -38,24 +37,30 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v;
-		char s, prev;
+		int n, m, i, j, u, v, ansx = 1, ans = 0;
 
 		cin >> n;
 
-		dp[1] = 1;
-		cin >> prev;
+		for(i = 1; i <= n; i++) cin >> a[i], ax[a[i]]++;
+		for(i = 1; i <= n; i++) cin >> b[i], bx[b[i]]++;
+		
+		// for(i = 1; i <= 5; i++)
+		// 	cout << ax[i] + bx[i] << " "; cout << endl;
 
-		for(i = 2; i <= n; i++) {
-			cin >> s;
+		for(i = 1; i <= 5; i++)
+			if((ax[i] + bx[i]) % 2 == 1) ansx = 0;
+			else cnt[i] = (ax[i] + bx[i]) / 2;
 
-			if(s != prev && ) dp[i] = (dp[i - 1] + dp[i - 2]) % mod;
-			else dp[i] = dp[i - 1];
-
-			prev = s;
+		if(!ansx) {
+			cout << -1 << endl;
+			return 0;
 		}
 
-		cout << dp[n] << endl;
+		// for(i = 1; i <= 5; i++) cout << cnt[i] << " "; cout << endl;
 
+		for(i = 1; i <= 5; i++)
+			ans += abs(cnt[i] - ax[i]);
+
+		cout << ans / 2 << endl;
 		return 0;
 	}

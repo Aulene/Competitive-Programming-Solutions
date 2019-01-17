@@ -21,14 +21,28 @@ signed main()
 		cin.tie(NULL);
 		cout.tie(NULL);
 
-		int n, m, i, j, u, v;
+		int n, m, i, j, u, v, sum, ans = 0;
 
 		cin >> n >> m;
 
 		for(i = 1; i <= n; i++) cin >> a[i], pre[i] = pre[i - 1] + a[i];
 
-		i = 1, j = 1;
+		i = 1, j = 1, sum = 0;
 
-		w
+		while(i <= n) {
+			if(sum <= m) {
+				sum += a[i];
+				i++;
+			}
+			else if(sum > m) {
+				sum -= a[j];
+				j++;
+			}
+
+			if(sum <= m) ans += i - j;
+			cout << sum << " " << i << " " << j - 1 << " " << ans << endl;
+		}
+
+		cout << ans << endl;
 		return 0;
 	}
