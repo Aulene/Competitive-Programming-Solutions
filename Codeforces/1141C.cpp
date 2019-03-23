@@ -23,6 +23,9 @@ using namespace std;
 
 #define ld long double
 
+const int N = 200007;
+int a[N], p[N], found[N];
+
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -38,25 +41,24 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans = 0;
+		int n, m, i, j, u, v = 0, sum = 0;
 
-		cin >> n >> m;
+		cin >> n;
 
-		if(m % n != 0) { cout << -1 << endl; return 0; }
-
-		u = m / n;
-
-		while(u % 2 == 0) {
-			u /= 2; ans++;
+		for(i = 2; i <= n; i++) {
+			cin >> p[i];
+			p[i] += p[i - 1];
+			v = min(v, p[i]);
 		}
 
-		while(u % 3 == 0) {
-			u /= 3; ans++;
+		u = 1 - v;
+
+		for(i = 1; i <= n; i++) {
+			p[i] += u;
+			if(p[i] < 1 || p[i] > n || found[p[i]]) { cout << -1 << endl; return 0; }
+			found[p[i]] = 1;
 		}
 
-		if(u > 1) { cout << -1 << endl; return 0; }
-
-		cout << ans << endl;
-		
+		for(i = 1; i <= n; i++) cout << p[i] << " "; cout << endl;
 		return 0;
 	}

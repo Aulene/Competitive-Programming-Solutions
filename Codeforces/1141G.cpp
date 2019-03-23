@@ -38,25 +38,9 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans = 0;
+		int n, m, i, j, u, v;
 
 		cin >> n >> m;
-
-		if(m % n != 0) { cout << -1 << endl; return 0; }
-
-		u = m / n;
-
-		while(u % 2 == 0) {
-			u /= 2; ans++;
-		}
-
-		while(u % 3 == 0) {
-			u /= 3; ans++;
-		}
-
-		if(u > 1) { cout << -1 << endl; return 0; }
-
-		cout << ans << endl;
-		
+			
 		return 0;
 	}

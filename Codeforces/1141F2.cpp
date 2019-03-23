@@ -23,6 +23,16 @@ using namespace std;
 
 #define ld long double
 
+const int N = 1507;
+int a[N], pre[N];
+map <int, vpi> mx;
+vpi ansv;
+
+bool cmp(pi a, pi b) {
+	if(a.s != b.s) return a.s < b.s;
+	return a.f < b.f;
+}
+
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -38,25 +48,35 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans = 0;
+		int n, m, i, j, u, v;
 
-		cin >> n >> m;
+		cin >> n;
 
-		if(m % n != 0) { cout << -1 << endl; return 0; }
+		for(i = 1; i <= n; i++) cin >> a[i], pre[i] = pre[i - 1] + a[i];
 
-		u = m / n;
+		for(i = 1; i <= n; i++)
+			for(j = i; j <= n; j++) mx[pre[j] - pre[i - 1]].pb({i, j});
 
-		while(u % 2 == 0) {
-			u /= 2; ans++;
+		for(auto it : mx)
+			sort(mx[it.f].begin(), mx[it.f].end(), cmp);
+
+		for(auto it : mx) {
+			vpi pos_ans;
+			int lst = 0;
+
+			for(auto it2 : it.s) {
+				int l = it2.f, r = it2.s;
+				if(l > lst) {
+					pos_ans.pb(it2);
+					lst = r;
+				}
+			}
+
+			if(pos_ans.size() > ansv.size()) 
+				ansv = pos_ans;
 		}
 
-		while(u % 3 == 0) {
-			u /= 3; ans++;
-		}
-
-		if(u > 1) { cout << -1 << endl; return 0; }
-
-		cout << ans << endl;
-		
+		cout << ansv.size() << endl;
+		for(auto it : ansv) cout << it.f << " " << it.s << endl;
 		return 0;
 	}
