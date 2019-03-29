@@ -5,7 +5,7 @@ using namespace std;
 #define endl '\n'
 #define ld long double
 #define int long long int
-#define mod 1000000007
+#define mod 998244353
 #define p push
 #define pb push_back
 #define mp make_pair
@@ -51,7 +51,11 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v;
+		int n, m, i, j, u, v, ans = 1;
+		// int M = 2e5;
+
+		// v = (M) * (M - 1) * (M - 1) % mod;
+		cout << v << endl;
 
 		cin >> n >> m;
 
@@ -60,12 +64,49 @@ signed main()
 			vs[i & 1].pb(u);
 		}
 
+		// for(i = 0; i < 2; i++) {
+		// 	for(auto it : vs[i]) cout << it << " "; cout << endl;
+		// }
+
 		for(i = 0; i < 2; i++) {
-			for(auto it : vs[i]) cout << it << " "; cout << endl;
+			int lst = 0;
+
+			for(j = 0; j < vs[i].size(); j++) {
+				
+				int pos = 1;
+				int ini = (vs[i][j] == -1) ? 1 : 0;
+
+				while(j < vs[i].size() && vs[i][j] == -1) {
+					
+					if(j == 0) {
+						// cout << "f" << endl;
+						if((j + 1 < (int) vs[i].size()) && vs[i][j + 1] != -1) pos *= m - 1;
+						else pos *= m;
+					}
+					else if(vs[i][j - 1] == -1 && (j + 1 < (int) vs[i].size()) && vs[i][j + 1] == -1) 
+						pos *= m - 1;
+					else if(vs[i][j - 1] != -1 && (j + 1 < (int) vs[i].size()) && vs[i][j + 1] == -1) 
+						pos *= m - 1;
+					else if(vs[i][j - 1] != -1 && (j + 1 < (int) vs[i].size()) && vs[i][j + 1] != -1) {
+						set <int> sx;
+						sx.insert(vs[i][j - 1]); sx.insert(vs[i][j + 1]);
+						pos *= ((int) m - sx.size());
+					}
+					else if(j + 1 == ((int) vs[i].size()))
+						pos *= m - 1;
+
+					// printf("i: %lld j: %lld ans: %lld pos: %lld\n", i, j, ans, pos);
+					pos %= mod;
+					j++;
+				}
+
+				if(ini) j--;
+
+				ans = (ans * pos) % mod;
+			}
 		}
 
-
-		
+		cout << ans << endl;
 
 		return 0;
 	}
