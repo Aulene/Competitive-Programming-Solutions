@@ -15,12 +15,13 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define remax(a,b) (a) = max((a),(b))
 #define endl '\n'
 #define ld long double
+#define int long long int
 #define MOD 1000000007
 #define p push
 #define pb push_back
 #define mp make_pair
-#define f first
-#define s second
+#define F first
+#define S second
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
 #define pi pair <int, int>
@@ -43,44 +44,17 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 100007;
+vi pos_starts;
+map <int, int> vis;
 
-vvpi g(N);
-int is_gate[N];
-int vis[N];
-
-int dijkstra(int n) {
-
-	priority_queue < pi, vpi, greater < pi > > pq;
-
-	REP(i, n) 
-		if(is_gate[i]) vis[i] = 1, pq.p({0, i});
-
-	while(!pq.empty()) {
-		pi pz = pq.top(); pq.pop();
-		int u = pz.s, d = pz.f;
-
-		// printf("u: %d dist: %d vis: %d\n", u, d, vis[u]);
-
-		if(vis[u] == 0) {
-			// printf("%d is now 1\n", u);
-			vis[u] = 1;
-			continue;
-		}
-		if(vis[u] == 2) continue;
-		if(u == 0) return d;
-		vis[u] = 2;
-
-		for(auto it : g[u]) {
-			int v = it.f, w = it.s;
-			if(vis[v] == 2) continue;
-			// printf("push v: %d dist: %d\n", v, d + w);
-			pq.p({d + w, v});
-		}
-	}
-
-	return 0;
+int gcd (int a, int b) {
+    return b ? gcd (b, a % b) : a;
 }
+int lcm(int a, int b) {
+	return (a * b) / gcd(a, b);
+}
+
+map <int, int> pos2;
 
 signed main()
 	{
@@ -97,20 +71,63 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, k, i, j, u, v, w;
-
-		cin >> n >> m >> k;
-
-		REP(i, m) {
-			cin >> u >> v >> w;
-			g[u].pb({v, w}); g[v].pb({u, w});
-		}
+		int n, m, i, j, u, v;
+		int min_ans = LLONG_MAX, max_ans = 0;
 		
-		REP(i, k) cin >> u, is_gate[u] = 1;	
 
-		cout << endl;
+		// cout << CLOCKS_PER_SEC << endl;
 
-		cout << dijkstra(n) << endl;
+		cin >> n >> m >> u >> v;
+
+		int f = n * m;
+
+		for(i = 0; i <= n * m - 1; i += m) {
+			int l = (i - u + n * m) % (n * m);
+			int r = (i + u + n * m) % (n * m);
+
+			// cout << i << " " << l << " " << r << endl;
+
+			if(!vis[l]) pos_starts.pb(l); vis[l] = 1;
+			if(!vis[r]) pos_starts.pb(r); vis[r] = 1;
+		}
+
+		for(i = 0; i <= n * m - 1; i += m) {
+			int l = (i - v + n * m) % (n * m);
+			int r = (i + v + n * m) % (n * m);
+			pos2[l] = 1; pos2[r] = 1;
+		}
+
+		shuffle(pos_starts.begin(), pos_starts.end(), rng);
+		// for(auto it : pos_starts) cout << it << endl;
+
+		cout << f << endl;
+
+		while(clock() < 1.9 * CLOCKS_PER_SEC) {
+			int idx = rng() % pos_starts.size();
+			int st = pos_starts[idx];
+			int l = rng() % f + 1;
+
+			int ds = n * m - st;
+			int flcm = lcm(ds, l);
+
+			// cout << st << endl;
+			// cout << ds << " " << l << " " << flcm << endl;
+			
+			// int cl1 = (st + l) / m;
+			// int cl2 = (st + 2 * l) / m;
+
+			// int p1 = abs(m * cl1 - (st + l));
+			// int p2 = abs(m * cl2 - (st + l));
+			// int dist = min(p1, p2);
+
+			if(pos2[st + l]) {
+				int x = flcm / l;
+				min_ans = min(min_ans, x);
+				max_ans = max(max_ans, x);
+			}
+		}
+
+		cout << min_ans << " " << max_ans << endl;
 
 		return 0;
 	}

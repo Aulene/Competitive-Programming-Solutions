@@ -15,6 +15,7 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define remax(a,b) (a) = max((a),(b))
 #define endl '\n'
 #define ld long double
+#define int long long int
 #define MOD 1000000007
 #define p push
 #define pb push_back
@@ -45,41 +46,52 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const int N = 100007;
 
-vvpi g(N);
-int is_gate[N];
-int vis[N];
+int c[N], p[N];
+int cc[N], num_c[N], vis[N];
+vvi g(N);
+vpi tr;
+vi ansv;
 
-int dijkstra(int n) {
+bool cmp(pi a, pi b) {
+	if(a.s != b.s) return a.s > b.s;
+	return a.f < b.f;
+}
 
-	priority_queue < pi, vpi, greater < pi > > pq;
-
-	REP(i, n) 
-		if(is_gate[i]) vis[i] = 1, pq.p({0, i});
-
-	while(!pq.empty()) {
-		pi pz = pq.top(); pq.pop();
-		int u = pz.s, d = pz.f;
-
-		// printf("u: %d dist: %d vis: %d\n", u, d, vis[u]);
-
-		if(vis[u] == 0) {
-			// printf("%d is now 1\n", u);
-			vis[u] = 1;
-			continue;
-		}
-		if(vis[u] == 2) continue;
-		if(u == 0) return d;
-		vis[u] = 2;
-
-		for(auto it : g[u]) {
-			int v = it.f, w = it.s;
-			if(vis[v] == 2) continue;
-			// printf("push v: %d dist: %d\n", v, d + w);
-			pq.p({d + w, v});
-		}
+void get_traversal(int idx) {
+	queue <pi> q;
+	q.p({idx, 1});
+	while(!q.empty()) {
+		pi pz = q.front(); q.pop();
+		vis[pz.f] = pz.s;
+		tr.pb(pz);
+		for(auto it : g[pz.f])
+			if(vis[it] == 0) q.p({it, pz.s + 1});
 	}
 
-	return 0;
+	sort(tr.begin(), tr.end(), cmp);
+	// reverse(tr.begin(), tr.end());
+}
+
+int numc_comp(int idx, int p = -1) {
+	int sz = 0;
+	for(auto it : g[idx])
+		if(it != p) {
+			sz += 1;
+			numc_comp(it, idx);
+		}
+	return num_c[idx] = sz;
+}
+
+int cc_comp(int idx, int p = -1) {
+	int sz = 0 ;
+	for(auto it : g[idx]) {
+		if(it != p) {
+			// cout << idx << " " << it << endl;
+			if(c[it] == 1) sz++;
+			cc_comp(it, idx);
+		}
+	}
+	return cc[idx] = sz;
 }
 
 signed main()
@@ -97,21 +109,45 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, k, i, j, u, v, w;
+		int n, m, i, j, u, v, root;
 
-		cin >> n >> m >> k;
+		cin >> n;
+	
+		FOR(i, 1, n) {
+			cin >> p[i] >> c[i];
+			if(p[i] == -1) root = i;
+			else g[i].pb(p[i]), g[p[i]].pb(i);
+		}
 
-		REP(i, m) {
-			cin >> u >> v >> w;
-			g[u].pb({v, w}); g[v].pb({u, w});
+		FOR(i, 1, n) sort(g[i].begin(), g[i].end());
+	
+		// FOR(i, 1, n) {
+		// 	cout << i << endl;
+		// 	for(auto it : g[i]) cout << it << " "; cout << endl;
+		// }
+		// get_traversal(root);
+		
+		FOR(i, 1, n) {
+			if(c[i] == 1) tr.pb({i, 0});
+		}
+
+		numc_comp(root);
+		cc_comp(root);
+		// FOR(i, 1, n) cout << vis[i] << " "; cout << endl;
+		// for(auto it : tr) cout << it.f << " "; cout << endl;
+		// FOR(i, 1, n) cout << num_c[i] << " "; cout << endl;
+		// FOR(i, 1, n) cout << cc[i] << " "; cout << endl;
+		
+		for(auto it : tr) {
+			int u = it.f;
+			if(c[u] == 1 && num_c[u] == cc[u]) ansv.pb(u);
+		}
+
+		if(ansv.size() == 0) cout << -1 << endl;
+		else {
+			for(auto it : ansv) cout << it << " "; cout << endl;
 		}
 		
-		REP(i, k) cin >> u, is_gate[u] = 1;	
-
-		cout << endl;
-
-		cout << dijkstra(n) << endl;
-
 		return 0;
 	}
 

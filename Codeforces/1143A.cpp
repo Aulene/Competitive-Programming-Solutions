@@ -15,12 +15,13 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define remax(a,b) (a) = max((a),(b))
 #define endl '\n'
 #define ld long double
+#define int long long int
 #define MOD 1000000007
 #define p push
 #define pb push_back
 #define mp make_pair
-#define f first
-#define s second
+#define F first
+#define S second
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
 #define pi pair <int, int>
@@ -43,44 +44,8 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 100007;
-
-vvpi g(N);
-int is_gate[N];
-int vis[N];
-
-int dijkstra(int n) {
-
-	priority_queue < pi, vpi, greater < pi > > pq;
-
-	REP(i, n) 
-		if(is_gate[i]) vis[i] = 1, pq.p({0, i});
-
-	while(!pq.empty()) {
-		pi pz = pq.top(); pq.pop();
-		int u = pz.s, d = pz.f;
-
-		// printf("u: %d dist: %d vis: %d\n", u, d, vis[u]);
-
-		if(vis[u] == 0) {
-			// printf("%d is now 1\n", u);
-			vis[u] = 1;
-			continue;
-		}
-		if(vis[u] == 2) continue;
-		if(u == 0) return d;
-		vis[u] = 2;
-
-		for(auto it : g[u]) {
-			int v = it.f, w = it.s;
-			if(vis[v] == 2) continue;
-			// printf("push v: %d dist: %d\n", v, d + w);
-			pq.p({d + w, v});
-		}
-	}
-
-	return 0;
-}
+const int N = 200007;
+int a[N];
 
 signed main()
 	{
@@ -97,20 +62,32 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, k, i, j, u, v, w;
+		int n, m, i, j, u, v;
+		int o = 0, z = 0;
 
-		cin >> n >> m >> k;
+		cin >> n;
 
-		REP(i, m) {
-			cin >> u >> v >> w;
-			g[u].pb({v, w}); g[v].pb({u, w});
+		FOR(i, 1, n) {
+			 cin >> a[i];
+			 if(a[i] == 0) o++;
+			 else z++;
 		}
-		
-		REP(i, k) cin >> u, is_gate[u] = 1;	
 
-		cout << endl;
+		int o1 = 0, z1 = 0;
 
-		cout << dijkstra(n) << endl;
+		FOR(i, 1, n) {
+			if(a[i] == 0) o1++;
+			else z1++;
+
+			if(o1 == o) {
+				cout << i << endl;
+				return 0;
+			}
+			else if(z1 == z) {
+				cout << i << endl;
+				return 0;
+			}
+		}
 
 		return 0;
 	}
