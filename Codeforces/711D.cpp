@@ -2,85 +2,104 @@
 
 using namespace std;
 
+const double PI = 3.141592653589793238462643383279502884197169399375105820974944;
+
+#define REP(i, n) for(int i = 0; i < (n); i++)
+#define FOR(i, a, b) for(int i = (a); i <= (b); i++)
+#define REPD(i, n) for(int i = (n); i >= 0; i--)
+#define FORD(i, a, b) for(int i = (a); i >= b; i--)
+#define prArr(a, n) REP(i, n) cout << a[i] << " "; cout << endl;
+#define all(v) v.begin(),v.end()
+#define WL(t) while(t--)
+#define remin(a,b) (a) = min((a),(b))
+#define remax(a,b) (a) = max((a),(b))
 #define endl '\n'
+#define ld long double
 #define int long long int
 #define mod 1000000007
 #define p push
 #define pb push_back
 #define mp make_pair
-#define f first
-#define s second
+#define F first
+#define S second
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
-#define pi pair <int, int> 
-#define ppi pair < pair <int, int>, int>
+#define pi pair <int, int>
+#define ppi pair < pair <int, int>, int >
 #define vpi vector < pi >
-#define vppi vector < ppi >
 #define vvpi vector < vector < pi > > 
+#define vppi vector < pair < pi, int > > 
+#define msi multiset <int> 
+#define si set <int>
 #define zp mp(0, 0)
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const int N = 200007;
 
-int n;
-vector < vector <int> > g(N);
-vector <char> color;
-vector <int> parent;
-vvi cycles;
-int cycle_start, cycle_end;
+int onStack[N], low[N], ids[N];
+vector < vector <int> > g(N); 
+vector < vector <int> > SCCs; // contains all found SCCs
+vector <int> path;
+stack <int> sx;
+int id = 1;
 
-bool dfs(int v) {
-    color[v] = 1;
-    
-    for(int u : g[v]) {
-        if(color[u] == 0) {
-            parent[u] = v;
-            if(dfs(u)) return true;
-        } 
-        else if (color[u] == 1) {
-            cycle_end = v;
-            cycle_start = u;
-            return true;
-        }
-    }
+void findSCC(int idx)
+{
+	/*
+	// put next lines in main
+	// memset(ids, -1, sizeof(ids));
+	// for(i = 1; i <= n; i++)
+	// 	if(ids[i] == -1) findSCC(i);
+	*/
+	
+	sx.push(idx);
+	onStack[idx] = 1;
+	ids[idx] = low[idx] = id++;
 
-    color[v] = 2;
-    return false;
+	for(int i = 0; i < g[idx].size(); i++) 
+		{
+			int u = g[idx][i];
+
+			if(ids[u] == -1)
+				{
+					findSCC(u);
+					low[idx] = min(low[idx], low[u]);
+				}
+			else if(onStack[u]) 
+				low[idx] = min(low[idx], ids[u]);
+		}
+
+	if(ids[idx] == low[idx]) 
+		{
+			vector <int> path;
+
+			while(sx.top() != idx) 
+				{
+					int u = sx.top();
+					sx.pop();
+					onStack[u] = 0;
+					path.pb(u);
+				}
+
+			int u = sx.top();
+			sx.pop();
+			onStack[u] = 0;
+			path.pb(u);
+
+			SCCs.emplace_back();
+			SCCs.back() = path;
+		}
 }
 
-vi find_cycle() {
-    color.assign(n + 1, 0);
-    parent.assign(n + 1, -1);
-    cycle_start = -1;
-
-    vi cycle;
-
-    for(int v = 1; v <= n; v++) {
-
-        if(!color[v]) {
-
-        	if(dfs(v)) {
-        		cycle.push_back(cycle_start);
-			    for(int v = cycle_end; v != cycle_start; v = parent[v]) cycle.push_back(v);
-			    cycle.push_back(cycle_start);
-			    reverse(cycle.begin(), cycle.end());
-        	}
-
-        	cycles.pb(cycle);
-        	cycle.clear();
-        	cycle_start = -1;
-        }
-
-    }
-
-    return cycle;
-}
-
-int fact[N];
-
-void facts() {
-	fact[0] = 1;
-	for(int i = 1; i < N; i++) fact[i] = (fact[i - 1] * i) % mod;
-}
+/*
+	Easy mistakes to spot before submitting!
+	1. Check const int N (1e5, 2e5).
+	2. Check easy cases (n = 1, 2).
+	3. Overflows! You'll fuck this up when binary searching.
+	4. LONG LONGS! Alternatively, remove the int long long int sometimes.
+	5. Check if you're dividing by 0 somewhere.
+	6. Memory allocations, sometimes the vector is N^2.
+*/
 
 int powmod(int a, int b, int m) {
 	int res = 1;
@@ -107,46 +126,49 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		facts();
+		int n, m, i, j, u, v, ans = 1, cur;
 
-		int m, i, j, u, v = 0, ans = 1;
-		vi cycle;
+		memset(ids, -1, sizeof(ids));
 
 		cin >> n;
+		
+		FOR(i, 1, n) cin >> u, g[i].pb(u);
+		for(i = 1; i <= n; i++)
+			if(ids[i] == -1) findSCC(i);
+		
+		// for(auto it : SCCs) {
+		// 	for(auto it2 : it) cout << it2 << " "; cout << endl;
+		// }
 
-		for(i = 1; i <= n; i++) cin >> u, g[i].pb(u);
-
-		cycle = find_cycle();
-        
-        // for(auto it : cycle) cout << it << " "; cout << endl;
-        
-        for(auto it : cycles) {
-        	// for(auto it2 : it) cout << it2 << " "; cout << endl;
-        	
-        	m = it.size() - 2;
-        	v += m;
-
-			int sum = 0;
-
-			for(j = 1; j <= m; j++) {
-
-				int num = fact[m] % mod;
-				int den1 = inv(fact[j], mod) % mod;
-				int den2 = inv(fact[m - j], mod) % mod;
-
-				num = (num * den1) % mod;
-				num = (num * den2) % mod;
-				sum = (sum + num) % mod;
-			}
-
-			// cout << sum << endl;
-
-			if(sum) ans = (ans * sum) % mod;
-        }
-
-		ans = (ans * powmod(2, n - v, mod) % mod) % mod;
+		for(auto it : SCCs) {
+			cur = powmod(2, it.size(), mod);
+			cur = (cur - 2 + mod) % mod;
+			if(it.size() == 1) cur = 2;
+			if(cur >= 2) ans = (ans * cur) % mod;
+		}
 
 		cout << ans << endl;
 
 		return 0;
 	}
+
+/*
+	Snippet Guide - 
+	1. Base Conversion - baseconv
+	2. Binary Exponentiation (a ^ b % m) - powmod 
+	3. Centroid Decomposition - centroid
+	4. Code Jam Input - jam
+	5. Disjoint Set Union - dsu
+	6. Factorial Method - factorials
+	7. Factorization O(SqrtN) - factors
+	8. Greatest Common Divisor - gcd
+	9. Line Template - line
+	10. Matrix Exponentiation - matrix
+	11. Merge Sort Tree - mstree
+	12. Modular Inverse - modinv
+	13. Point Template - point
+	14. Range Segment Tree (w/ Lazy) - segtree
+	15. Range Segment Tree (w/out Lazy) - rstree
+	16. Sieve of Eratosthenes - sieve
+	17. Topological Sort - toposort
+*/

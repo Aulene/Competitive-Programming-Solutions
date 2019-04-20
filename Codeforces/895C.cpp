@@ -2,22 +2,67 @@
 
 using namespace std;
 
+const double PI = 3.141592653589793238462643383279502884197169399375105820974944;
+
+#define REP(i, n) for(int i = 0; i < (n); i++)
+#define FOR(i, a, b) for(int i = (a); i <= (b); i++)
+#define REPD(i, n) for(int i = (n); i >= 0; i--)
+#define FORD(i, a, b) for(int i = (a); i >= b; i--)
+#define prArr(a, n) REP(i, n) cout << a[i] << " "; cout << endl;
+#define all(v) v.begin(),v.end()
+#define WL(t) while(t--)
+#define remin(a,b) (a) = min((a),(b))
+#define remax(a,b) (a) = max((a),(b))
+#define bin(a) bitset<32>(a)
 #define endl '\n'
+#define ld long double
 #define int long long int
-#define mod 1000000007
+#define MOD 1000000007
 #define p push
 #define pb push_back
 #define mp make_pair
-#define f first
-#define s second
+#define F first
+#define S second
 #define vi vector <int> 
 #define vvi vector < vector <int> > 
-#define pi pair <int, int> 
-#define ppi pair < pair <int, int>, int> 
-#define mid (start + end) / 2
+#define pi pair <int, int>
+#define ppi pair < pair <int, int>, int >
+#define vpi vector < pi >
+#define vvpi vector < vector < pi > > 
+#define vppi vector < pair < pi, int > > 
+#define msi multiset <int> 
+#define si set <int>
 #define zp mp(0, 0)
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-const int N = 100007;
+/*
+	Easy mistakes to spot before submitting!
+	1. Check const int N (1e5, 2e5).
+	2. Check easy cases (n = 1, 2).
+	3. Overflows! You'll fuck this up when binary searching.
+	4. LONG LONGS! Alternatively, remove the int long long int sometimes.
+	5. Check if you're dividing by 0 somewhere.
+	6. Memory allocations, sometimes the vector is N^2.
+*/
+
+const int N = 77;
+const int M = 100007;
+const int MAX_POW = 600007;
+const int PZ = 24;
+
+int a[M];
+int dp[PZ][MAX_POW];
+bool prime[N];
+vi primes;
+
+void sieve() {
+	for(int i = 2; i < N; i++) prime[i] = 1;
+	for(int i = 2; i < N; i++)
+		if(prime[i]) {
+			primes.pb(i);
+			for(int j = i * i; j < N; j += i) prime[j] = 0;
+		}
+}
 
 signed main()
 	{
@@ -31,5 +76,46 @@ signed main()
 		// ifstream cin ("input.txt");
 		// ofstream cout ("output.txt");
 		
+		// ifstream cin ("usaco.in");
+		// ofstream cout ("usaco.out");
+			
+		sieve();
+
+		int n, m, i, j, u, v, x;
+
+		cin >> n;
+		FOR(i, 1, n) cin >> a[i];
+		FOR(i, 1, n) {
+			x = a[i];
+			REP(j, primes.size()) {
+				int cur = 0;
+				while(x % primes[j] == 0) x /= primes[j], cur++;
+				dp[j][cur]++;
+			}
+		}
+
+		for(auto it : primes) cout << it << " "; cout << endl;
+
 		return 0;
 	}
+
+/*
+	Snippet Guide - 
+	1. Base Conversion - baseconv
+	2. Binary Exponentiation (a ^ b % m) - powMOD 
+	3. Centroid Decomposition - centroid
+	4. Code Jam Input - jam
+	5. Disjoint Set Union - dsu
+	6. Factorial Method - factorials
+	7. Factorization O(SqrtN) - factors
+	8. Greatest Common Divisor - gcd
+	9. Line Template - line
+	10. Matrix Exponentiation - matrix
+	11. Merge Sort Tree - mstree
+	12. Modular Inverse - MODinv
+	13. Point Template - point
+	14. Range Segment Tree (w/ Lazy) - segtree
+	15. Range Segment Tree (w/out Lazy) - rstree
+	16. Sieve of Eratosthenes - sieve
+	17. Topological Sort - toposort
+*/

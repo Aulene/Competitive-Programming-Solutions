@@ -13,9 +13,10 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define WL(t) while(t--)
 #define remin(a,b) (a) = min((a),(b))
 #define remax(a,b) (a) = max((a),(b))
-#define bin(a) bitset<8>(a)
+#define bin(a) bitset<32>(a)
 #define endl '\n'
 #define ld long double
+#define int long long int
 #define MOD 1000000007
 #define p push
 #define pb push_back
@@ -34,10 +35,6 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define zp mp(0, 0)
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int gcd (int a, int b) {
-    return b ? gcd (b, a % b) : a;
-}
-
 /*
 	Easy mistakes to spot before submitting!
 	1. Check const int N (1e5, 2e5).
@@ -48,13 +45,11 @@ int gcd (int a, int b) {
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 107;
-const int M = 67;
-const int K = 100007;
-
-int a[N], dp[N][K], p_sets[N];
-bool ip[M];
-vi prime_facts;
+const int N = 1000007;
+const int M = 10000007;
+int fd[M];
+vpi divs[M];
+vpi vs;
 
 vi factors(int n) {
 	vi fax;
@@ -63,16 +58,11 @@ vi factors(int n) {
 			if(i == sqrt(n)) fax.pb(i);
 			else fax.pb(i), fax.pb(n / i);
 		}
-	sort(fax.begin(), fax.end());
+	// sort(fax.begin(), fax.end());
 	return fax;
 }
 
-vi get_prime_facts(int n) {
-	vi ansv;
-	FOR(i, 1, 60)
-		if(ip[i] && (n % i == 0)) ansv.pb(i);
-	return ansv;
-}
+bool cmp(pi a, pi b) { return a.F < b.F; }
 
 signed main()
 	{
@@ -89,47 +79,51 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v;
+		int n, m, i, j, u, v, ans_lcm = LLONG_MAX, ans1, ans2;
 
 		cin >> n;
-		FOR(i, 1, n) cin >> a[i];
+		REP(i, n) {
+			cin >> u;
+			vs.pb({u, i});
+		}
+		sort(vs.begin(), vs.end(), cmp);
 
-		REP(i, M - 1)
-			if(factors(i).size() == 2) prime_facts.pb(i), ip[i] = 1;
-
-		cout << prime_facts.size() << endl;
-
-		FOR(i, 1, N - 1) {
-			int prime_set = 0;
-			REP(j, prime_facts.size())
-				if(i % prime_facts[j] == 0) prime_set = prime_set | (1 << j);
-			p_sets[i] = prime_set;
-			cout << i << "\t" << bin(prime_set) << "\t" << prime_set << endl;
+		REP(i, n) {
+			if(fd[vs[i].F] == 2) continue;
+			fd[vs[i].F]++;
+			// cout << vs[i].F << endl;
+			vi fx = factors(vs[i].F);
+			// for(auto it : fx) cout << it << " "; cout << endl;
+			for(auto it : fx) {
+				if(divs[it].size() == 2) continue;
+				divs[it].pb(vs[i]);
+			}
 		}
 
-		FOR(i, 1, N - 1)
-			FOR(j, 1, K - 1) dp[i][j] = INT_MAX;
+		// FOR(i, 1, 10) {
+		// 	cout << i << endl;
+		// 	for(auto it : divs[i]) cout << it.F << " " << it.S << endl; cout << endl;
+		// }
 
-		FOR(i, 1, n)
-			FOR(j, 1, 60) {
-				int cur_pset = p_sets[j];
-				//iwanttofuckingkillmyself
-				//whatinthegoodfuckisthiscode
-				FOR(k, 1, K - 1)
-					if((cur_pset & k) == 0) {
-						int new_pset = cur_pset | k;
-						if(k < 10) {
-							printf("j = %d DP{%d, %d} = min(%d, %d)\n", j, i, new_pset, dp[i][new_pset], abs(a[i] - j) + dp[i - 1][k]);
-							cout << "cur_pset = " << bin(cur_pset) << " prev_pset = " << bin(k) << endl;
-						}
-						dp[i][new_pset] = min(dp[i][new_pset], abs(a[i] - j) + dp[i - 1][k]);
-					}
+		FOR(i, 1, M - 1) {
+			if(divs[i].size() >= 2) {
+				int f1 = divs[i][0].F;
+				int f2 = divs[i][1].F;
+				int mx = f1 * f2;
+				mx = mx / i;
+
+				if(mx < ans_lcm) {
+					ans_lcm = mx;
+					ans1 = divs[i][0].S;
+					ans2 = divs[i][1].S;
+				}
 			}
+		}
 
-		int ans = INT_MAX;
-		FOR(i, 1, K - 1) ans = min(ans, dp[n][i]);
+		if(ans1 > ans2) swap(ans1, ans2);
 
-		cout << ans << endl;
+		cout << ans1 + 1 << " " << ans2 + 1 << endl;
+ 
 
 		return 0;
 	}

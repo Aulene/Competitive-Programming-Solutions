@@ -13,9 +13,10 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define WL(t) while(t--)
 #define remin(a,b) (a) = min((a),(b))
 #define remax(a,b) (a) = max((a),(b))
-#define bin(a) bitset<8>(a)
+#define bin(a) bitset<32>(a)
 #define endl '\n'
 #define ld long double
+#define int long long int
 #define MOD 1000000007
 #define p push
 #define pb push_back
@@ -34,10 +35,6 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define zp mp(0, 0)
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int gcd (int a, int b) {
-    return b ? gcd (b, a % b) : a;
-}
-
 /*
 	Easy mistakes to spot before submitting!
 	1. Check const int N (1e5, 2e5).
@@ -48,31 +45,8 @@ int gcd (int a, int b) {
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 107;
-const int M = 67;
-const int K = 100007;
-
-int a[N], dp[N][K], p_sets[N];
-bool ip[M];
-vi prime_facts;
-
-vi factors(int n) {
-	vi fax;
-	for(int i = 1; i <= sqrt(n); i++)
-		if(n % i == 0) {
-			if(i == sqrt(n)) fax.pb(i);
-			else fax.pb(i), fax.pb(n / i);
-		}
-	sort(fax.begin(), fax.end());
-	return fax;
-}
-
-vi get_prime_facts(int n) {
-	vi ansv;
-	FOR(i, 1, 60)
-		if(ip[i] && (n % i == 0)) ansv.pb(i);
-	return ansv;
-}
+const int N = 7;
+int a[N], b[N], dp[N];
 
 signed main()
 	{
@@ -90,46 +64,45 @@ signed main()
 		// ofstream cout ("usaco.out");
 		
 		int n, m, i, j, u, v;
+		int a_even = 0, a_odd = 0;
+		string s;
+		
+		cin >> s; n = s.size();
 
-		cin >> n;
-		FOR(i, 1, n) cin >> a[i];
-
-		REP(i, M - 1)
-			if(factors(i).size() == 2) prime_facts.pb(i), ip[i] = 1;
-
-		cout << prime_facts.size() << endl;
-
-		FOR(i, 1, N - 1) {
-			int prime_set = 0;
-			REP(j, prime_facts.size())
-				if(i % prime_facts[j] == 0) prime_set = prime_set | (1 << j);
-			p_sets[i] = prime_set;
-			cout << i << "\t" << bin(prime_set) << "\t" << prime_set << endl;
-		}
-
-		FOR(i, 1, N - 1)
-			FOR(j, 1, K - 1) dp[i][j] = INT_MAX;
-
-		FOR(i, 1, n)
-			FOR(j, 1, 60) {
-				int cur_pset = p_sets[j];
-				//iwanttofuckingkillmyself
-				//whatinthegoodfuckisthiscode
-				FOR(k, 1, K - 1)
-					if((cur_pset & k) == 0) {
-						int new_pset = cur_pset | k;
-						if(k < 10) {
-							printf("j = %d DP{%d, %d} = min(%d, %d)\n", j, i, new_pset, dp[i][new_pset], abs(a[i] - j) + dp[i - 1][k]);
-							cout << "cur_pset = " << bin(cur_pset) << " prev_pset = " << bin(k) << endl;
-						}
-						dp[i][new_pset] = min(dp[i][new_pset], abs(a[i] - j) + dp[i - 1][k]);
-					}
+		REP(i, n) {
+			if(s[i] == 'a') {
+				if(i % 2 == 0) a[0]++;
+				else a[1]++;
+			}
+			else {
+				if(i % 2 == 0) b[0]++;
+				else b[1]++;
 			}
 
-		int ans = INT_MAX;
-		FOR(i, 1, K - 1) ans = min(ans, dp[n][i]);
+			if(s[i] == 'a') {
+				if(i % 2 == 0) {
+					a_odd += a[0];
+					a_even += a[1];
+				}
+				else {
+					a_odd += a[1];
+					a_even += a[0];
+				}	
+			}
+			else if(s[i] == 'b') {
+				if(i % 2 == 0) {
+					a_odd += b[0];
+					a_even += b[1];
+				}
+				else {
+					a_odd += b[1];
+					a_even += b[0];
+				}	
+			}
+		}
 
-		cout << ans << endl;
+		cout << a_even << " " << a_odd << endl;
+
 
 		return 0;
 	}

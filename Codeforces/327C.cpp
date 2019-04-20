@@ -13,10 +13,10 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define WL(t) while(t--)
 #define remin(a,b) (a) = min((a),(b))
 #define remax(a,b) (a) = max((a),(b))
-#define bin(a) bitset<8>(a)
 #define endl '\n'
 #define ld long double
-#define MOD 1000000007
+#define int long long int
+#define mod 1000000007
 #define p push
 #define pb push_back
 #define mp make_pair
@@ -34,10 +34,6 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define zp mp(0, 0)
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int gcd (int a, int b) {
-    return b ? gcd (b, a % b) : a;
-}
-
 /*
 	Easy mistakes to spot before submitting!
 	1. Check const int N (1e5, 2e5).
@@ -48,32 +44,16 @@ int gcd (int a, int b) {
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 107;
-const int M = 67;
-const int K = 100007;
-
-int a[N], dp[N][K], p_sets[N];
-bool ip[M];
-vi prime_facts;
-
-vi factors(int n) {
-	vi fax;
-	for(int i = 1; i <= sqrt(n); i++)
-		if(n % i == 0) {
-			if(i == sqrt(n)) fax.pb(i);
-			else fax.pb(i), fax.pb(n / i);
-		}
-	sort(fax.begin(), fax.end());
-	return fax;
+int powmod(int a, int b, int m) {
+	int res = 1;
+	while(b)
+		if(b & 1) res = (res * 1ll * a) % m, --b;
+		else a = (a * 1ll * a) % m,  b >>= 1;
+	return res;
 }
 
-vi get_prime_facts(int n) {
-	vi ansv;
-	FOR(i, 1, 60)
-		if(ip[i] && (n % i == 0)) ansv.pb(i);
-	return ansv;
-}
-
+int inv(int a, int m) { return a < 2 ? a : ((1 - m * 1ll * inv(m % a, a)) / a % m + m) % m; }
+[]
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -89,48 +69,27 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v;
+		int n, m, i, j, u, v, ans = 0;
+		string s;
+		cin >> s >> m;
+		n = s.size();
 
-		cin >> n;
-		FOR(i, 1, n) cin >> a[i];
+		REP(i, n) 
+			if(s[i] == '5' || s[i] == '0') {
+				int num = (powmod(2, m * n, mod) - 1 + mod) % mod;
+				int denom = (powmod(2, n, mod) - 1 + mod) % mod;
+				denom = inv(denom, mod);
+				int two_i = powmod(2, i, mod);
 
-		REP(i, M - 1)
-			if(factors(i).size() == 2) prime_facts.pb(i), ip[i] = 1;
+				// cout << i << " " << two_i << " " << num << " " << denom << endl;
 
-		cout << prime_facts.size() << endl;
-
-		FOR(i, 1, N - 1) {
-			int prime_set = 0;
-			REP(j, prime_facts.size())
-				if(i % prime_facts[j] == 0) prime_set = prime_set | (1 << j);
-			p_sets[i] = prime_set;
-			cout << i << "\t" << bin(prime_set) << "\t" << prime_set << endl;
+				num = (num * two_i) % mod;
+				num = (num * denom) % mod;
+				ans = (ans + num) % mod;
 		}
 
-		FOR(i, 1, N - 1)
-			FOR(j, 1, K - 1) dp[i][j] = INT_MAX;
-
-		FOR(i, 1, n)
-			FOR(j, 1, 60) {
-				int cur_pset = p_sets[j];
-				//iwanttofuckingkillmyself
-				//whatinthegoodfuckisthiscode
-				FOR(k, 1, K - 1)
-					if((cur_pset & k) == 0) {
-						int new_pset = cur_pset | k;
-						if(k < 10) {
-							printf("j = %d DP{%d, %d} = min(%d, %d)\n", j, i, new_pset, dp[i][new_pset], abs(a[i] - j) + dp[i - 1][k]);
-							cout << "cur_pset = " << bin(cur_pset) << " prev_pset = " << bin(k) << endl;
-						}
-						dp[i][new_pset] = min(dp[i][new_pset], abs(a[i] - j) + dp[i - 1][k]);
-					}
-			}
-
-		int ans = INT_MAX;
-		FOR(i, 1, K - 1) ans = min(ans, dp[n][i]);
-
 		cout << ans << endl;
-
+		
 		return 0;
 	}
 

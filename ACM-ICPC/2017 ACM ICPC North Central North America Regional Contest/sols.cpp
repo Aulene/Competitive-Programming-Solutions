@@ -34,10 +34,6 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define zp mp(0, 0)
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int gcd (int a, int b) {
-    return b ? gcd (b, a % b) : a;
-}
-
 /*
 	Easy mistakes to spot before submitting!
 	1. Check const int N (1e5, 2e5).
@@ -48,30 +44,28 @@ int gcd (int a, int b) {
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 107;
-const int M = 67;
-const int K = 100007;
+const int N = 23;
+const int M = 1200007;
 
-int a[N], dp[N][K], p_sets[N];
-bool ip[M];
-vi prime_facts;
+map <string, int> mx;
+map < pi, int> mx2;
+vppi vs;
 
-vi factors(int n) {
-	vi fax;
-	for(int i = 1; i <= sqrt(n); i++)
-		if(n % i == 0) {
-			if(i == sqrt(n)) fax.pb(i);
-			else fax.pb(i), fax.pb(n / i);
+int poke[N];
+int d[N][N];
+int dp[N][M]; // min cost of catching bitmask(M) pokes till town j
+
+int tot_poke = 1;
+int num_towns = 1;
+
+void recur(int idx, int mask) {
+	FOR(i, 0, num_towns - 1) {
+		int new_mask = mask | poke[i];
+		if(dp[i][new_mask] > d[idx][i] + dp[idx][mask]) {
+			dp[i][new_mask] = d[idx][i] + dp[idx][mask];
+			recur(i, new_mask);
 		}
-	sort(fax.begin(), fax.end());
-	return fax;
-}
-
-vi get_prime_facts(int n) {
-	vi ansv;
-	FOR(i, 1, 60)
-		if(ip[i] && (n % i == 0)) ansv.pb(i);
-	return ansv;
+	}
 }
 
 signed main()
@@ -88,48 +82,50 @@ signed main()
 		
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
-		
+			
+		REP(i, N) REP(j, M) dp[i][j] = INT_MAX;
+		dp[0][0] = 0;
+
 		int n, m, i, j, u, v;
+		string s;
 
 		cin >> n;
-		FOR(i, 1, n) cin >> a[i];
 
-		REP(i, M - 1)
-			if(factors(i).size() == 2) prime_facts.pb(i), ip[i] = 1;
+		vs.pb({{0, 0}, 0});
 
-		cout << prime_facts.size() << endl;
+		REP(i, n) {
+			cin >> u >> v >> s;
+			
+			if(mx[s] == 0) mx[s] = tot_poke++;
+			if(mx2[{u, v}] == 0) mx2[{u, v}] = num_towns++;
 
-		FOR(i, 1, N - 1) {
-			int prime_set = 0;
-			REP(j, prime_facts.size())
-				if(i % prime_facts[j] == 0) prime_set = prime_set | (1 << j);
-			p_sets[i] = prime_set;
-			cout << i << "\t" << bin(prime_set) << "\t" << prime_set << endl;
+			poke[mx2[{u, v}]] = poke[mx2[{u, v}]] | (1 << mx[s]); 
+			vs.pb({{u, v}, mx[s]});
 		}
 
-		FOR(i, 1, N - 1)
-			FOR(j, 1, K - 1) dp[i][j] = INT_MAX;
+		FOR(i, 0, num_towns - 1)
+		FOR(j, 0, num_towns - 1) d[i][j] = abs((vs[i].F.F - vs[j].F.F) + (vs[i].F.S - vs[j].F.S));
 
-		FOR(i, 1, n)
-			FOR(j, 1, 60) {
-				int cur_pset = p_sets[j];
-				//iwanttofuckingkillmyself
-				//whatinthegoodfuckisthiscode
-				FOR(k, 1, K - 1)
-					if((cur_pset & k) == 0) {
-						int new_pset = cur_pset | k;
-						if(k < 10) {
-							printf("j = %d DP{%d, %d} = min(%d, %d)\n", j, i, new_pset, dp[i][new_pset], abs(a[i] - j) + dp[i - 1][k]);
-							cout << "cur_pset = " << bin(cur_pset) << " prev_pset = " << bin(k) << endl;
-						}
-						dp[i][new_pset] = min(dp[i][new_pset], abs(a[i] - j) + dp[i - 1][k]);
-					}
-			}
+		FOR(i, 1, num_towns - 1) poke[i] = poke[i] >> 1;
+		// FOR(i, 1, num_towns - 1) cout << bin(poke[i]) << endl;
 
+		// FOR(i, 1, num_towns - 1) {
+		// 	FOR(j, 1, num_towns - 1) cout << d[i][j] << " "; cout << endl;
+		// } cout << endl;
+
+		recur(0, 0);
+
+		int f_mask = (1 << (tot_poke - 1)) - 1;
 		int ans = INT_MAX;
-		FOR(i, 1, K - 1) ans = min(ans, dp[n][i]);
 
-		cout << ans << endl;
+		// FOR(i, 1, num_towns - 1) {
+		// 	FOR(j, 0, f_mask) 
+		// 		if(dp[i][j] != INT_MAX) 
+		// 			cout << i << " " << bin(j) << " " << dp[i][j] << endl; 
+		// 		cout << endl;
+		// }
+
+		cout << dp[0][f_mask] << endl;
 
 		return 0;
 	}
