@@ -13,9 +13,10 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define WL(t) while(t--)
 #define remin(a,b) (a) = min((a),(b))
 #define remax(a,b) (a) = max((a),(b))
-#define bin(a) bitset<8>(a)
+#define bin(a) bitset<32>(a)
 #define endl '\n'
 #define ld long double
+#define int long long int
 #define MOD 1000000007
 #define p push
 #define pb push_back
@@ -44,29 +45,22 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 23;
-const int M = 1200007;
+const int N = 300007;
+int a[N], p[N];
 
-map <string, int> mx;
-map < pi, int> mx2;
-vppi vs;
+int gcd (int a, int b) {
+    return b ? gcd (b, a % b) : a;
+}
 
-int poke[N];
-int d[N][N];
-int dp[N][M]; // min cost of catching bitmask(M) pokes till town j
-
-int tot_poke = 1;
-int num_towns = 1;
-
-void recur(int idx, int mask) {
-	if(dp[idx][mask] != -1) return 
-	FOR(i, 0, num_towns - 1) {
-		int new_mask = mask | poke[i];
-		if(dp[i][new_mask] > d[idx][i] + dp[idx][mask]) {
-			dp[i][new_mask] = d[idx][i] + dp[idx][mask];
-			recur(i, new_mask);
+vi factors(int n) {
+	vi fax;
+	for(int i = 1; i <= sqrt(n); i++)
+		if(n % i == 0) {
+			if(i == sqrt(n)) fax.pb(i);
+			else fax.pb(i), fax.pb(n / i);
 		}
-	}
+	sort(fax.begin(), fax.end());
+	return fax;
 }
 
 signed main()
@@ -83,51 +77,34 @@ signed main()
 		
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
+		
+		int n, m, i, j, u, v, ans1, ans2, ansx = 1;
+
+		cin >> n >> m;
+
+		FOR(i, 1, n) cin >> a[i];
+		FOR(i, 1, m) cin >> p[i];
 			
-		REP(i, N) REP(j, M) dp[i][j] = INT_MAX;
-		dp[0][0] = 0;
+		ans1 = a[1];
 
-		int n, m, i, j, u, v;
-		string s;
+		u = a[2] - a[1];
+		FOR(i, 2, n) u = gcd(u, a[i] - a[1]);
 
-		cin >> n;
+		// cout << u << endl;
 
-		vs.pb({{0, 0}, 0});
+		vi fx = factors(u);
 
-		REP(i, n) {
-			cin >> u >> v >> s;
-			
-			if(mx[s] == 0) mx[s] = tot_poke++;
-			if(mx2[{u, v}] == 0) mx2[{u, v}] = num_towns++;
-
-			poke[mx2[{u, v}]] = poke[mx2[{u, v}]] | (1 << mx[s]); 
-			vs.pb({{u, v}, mx[s]});
+		FOR(i, 1, m) {
+			REP(j, fx.size()) {
+				if(p[i] == fx[j]) {
+					cout << "YES" << endl;
+					cout << ans1 << " " << i << endl;
+					return 0;
+				}
+			}
 		}
 
-		FOR(i, 0, num_towns - 1)
-		FOR(j, 0, num_towns - 1) d[i][j] = abs((vs[i].F.F - vs[j].F.F) + (vs[i].F.S - vs[j].F.S));
-
-		FOR(i, 1, num_towns - 1) poke[i] = poke[i] >> 1;
-		// FOR(i, 1, num_towns - 1) cout << bin(poke[i]) << endl;
-
-		// FOR(i, 1, num_towns - 1) {
-		// 	FOR(j, 1, num_towns - 1) cout << d[i][j] << " "; cout << endl;
-		// } cout << endl;
-
-		recur(0, 0);
-
-		int f_mask = (1 << (tot_poke - 1)) - 1;
-		int ans = INT_MAX;
-
-		// FOR(i, 1, num_towns - 1) {
-		// 	FOR(j, 0, f_mask) 
-		// 		if(dp[i][j] != INT_MAX) 
-		// 			cout << i << " " << bin(j) << " " << dp[i][j] << endl; 
-		// 		cout << endl;
-		// }
-
-		cout << dp[0][f_mask] << endl;
-
+		cout << "NO" << endl;
 		return 0;
 	}
 

@@ -5,15 +5,15 @@ using namespace std;
 const double PI = 3.141592653589793238462643383279502884197169399375105820974944;
 
 #define REP(i, n) for(int i = 0; i < (n); i++)
-#define FOR(i, a, b) for(int i = (a); i <= (b); i++)
+#define FOR(i, a, qset) for(int i = (a); i <= (qset); i++)
 #define REPD(i, n) for(int i = (n); i >= 0; i--)
-#define FORD(i, a, b) for(int i = (a); i >= b; i--)
+#define FORD(i, a, qset) for(int i = (a); i >= qset; i--)
 #define prArr(a, n) REP(i, n) cout << a[i] << " "; cout << endl;
 #define all(v) v.begin(),v.end()
 #define WL(t) while(t--)
-#define remin(a,b) (a) = min((a),(b))
-#define remax(a,b) (a) = max((a),(b))
-#define bin(a) bitset<8>(a)
+#define remin(a,qset) (a) = min((a),(qset))
+#define remax(a,qset) (a) = max((a),(qset))
+#define bin(a) bitset<32>(a)
 #define endl '\n'
 #define ld long double
 #define MOD 1000000007
@@ -44,37 +44,8 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 23;
-const int M = 1200007;
-
-map <string, int> mx;
-map < pi, int> mx2;
-vppi vs;
-
-int poke[N];
-int d[N][N];
-int dp[N][M]; // min cost of catching bitmask(M) pokes till town j
-
-int tot_poke = 1;
-int num_towns = 1;
-
-void recur(int idx, int mask) {
-	if(dp[idx][mask] != -1) return 
-	FOR(i, 0, num_towns - 1) {
-		int new_mask = mask | poke[i];
-		if(dp[i][new_mask] > d[idx][i] + dp[idx][mask]) {
-			dp[i][new_mask] = d[idx][i] + dp[idx][mask];
-			recur(i, new_mask);
-		}
-	}
-}
-
-signed main()
+int main()
 	{
-		ios_base::sync_with_stdio(false);
-		cin.tie(NULL);
-		cout.tie(NULL);
-		
 		// ifstream cin ("/Users/Aulene/Desktop/input.txt");
 		// ofstream cout ("/Users/Aulene/Desktop/output.txt");
 
@@ -83,50 +54,63 @@ signed main()
 		
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
-			
-		REP(i, N) REP(j, M) dp[i][j] = INT_MAX;
-		dp[0][0] = 0;
+		
+		int t, n, m, i, j, u, v, q1, q2;
 
-		int n, m, i, j, u, v;
-		string s;
+		cin >> t;
 
-		cin >> n;
+		WL(t) {
+			cin >> n;
 
-		vs.pb({{0, 0}, 0});
+			int left = 2, right = n;
+			int ans = 0;
+			v = 1;
+			int q = 8;
 
-		REP(i, n) {
-			cin >> u >> v >> s;
-			
-			if(mx[s] == 0) mx[s] = tot_poke++;
-			if(mx2[{u, v}] == 0) mx2[{u, v}] = num_towns++;
+			while(left <= right && q--) {
 
-			poke[mx2[{u, v}]] = poke[mx2[{u, v}]] | (1 << mx[s]); 
-			vs.pb({{u, v}, mx[s]});
+				int mid = (left + right) / 2;
+
+				// cout << "Lr " << left << " " << right << endl;
+
+				if(right - left == 0) {
+					v = right; break;
+				}
+
+				// query left
+				int sz1 = 1, sz2 = mid - left + 1;
+				cout << sz1 << ' ' << sz2 << ' ';
+				cout << 1 << ' '; FOR(i, left, mid) cout << i << ' '; cout << endl;
+				cin >> q1;
+
+				// if(q1 == -1) exit(0);
+				
+				//query right
+				sz1 = 1, sz2 = right - mid;
+				cout << sz1 << ' ' << sz2 << ' ';
+				cout << 1 << ' '; FOR(i, mid + 1, right) cout << i << ' '; cout << endl;
+				cin >> q2;
+
+				// if(q2 == -1) exit(0);
+
+				ans = max(ans, max(q1, q2));
+
+				if(q1 < q2) left = mid + 1;
+				else right = mid;
+			}
+
+			int sz1 = 1, sz2 = n - 1;
+			cout << sz1 << ' ' << sz2 << ' ';
+			cout << v << ' '; 
+			FOR(i, 1, n) 
+				if(i != v) cout << i << ' '; cout << endl;
+			cin >> q1;
+			// if(q1 == -1) exit(0);
+				
+			ans = max(ans, q1);
+
+			cout << "-1 " << ans << endl;
 		}
-
-		FOR(i, 0, num_towns - 1)
-		FOR(j, 0, num_towns - 1) d[i][j] = abs((vs[i].F.F - vs[j].F.F) + (vs[i].F.S - vs[j].F.S));
-
-		FOR(i, 1, num_towns - 1) poke[i] = poke[i] >> 1;
-		// FOR(i, 1, num_towns - 1) cout << bin(poke[i]) << endl;
-
-		// FOR(i, 1, num_towns - 1) {
-		// 	FOR(j, 1, num_towns - 1) cout << d[i][j] << " "; cout << endl;
-		// } cout << endl;
-
-		recur(0, 0);
-
-		int f_mask = (1 << (tot_poke - 1)) - 1;
-		int ans = INT_MAX;
-
-		// FOR(i, 1, num_towns - 1) {
-		// 	FOR(j, 0, f_mask) 
-		// 		if(dp[i][j] != INT_MAX) 
-		// 			cout << i << " " << bin(j) << " " << dp[i][j] << endl; 
-		// 		cout << endl;
-		// }
-
-		cout << dp[0][f_mask] << endl;
 
 		return 0;
 	}
@@ -134,7 +118,7 @@ signed main()
 /*
 	Snippet Guide - 
 	1. Base Conversion - baseconv
-	2. Binary Exponentiation (a ^ b % m) - powmod 
+	2. Binary Exponentiation (a ^ qset % m) - powmod 
 	3. Centroid Decomposition - centroid
 	4. Code Jam Input - jam
 	5. Disjoint Set Union - dsu
