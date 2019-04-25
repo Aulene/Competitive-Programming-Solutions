@@ -45,20 +45,8 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 1000007;
-const int M = 10000007;
-int fd[M];
-vpi divs[M];
-vpi vs;
-
-int greatest_div[M];
-
-void sieve()
-{
-	
-}
-
-bool cmp(pi a, pi b) { return a.F < b.F; }
+const int N = 507;
+int a[N][N], b[N][N];
 
 signed main()
 	{
@@ -75,52 +63,46 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans_lcm = LLONG_MAX, ans1, ans2;
+		int n, m, i, j, u, v, ans1 = 1, ans2 = 1, ans, x = 0, y = 0;
 
-		cin >> n;
+		cin >> n >> m;
+
+		REP(i, n)
+		REP(j, m) cin >> a[i][j], ((a[i][j] == 1) ? x++ : 0);
+
+		REP(i, n)
+		REP(j, m) cin >> b[i][j], (b[i][j] == 1 ? y++ : 0);
+
+		if((x % 2) != (y % 2)) {
+			cout << "No" << endl;
+			return 0;
+		}
+
 		REP(i, n) {
-			cin >> u;
-			vs.pb({u, i});
-		}
-
-		sort(vs.begin(), vs.end(), cmp);
-
-		REP(i, n) {
-			if(fd[vs[i].F] == 2) continue;
-			fd[vs[i].F]++;
-			// cout << vs[i].F << endl;
-			// vi fx = factors(vs[i].F);
-			// for(auto it : fx) cout << it << " "; cout << endl;
-			for(auto it : fx) {
-				if(divs[it].size() == 2) continue;
-				divs[it].pb(vs[i]);
+			int s1 = 0, s2 = 0;
+			REP(j, m) {
+				if(a[i][j]) s1++;
+				if(b[i][j]) s2++;
 			}
+			// cout << i << " " << s1 << " " << s2 << endl;
+			if((s1 % 2) != (s2 % 2)) ans1 = 0;
 		}
 
-		// FOR(i, 1, 10) {
-		// 	cout << i << endl;
-		// 	for(auto it : divs[i]) cout << it.F << " " << it.S << endl; cout << endl;
-		// }
-
-		FOR(i, 1, M - 1) {
-			if(divs[i].size() >= 2) {
-				int f1 = divs[i][0].F;
-				int f2 = divs[i][1].F;
-				int mx = f1 * f2;
-				mx = mx / i;
-
-				if(mx < ans_lcm) {
-					ans_lcm = mx;
-					ans1 = divs[i][0].S;
-					ans2 = divs[i][1].S;
-				}
+		REP(i, m) {
+			int s1 = 0, s2 = 0;
+			REP(j, n) {
+				if(a[j][i]) s1++;
+				if(b[j][i]) s2++;
 			}
+
+			// cout << i << " " << s1 << " " << s2 << endl;
+
+			if((s1 % 2) != (s2 % 2)) ans2 = 0;
 		}
 
-		if(ans1 > ans2) swap(ans1, ans2);
+		ans = ans1 & ans2;
+		cout << ((ans == 1) ? "Yes" : "No") << endl;
 
-		cout << ans1 + 1 << " " << ans2 + 1 << endl;
- 
 
 		return 0;
 	}

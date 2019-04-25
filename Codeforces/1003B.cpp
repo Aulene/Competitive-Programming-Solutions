@@ -45,21 +45,6 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 1000007;
-const int M = 10000007;
-int fd[M];
-vpi divs[M];
-vpi vs;
-
-int greatest_div[M];
-
-void sieve()
-{
-	
-}
-
-bool cmp(pi a, pi b) { return a.F < b.F; }
-
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -75,52 +60,64 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans_lcm = LLONG_MAX, ans1, ans2;
+		int n, m, i, j, u, v;
+		int a, b, x;
 
-		cin >> n;
-		REP(i, n) {
-			cin >> u;
-			vs.pb({u, i});
+		cin >> a >> b >> x;
+
+		deque <int> dq;
+
+		if(x == 2) {
+			if(a == 1 && b == 2) {
+				cout << "101" << endl; return 0;
+			}
+			else if(a == 2 && b == 1) {
+				cout << "010" << endl; return 0;
+			}
+
+			if(b > a) {
+				while(a) dq.push_back(0), a--;
+				dq.push_front(1);
+				dq.push_back(1);
+				b -= 2;
+				while(b > 0) dq.push_back(1), b--;
+			}
+			else {
+				while(b) dq.push_back(1), b--;
+				dq.push_front(0);
+				dq.push_back(0);
+				a -= 2;
+				while(a > 0) dq.push_back(0), a--;
+			}
+			while(!dq.empty()) cout << dq.front(), dq.pop_front();
+			return 0;
 		}
 
-		sort(vs.begin(), vs.end(), cmp);
+		dq.push_back(1);
+		dq.push_back(0);
+		a--, b--, x--;
 
-		REP(i, n) {
-			if(fd[vs[i].F] == 2) continue;
-			fd[vs[i].F]++;
-			// cout << vs[i].F << endl;
-			// vi fx = factors(vs[i].F);
-			// for(auto it : fx) cout << it << " "; cout << endl;
-			for(auto it : fx) {
-				if(divs[it].size() == 2) continue;
-				divs[it].pb(vs[i]);
+		while(x) {
+			if(a) {
+				if(dq.back() == 1) dq.push_back(0), a--, x--;
+				else if(dq.front() == 1) dq.push_front(0), a--, x--; 
+			}
+
+			if(!x) break;
+			
+			if(b) {
+				if(dq.back() == 0) dq.push_back(1), b--, x--;
+				else if(dq.front() == 0) dq.push_front(1), b--, x--; 
 			}
 		}
 
-		// FOR(i, 1, 10) {
-		// 	cout << i << endl;
-		// 	for(auto it : divs[i]) cout << it.F << " " << it.S << endl; cout << endl;
-		// }
-
-		FOR(i, 1, M - 1) {
-			if(divs[i].size() >= 2) {
-				int f1 = divs[i][0].F;
-				int f2 = divs[i][1].F;
-				int mx = f1 * f2;
-				mx = mx / i;
-
-				if(mx < ans_lcm) {
-					ans_lcm = mx;
-					ans1 = divs[i][0].S;
-					ans2 = divs[i][1].S;
-				}
-			}
-		}
-
-		if(ans1 > ans2) swap(ans1, ans2);
-
-		cout << ans1 + 1 << " " << ans2 + 1 << endl;
- 
+		while(b && dq.front() == 1) dq.push_front(1), b--;
+		while(b && dq.back() == 1) dq.push_back(1), b--;
+		while(a && dq.front() == 0) dq.push_front(0), a--;
+		while(a && dq.back() == 0) dq.push_back(0), a--;
+		
+		while(!dq.empty()) cout << dq.front(), dq.pop_front();
+		
 
 		return 0;
 	}

@@ -45,20 +45,25 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 1000007;
-const int M = 10000007;
-int fd[M];
-vpi divs[M];
+const int N = 200007;
+map <int, int> mx;
 vpi vs;
+int a[N];
 
-int greatest_div[M];
+int bs(int w, int high, int num) {
+	int low = 0, mid, ans = 0;
 
-void sieve()
-{
-	
+	while(low <= high) {
+
+		mid = (low + high) / 2;
+		if(mid * w <= num) {
+			ans = mid;
+			low = mid + 1;
+		}
+		else high = mid - 1;
+	}
+	return ans;
 }
-
-bool cmp(pi a, pi b) { return a.F < b.F; }
 
 signed main()
 	{
@@ -75,52 +80,27 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans_lcm = LLONG_MAX, ans1, ans2;
+		int n, m, i, j, u, v;
 
-		cin >> n;
-		REP(i, n) {
-			cin >> u;
-			vs.pb({u, i});
-		}
+		cin >> n >> m;
+		FOR(i, 1, n) cin >> u, mx[u]++;
+		for(auto it : mx) vs.pb({it.F, it.S});
+		reverse(vs.begin(), vs.end());
 
-		sort(vs.begin(), vs.end(), cmp);
+		while(m--) {
+			cin >> v;
 
-		REP(i, n) {
-			if(fd[vs[i].F] == 2) continue;
-			fd[vs[i].F]++;
-			// cout << vs[i].F << endl;
-			// vi fx = factors(vs[i].F);
-			// for(auto it : fx) cout << it << " "; cout << endl;
-			for(auto it : fx) {
-				if(divs[it].size() == 2) continue;
-				divs[it].pb(vs[i]);
+			int ans= 0;
+
+			for(auto it : vs) {
+				u = bs(it.F, it.S, v);
+				v -= u * it.F;
+				ans += u;
 			}
+
+			if(v) ans = -1;
+			cout << ans << endl;
 		}
-
-		// FOR(i, 1, 10) {
-		// 	cout << i << endl;
-		// 	for(auto it : divs[i]) cout << it.F << " " << it.S << endl; cout << endl;
-		// }
-
-		FOR(i, 1, M - 1) {
-			if(divs[i].size() >= 2) {
-				int f1 = divs[i][0].F;
-				int f2 = divs[i][1].F;
-				int mx = f1 * f2;
-				mx = mx / i;
-
-				if(mx < ans_lcm) {
-					ans_lcm = mx;
-					ans1 = divs[i][0].S;
-					ans2 = divs[i][1].S;
-				}
-			}
-		}
-
-		if(ans1 > ans2) swap(ans1, ans2);
-
-		cout << ans1 + 1 << " " << ans2 + 1 << endl;
- 
 
 		return 0;
 	}

@@ -45,21 +45,6 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 1000007;
-const int M = 10000007;
-int fd[M];
-vpi divs[M];
-vpi vs;
-
-int greatest_div[M];
-
-void sieve()
-{
-	
-}
-
-bool cmp(pi a, pi b) { return a.F < b.F; }
-
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -75,52 +60,55 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans_lcm = LLONG_MAX, ans1, ans2;
+		int n, m, i, j, u, v, ans = 0;
+		string s;
 
-		cin >> n;
-		REP(i, n) {
-			cin >> u;
-			vs.pb({u, i});
-		}
+		cin >> m >> s; 
 
-		sort(vs.begin(), vs.end(), cmp);
-
-		REP(i, n) {
-			if(fd[vs[i].F] == 2) continue;
-			fd[vs[i].F]++;
-			// cout << vs[i].F << endl;
-			// vi fx = factors(vs[i].F);
-			// for(auto it : fx) cout << it << " "; cout << endl;
-			for(auto it : fx) {
-				if(divs[it].size() == 2) continue;
-				divs[it].pb(vs[i]);
-			}
-		}
-
-		// FOR(i, 1, 10) {
-		// 	cout << i << endl;
-		// 	for(auto it : divs[i]) cout << it.F << " " << it.S << endl; cout << endl;
-		// }
-
-		FOR(i, 1, M - 1) {
-			if(divs[i].size() >= 2) {
-				int f1 = divs[i][0].F;
-				int f2 = divs[i][1].F;
-				int mx = f1 * f2;
-				mx = mx / i;
-
-				if(mx < ans_lcm) {
-					ans_lcm = mx;
-					ans1 = divs[i][0].S;
-					ans2 = divs[i][1].S;
+		if(m == 0) {
+			int sum = 0;
+			REP(i, s.size()) {
+				if(s[i] == '0') sum++;
+				else {
+					ans += sum * (sum + 1) / 2;
+					sum = 0;
 				}
 			}
+
+			ans += sum * (sum + 1) / 2;
+
+			cout << ans << endl; return 0;
 		}
 
-		if(ans1 > ans2) swap(ans1, ans2);
+		s = '1' + s + '1';
 
-		cout << ans1 + 1 << " " << ans2 + 1 << endl;
- 
+		n = s.size();
+		
+		vi vs;
+
+		REP(i, n) 
+			if(s[i] == '1')
+				vs.pb(i);
+			
+		// for(auto it : vs) cout << it << " "; cout << endl;
+
+		FOR(i, 1, vs.size() - 1) {
+			int idx = i + m - 1;
+
+			if(idx >= vs.size() - 1) break;
+
+			int sum = 0;
+			int lt = vs[i] - vs[i - 1] - 1;
+			int rt = vs[idx + 1] - vs[idx] - 1;
+			sum = 1 + lt + rt + lt * rt;
+			ans += sum;
+
+			// cout << i << " " << idx << endl;
+			// cout << "LTRT = " << lt << " " << rt << endl;
+			// cout << "Sum = " << sum << endl;
+		}
+
+		cout << ans << endl;
 
 		return 0;
 	}

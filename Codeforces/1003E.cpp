@@ -45,20 +45,12 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 1000007;
-const int M = 10000007;
-int fd[M];
-vpi divs[M];
-vpi vs;
-
-int greatest_div[M];
-
-void sieve()
-{
-	
-}
-
-bool cmp(pi a, pi b) { return a.F < b.F; }
+const int N = 400007;
+vpi ansv;
+int num_left;
+int left_deg[N];
+int cur_depth[N], max_depth[N];
+int cnode;
 
 signed main()
 	{
@@ -75,52 +67,36 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans_lcm = LLONG_MAX, ans1, ans2;
+		int n, m, d, k, i, j, u, v;
 
-		cin >> n;
-		REP(i, n) {
-			cin >> u;
-			vs.pb({u, i});
+		cin >> n >> m >> k;
+
+		if(m > n - 1) {
+			cout << "NO" << endl;
+			return 0;
 		}
 
-		sort(vs.begin(), vs.end(), cmp);
-
-		REP(i, n) {
-			if(fd[vs[i].F] == 2) continue;
-			fd[vs[i].F]++;
-			// cout << vs[i].F << endl;
-			// vi fx = factors(vs[i].F);
-			// for(auto it : fx) cout << it << " "; cout << endl;
-			for(auto it : fx) {
-				if(divs[it].size() == 2) continue;
-				divs[it].pb(vs[i]);
-			}
+		if(k == 2 && m != n - 1) {
+			cout << "NO" << endl;
+			return 0;
 		}
 
-		// FOR(i, 1, 10) {
-		// 	cout << i << endl;
-		// 	for(auto it : divs[i]) cout << it.F << " " << it.S << endl; cout << endl;
+		FOR(i, 1, n) left_deg[i] = k;
+
+		num_left -= m - 1;
+		cnode = m + 1;
+
+		FOR(i, 1, m) 
+			ansv.pb({i, i + 1}), left_deg[i]--, left_deg[i + 1]--;
+
+		// FOR(i, 2, n - 2) {
+		// 	int md = min(i - 1, n - 1 - i);
+		// 	while(num_left && left_deg[i]) {
+		// 		max_depth[i] = 
+		// 	}
 		// }
-
-		FOR(i, 1, M - 1) {
-			if(divs[i].size() >= 2) {
-				int f1 = divs[i][0].F;
-				int f2 = divs[i][1].F;
-				int mx = f1 * f2;
-				mx = mx / i;
-
-				if(mx < ans_lcm) {
-					ans_lcm = mx;
-					ans1 = divs[i][0].S;
-					ans2 = divs[i][1].S;
-				}
-			}
-		}
-
-		if(ans1 > ans2) swap(ans1, ans2);
-
-		cout << ans1 + 1 << " " << ans2 + 1 << endl;
- 
+		for(auto it : ansv) cout << it.F << " " << it.S << endl;
+		
 
 		return 0;
 	}

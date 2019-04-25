@@ -45,20 +45,9 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 1000007;
-const int M = 10000007;
-int fd[M];
-vpi divs[M];
-vpi vs;
+// 0, 3, 6 - a. 1, 5 - b. 2, 4 - c.
 
-int greatest_div[M];
-
-void sieve()
-{
-	
-}
-
-bool cmp(pi a, pi b) { return a.F < b.F; }
+int a[4], b[4];
 
 signed main()
 	{
@@ -75,52 +64,54 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans_lcm = LLONG_MAX, ans1, ans2;
+		int n, m, i, j, u, v;
 
-		cin >> n;
-		REP(i, n) {
-			cin >> u;
-			vs.pb({u, i});
-		}
+		REP(i, 3) cin >> a[i];
 
-		sort(vs.begin(), vs.end(), cmp);
+		int max_week = min(min(a[0] / 3, a[1] / 2), a[2] / 2);
+		// cout << max_week << endl;
 
-		REP(i, n) {
-			if(fd[vs[i].F] == 2) continue;
-			fd[vs[i].F]++;
-			// cout << vs[i].F << endl;
-			// vi fx = factors(vs[i].F);
-			// for(auto it : fx) cout << it << " "; cout << endl;
-			for(auto it : fx) {
-				if(divs[it].size() == 2) continue;
-				divs[it].pb(vs[i]);
-			}
-		}
+		int ans = max_week * 7;
 
-		// FOR(i, 1, 10) {
-		// 	cout << i << endl;
-		// 	for(auto it : divs[i]) cout << it.F << " " << it.S << endl; cout << endl;
-		// }
+		REP(i, 3)
+			if(i == 0) a[i] -= 3 * max_week;
+			else a[i] -= 2 * max_week;
 
-		FOR(i, 1, M - 1) {
-			if(divs[i].size() >= 2) {
-				int f1 = divs[i][0].F;
-				int f2 = divs[i][1].F;
-				int mx = f1 * f2;
-				mx = mx / i;
+		int m_add = 0;
 
-				if(mx < ans_lcm) {
-					ans_lcm = mx;
-					ans1 = divs[i][0].S;
-					ans2 = divs[i][1].S;
+		REP(start_day, 7) {
+
+			int cans = 0;
+			
+			REP(j, 3) b[j] = a[j];
+			// REP(j, 3) cout << b[j] << " "; cout << endl;
+
+			REP(j, 7) {
+				int c_day = (start_day + j) % 7;
+
+				if(c_day == 0 || c_day == 3 || c_day == 6) {
+					if(b[0] <= 0) break;
+					else b[0]--, cans++;
 				}
+				else if(c_day == 1 || c_day == 5) {
+					if(b[1] <= 0) break;
+					else b[1]--, cans++;
+				}
+				else {
+					if(b[2] <= 0) break;
+					else b[2]--, cans++;
+				}
+
+				// cout << " " << c_day << " " << cans << endl;
+				
 			}
+
+			// cout << start_day << " " << cans << endl;
+
+			m_add = max(m_add, cans);
 		}
 
-		if(ans1 > ans2) swap(ans1, ans2);
-
-		cout << ans1 + 1 << " " << ans2 + 1 << endl;
- 
+		cout << ans + m_add << endl;
 
 		return 0;
 	}

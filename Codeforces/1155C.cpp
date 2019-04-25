@@ -63,6 +63,8 @@ vi factors(int n) {
 	return fax;
 }
 
+map <int, int> mx;
+
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -92,15 +94,15 @@ signed main()
 
 		// cout << u << endl;
 
-		vi fx = factors(u);
+		// vi fx = factors(u);
+
+		// REP(j, fx.size()) mx[fx[j]] = 1;
 
 		FOR(i, 1, m) {
-			REP(j, fx.size()) {
-				if(p[i] == fx[j]) {
-					cout << "YES" << endl;
-					cout << ans1 << " " << i << endl;
-					return 0;
-				}
+			if(u % p[i] == 0) {
+				cout << "YES" << endl;
+				cout << ans1 << " " << i << endl;
+				return 0;
 			}
 		}
 

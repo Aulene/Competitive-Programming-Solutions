@@ -45,21 +45,41 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 1000007;
-const int M = 10000007;
-int fd[M];
-vpi divs[M];
-vpi vs;
+const int N = 1007;
+int a[N];
 
-int greatest_div[M];
+int c(int x, int h) {
+	vi vs;
+	REP(i, x + 1) vs.pb(a[i]);
+	sort(vs.begin(), vs.end(), greater <int>());
 
-void sieve()
-{
-	
+	// REP(i, x + 1) cout << vs[i] << " "; cout << endl;
+
+	for(int i = 0; i <= x; i += 2) {
+		int hx = vs[i];
+		if(i + 1 <= x) hx = max(hx, vs[i + 1]);
+		h -= hx;
+		if(h < 0) return 0;
+	}
+
+	return 1;
 }
+int bs(int n, int m) {
 
-bool cmp(pi a, pi b) { return a.F < b.F; }
+	int low = 0, high = n - 1, mid, ans = 0;
 
+	while(low <= high) {
+
+		int mid = (low + high) / 2;
+
+		if(c(mid, m)) {
+			ans = mid;
+			low = mid + 1;
+		}
+		else high = mid - 1;
+	}
+	return ans;
+}
 signed main()
 	{
 		ios_base::sync_with_stdio(false);
@@ -75,53 +95,13 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans_lcm = LLONG_MAX, ans1, ans2;
+		int n, m, i, j, u, v;
 
-		cin >> n;
-		REP(i, n) {
-			cin >> u;
-			vs.pb({u, i});
-		}
+		cin >> n >> m;
+		REP(i, n) cin >> a[i];
+		// cout << c(2, m) << endl;
 
-		sort(vs.begin(), vs.end(), cmp);
-
-		REP(i, n) {
-			if(fd[vs[i].F] == 2) continue;
-			fd[vs[i].F]++;
-			// cout << vs[i].F << endl;
-			// vi fx = factors(vs[i].F);
-			// for(auto it : fx) cout << it << " "; cout << endl;
-			for(auto it : fx) {
-				if(divs[it].size() == 2) continue;
-				divs[it].pb(vs[i]);
-			}
-		}
-
-		// FOR(i, 1, 10) {
-		// 	cout << i << endl;
-		// 	for(auto it : divs[i]) cout << it.F << " " << it.S << endl; cout << endl;
-		// }
-
-		FOR(i, 1, M - 1) {
-			if(divs[i].size() >= 2) {
-				int f1 = divs[i][0].F;
-				int f2 = divs[i][1].F;
-				int mx = f1 * f2;
-				mx = mx / i;
-
-				if(mx < ans_lcm) {
-					ans_lcm = mx;
-					ans1 = divs[i][0].S;
-					ans2 = divs[i][1].S;
-				}
-			}
-		}
-
-		if(ans1 > ans2) swap(ans1, ans2);
-
-		cout << ans1 + 1 << " " << ans2 + 1 << endl;
- 
-
+		cout << bs(n, m) + 1 << endl;
 		return 0;
 	}
 

@@ -16,7 +16,7 @@ const double PI = 3.141592653589793238462643383279502884197169399375105820974944
 #define bin(a) bitset<32>(a)
 #define endl '\n'
 #define ld long double
-#define int long long int
+#define int unsigned long long int
 #define MOD 1000000007
 #define p push
 #define pb push_back
@@ -45,20 +45,22 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 	6. Memory allocations, sometimes the vector is N^2.
 */
 
-const int N = 1000007;
-const int M = 10000007;
-int fd[M];
-vpi divs[M];
-vpi vs;
+const int N = 200007;
 
-int greatest_div[M];
-
-void sieve()
-{
-	
+int gcd (int a, int b) {
+    return b ? gcd (b, a % b) : a;
 }
 
-bool cmp(pi a, pi b) { return a.F < b.F; }
+vi factors(int n) {
+	vi fax;
+	for(int i = 1; i <= sqrt(n); i++)
+		if(n % i == 0) {
+			if(i == sqrt(n)) fax.pb(i);
+			else fax.pb(i), fax.pb(n / i);
+		}
+	sort(fax.begin(), fax.end());
+	return fax;
+}
 
 signed main()
 	{
@@ -75,52 +77,25 @@ signed main()
 		// ifstream cin ("usaco.in");
 		// ofstream cout ("usaco.out");
 		
-		int n, m, i, j, u, v, ans_lcm = LLONG_MAX, ans1, ans2;
+		int a, b, n, m, i, idx = 0;
+		cin >> a >> b;
+		if(a > b) swap(a, b);
 
-		cin >> n;
-		REP(i, n) {
-			cin >> u;
-			vs.pb({u, i});
-		}
+		int lcm = (a * b) / gcd(a, b);
+		int ans = 0;
 
-		sort(vs.begin(), vs.end(), cmp);
+		vi fx = factors(b - a);
 
-		REP(i, n) {
-			if(fd[vs[i].F] == 2) continue;
-			fd[vs[i].F]++;
-			// cout << vs[i].F << endl;
-			// vi fx = factors(vs[i].F);
-			// for(auto it : fx) cout << it << " "; cout << endl;
-			for(auto it : fx) {
-				if(divs[it].size() == 2) continue;
-				divs[it].pb(vs[i]);
+		for(auto it : fx) {
+			int _a = a + it, _b = b + it;
+			int n_lcm = (_a * _b) / gcd(_a, _b);
+			if(n_lcm < lcm) {
+				lcm = n_lcm;
+				ans = it;
 			}
 		}
 
-		// FOR(i, 1, 10) {
-		// 	cout << i << endl;
-		// 	for(auto it : divs[i]) cout << it.F << " " << it.S << endl; cout << endl;
-		// }
-
-		FOR(i, 1, M - 1) {
-			if(divs[i].size() >= 2) {
-				int f1 = divs[i][0].F;
-				int f2 = divs[i][1].F;
-				int mx = f1 * f2;
-				mx = mx / i;
-
-				if(mx < ans_lcm) {
-					ans_lcm = mx;
-					ans1 = divs[i][0].S;
-					ans2 = divs[i][1].S;
-				}
-			}
-		}
-
-		if(ans1 > ans2) swap(ans1, ans2);
-
-		cout << ans1 + 1 << " " << ans2 + 1 << endl;
- 
+		cout << ans << endl;
 
 		return 0;
 	}
